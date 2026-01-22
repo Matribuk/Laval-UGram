@@ -1,0 +1,24 @@
+.users-page-title {
+	font-family: 'Times New Roman', Georgia, serif;
+	font-size: 32px;
+	font-weight: 600;
+	color: #1a1a2e;
+	margin: 0 0 24px 0;
+}
+
+.users-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+@media (max-width: 768px) {
+	.users-page-title {
+		font-size: 24px;
+		margin-bottom: 16px;
+	}
+
+	.users-list {
+		gap: 8px;
+	}
+}

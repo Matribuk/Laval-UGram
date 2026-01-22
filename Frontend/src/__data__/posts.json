@@ -1,0 +1,112 @@
+{
+	"posts": [
+		{
+			"id": 1,
+			"authorUsername": "testuser",
+			"createdAt": "2026-01-15T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Local test image",
+			"tags": ["test", "local"],
+			"mentions": []
+		},
+		{
+			"id": 2,
+			"authorUsername": "testuser230532",
+			"createdAt": "2026-01-15T08:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Beautiful blue sky today!",
+			"tags": ["sky", "nature", "photography"],
+			"mentions": []
+		},
+		{
+			"id": 3,
+			"authorUsername": "testuser230532",
+			"createdAt": "2026-01-15T05:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Green vibes only",
+			"tags": ["green", "nature"],
+			"mentions": []
+		},
+		{
+			"id": 4,
+			"authorUsername": "testuser",
+			"createdAt": "2026-01-14T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Another great day with @testuser230532",
+			"tags": ["life", "happy"],
+			"mentions": ["testuser230532"]
+		},
+		{
+			"id": 5,
+			"authorUsername": "testuser",
+			"createdAt": "2026-01-13T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Weekend vibes",
+			"tags": ["weekend"],
+			"mentions": []
+		},
+		{
+			"id": 6,
+			"authorUsername": "testuser230532",
+			"createdAt": "2026-01-12T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Coffee time",
+			"tags": ["coffee", "morning"],
+			"mentions": []
+		},
+		{
+			"id": 7,
+			"authorUsername": "testuser230532",
+			"createdAt": "2026-01-11T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Sunset views",
+			"tags": ["sunset", "nature"],
+			"mentions": []
+		},
+		{
+			"id": 8,
+			"authorUsername": "testuser230532",
+			"createdAt": "2026-01-10T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "City lights",
+			"tags": ["city", "night"],
+			"mentions": []
+		},
+		{
+			"id": 9,
+			"authorUsername": "testuser1768431984",
+			"createdAt": "2026-01-08T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Mountain adventure",
+			"tags": ["mountain", "hiking"],
+			"mentions": []
+		},
+		{
+			"id": 10,
+			"authorUsername": "testuser1768431984",
+			"createdAt": "2026-01-08T08:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Beach day",
+			"tags": ["beach", "summer"],
+			"mentions": []
+		},
+		{
+			"id": 11,
+			"authorUsername": "testuser1768431984",
+			"createdAt": "2026-01-01T10:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Food photography",
+			"tags": ["food", "photography"],
+			"mentions": []
+		},
+		{
+			"id": 12,
+			"authorUsername": "testuser1768431984",
+			"createdAt": "2026-01-01T08:00:00Z",
+			"imageUrl": "/assets/imgNotFound.jpg",
+			"caption": "Street art with @kiki",
+			"tags": ["art", "street"],
+			"mentions": ["kiki"]
+		}
+	]
+}

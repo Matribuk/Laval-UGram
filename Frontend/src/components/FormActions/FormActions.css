@@ -1,0 +1,6 @@
+.form-actions {
+	display: flex;
+	gap: var(--spacing-md);
+	justify-content: flex-end;
+	margin-top: var(--spacing-md);
+}

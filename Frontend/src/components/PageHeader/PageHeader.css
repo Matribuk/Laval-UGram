@@ -1,0 +1,30 @@
+.page-header {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-xl);
+}
+
+.page-header .back-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: var(--spacing-xs);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--radius-sm);
+	transition: background-color 0.2s;
+}
+
+.page-header .back-button:hover {
+	background-color: var(--color-background-hover);
+}
+
+.page-header .page-title {
+	margin: 0;
+	font-family: 'Times New Roman', Georgia, serif;
+	font-size: 32px;
+	font-weight: 600;
+	color: var(--color-text-primary);
+}

@@ -1,0 +1,153 @@
+.post-card {
+	background: white;
+	border-radius: 12px;
+	border: 1px solid #e9ecef;
+	overflow: hidden;
+	margin-bottom: 24px;
+}
+
+.post-header {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 16px;
+}
+
+.post-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #1a1a8e;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.post-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.post-avatar span {
+	color: white;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.post-author-info {
+	display: flex;
+	flex-direction: column;
+}
+
+.post-username {
+	font-size: 14px;
+	font-weight: 600;
+	color: #1a1a2e;
+}
+
+.post-time {
+	font-size: 12px;
+	color: #6c757d;
+	font-family: monospace;
+}
+
+.post-image {
+	width: 100%;
+	aspect-ratio: 1;
+	background-color: #f8f9fa;
+}
+
+.post-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.post-content {
+	padding: 16px;
+}
+
+.post-caption {
+	font-size: 14px;
+	color: #1a1a2e;
+	margin: 0 0 12px 0;
+	line-height: 1.5;
+}
+
+.caption-username {
+	font-weight: 600;
+}
+
+.post-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.post-tag {
+	font-size: 13px;
+	color: #1a1a2e;
+	background-color: #f1f3f4;
+	padding: 4px 12px;
+	border-radius: 16px;
+}
+
+.post-author-link {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	text-decoration: none;
+	color: inherit;
+}
+
+.post-author-link:hover .post-username {
+	text-decoration: underline;
+}
+
+.post-image {
+	cursor: pointer;
+}
+
+.caption-username {
+	text-decoration: none;
+	color: #1a1a2e;
+}
+
+.caption-username:hover {
+	text-decoration: underline;
+}
+
+.mention-link {
+	color: var(--color-primary);
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.mention-link:hover {
+	text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+	.post-card {
+		border-radius: 0;
+		border-left: none;
+		border-right: none;
+		margin-bottom: 8px;
+	}
+
+	.post-header {
+		padding: 12px;
+	}
+
+	.post-content {
+		padding: 12px;
+	}
+
+	.post-tag {
+		font-size: 12px;
+		padding: 3px 10px;
+	}
+}

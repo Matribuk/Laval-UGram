@@ -1,0 +1,40 @@
+{
+	"users": [
+		{
+			"id": 1,
+			"username": "kiki",
+			"fullName": "killian cottrelle",
+			"email": "killiancottrelle@gmail.com",
+			"phoneNumber": "+1 (555) 123-4567",
+			"joinedDate": "Jan 2026",
+			"avatar": null
+		},
+		{
+			"id": 2,
+			"username": "testuser230532",
+			"fullName": "Updated Name",
+			"email": "testuser230532@example.com",
+			"phoneNumber": "+1 (555) 234-5678",
+			"joinedDate": "Dec 2025",
+			"avatar": null
+		},
+		{
+			"id": 3,
+			"username": "testuser1768431984",
+			"fullName": "Test User",
+			"email": "testuser1768431984@example.com",
+			"phoneNumber": "+1 (555) 345-6789",
+			"joinedDate": "Nov 2025",
+			"avatar": null
+		},
+		{
+			"id": 4,
+			"username": "testuser",
+			"fullName": "Test User",
+			"email": "testuser@example.com",
+			"phoneNumber": "+1 (555) 456-7890",
+			"joinedDate": "Oct 2025",
+			"avatar": null
+		}
+	]
+}

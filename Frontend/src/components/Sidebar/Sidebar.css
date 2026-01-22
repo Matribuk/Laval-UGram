@@ -1,0 +1,223 @@
+.sidebar {
+	width: var(--sidebar-width);
+	min-height: 100vh;
+	background-color: var(--color-bg-white);
+	border-right: 1px solid var(--color-border);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: var(--spacing-2xl) var(--spacing-lg);
+	box-sizing: border-box;
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 100;
+	transition: transform var(--transition-normal);
+}
+
+.sidebar-content {
+	display: flex;
+	flex-direction: column;
+}
+
+.sidebar-logo {
+	font-family: var(--font-serif);
+	font-size: var(--font-3xl);
+	font-weight: var(--font-normal);
+	color: var(--color-primary);
+	margin: 0 0 var(--spacing-3xl) var(--spacing-sm);
+	letter-spacing: -0.5px;
+}
+
+.sidebar-nav {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+}
+
+.nav-item {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md) var(--spacing-lg);
+	font-size: var(--font-md);
+	font-weight: var(--font-medium);
+	color: var(--color-text-primary);
+	background: none;
+	border: none;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: background-color var(--transition-fast);
+	text-align: left;
+	width: 100%;
+}
+
+.nav-item:hover {
+	background-color: var(--color-bg-primary);
+}
+
+.nav-item.active {
+	background-color: var(--color-primary);
+	color: white;
+}
+
+.nav-item.active svg {
+	stroke: white;
+}
+
+.new-post-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-md) var(--spacing-lg);
+	font-size: var(--font-md);
+	font-weight: var(--font-medium);
+	color: white;
+	background-color: var(--color-primary);
+	border: none;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: background-color var(--transition-fast);
+	margin-top: var(--spacing-lg);
+	width: 100%;
+}
+
+.new-post-button:hover {
+	background-color: var(--color-primary-dark);
+}
+
+.sidebar-footer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-lg);
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-sm);
+}
+
+.user-avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: var(--radius-full);
+	background-color: var(--color-primary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.user-avatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.user-avatar span {
+	color: white;
+	font-size: var(--font-lg);
+	font-weight: var(--font-medium);
+}
+
+.user-details {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.user-name {
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
+	color: var(--color-text-primary);
+}
+
+.user-email {
+	font-size: var(--font-xs);
+	color: var(--color-text-secondary);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.logout-button {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md) var(--spacing-lg);
+	font-size: var(--font-sm);
+	font-weight: var(--font-medium);
+	color: var(--color-text-secondary);
+	background: none;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition:
+		background-color var(--transition-fast),
+		color var(--transition-fast);
+	width: 100%;
+}
+
+.logout-button:hover {
+	background-color: var(--color-bg-primary);
+	color: var(--color-text-primary);
+}
+
+@media (min-width: 1201px) {
+	.messages-nav-item {
+		display: none;
+	}
+}
+
+@media (max-width: 1024px) {
+	.sidebar {
+		width: 80px;
+		padding: var(--spacing-xl) var(--spacing-sm);
+	}
+
+	.sidebar-logo {
+		font-size: var(--font-xl);
+		text-align: center;
+		margin-left: 0;
+	}
+
+	.nav-item {
+		justify-content: center;
+		padding: var(--spacing-md);
+	}
+
+	.nav-item span {
+		display: none;
+	}
+
+	.new-post-button {
+		padding: var(--spacing-md);
+	}
+
+	.new-post-button span {
+		display: none;
+	}
+
+	.user-details {
+		display: none;
+	}
+
+	.logout-button span {
+		display: none;
+	}
+
+	.logout-button {
+		justify-content: center;
+		padding: var(--spacing-md);
+	}
+}
+
+@media (max-width: 768px) {
+	.sidebar {
+		display: none;
+	}
+}
