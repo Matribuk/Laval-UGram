@@ -1,14 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import usersData from '../../__data__/users.json';
+import { User } from '../../types/api.types';
+import { usersService } from '../../services/usersService';
 import Avatar from '../Avatar';
 import './MentionTextarea.css';
-
-interface User {
-	id: number;
-	username: string;
-	fullName: string;
-	avatar?: string | null;
-}
 
 interface MentionTextareaProps {
 	value: string;
@@ -34,34 +28,49 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 	const [mentionQuery, setMentionQuery] = useState('');
 	const [mentionStartIndex, setMentionStartIndex] = useState(-1);
 	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [users, setUsers] = useState<User[]>([]);
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const suggestionsRef = useRef<HTMLDivElement>(null);
 
-	const users: User[] = usersData.users;
-
-	const findMentionQuery = useCallback((text: string, cursorPos: number): { query: string; startIndex: number } | null => {
-		const textBeforeCursor = text.slice(0, cursorPos);
-		const atIndex = textBeforeCursor.lastIndexOf('@');
-
-		if (atIndex === -1) {
-			return null;
-		}
-
-		const textAfterAt = textBeforeCursor.slice(atIndex + 1);
-
-		if (textAfterAt.includes(' ') || textAfterAt.includes('\n')) {
-			return null;
-		}
-
-		if (atIndex > 0 && !/[\s\n]/.test(text[atIndex - 1])) {
-			return null;
-		}
-
-		return {
-			query: textAfterAt.toLowerCase(),
-			startIndex: atIndex,
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				const data = await usersService.getAllUsers();
+				setUsers(data);
+			} catch (error) {
+				console.error('Failed to fetch users for mentions:', error);
+			}
 		};
+
+		fetchUsers();
 	}, []);
+
+	const findMentionQuery = useCallback(
+		(text: string, cursorPos: number): { query: string; startIndex: number } | null => {
+			const textBeforeCursor = text.slice(0, cursorPos);
+			const atIndex = textBeforeCursor.lastIndexOf('@');
+
+			if (atIndex === -1) {
+				return null;
+			}
+
+			const textAfterAt = textBeforeCursor.slice(atIndex + 1);
+
+			if (textAfterAt.includes(' ') || textAfterAt.includes('\n')) {
+				return null;
+			}
+
+			if (atIndex > 0 && !/[\s\n]/.test(text[atIndex - 1])) {
+				return null;
+			}
+
+			return {
+				query: textAfterAt.toLowerCase(),
+				startIndex: atIndex,
+			};
+		},
+		[],
+	);
 
 	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		const newValue = e.target.value;
@@ -75,7 +84,7 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 			const filteredUsers = users.filter(
 				(user) =>
 					user.username.toLowerCase().includes(mentionInfo.query) ||
-					user.fullName.toLowerCase().includes(mentionInfo.query)
+					(user.fullName || '').toLowerCase().includes(mentionInfo.query),
 			);
 
 			if (filteredUsers.length > 0) {
@@ -186,10 +195,10 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 							onClick={() => insertMention(user.username)}
 							onMouseEnter={() => setSelectedIndex(index)}
 						>
-							<Avatar name={user.fullName} src={user.avatar || undefined} size="small" />
+							<Avatar name={user.fullName || user.username} src={user.avatar || undefined} size="small" />
 							<div className="mention-suggestion-info">
 								<span className="mention-suggestion-username">@{user.username}</span>
-								<span className="mention-suggestion-fullname">{user.fullName}</span>
+								<span className="mention-suggestion-fullname">{user.fullName || user.username}</span>
 							</div>
 						</button>
 					))}

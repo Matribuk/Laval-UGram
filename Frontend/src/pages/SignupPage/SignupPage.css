@@ -89,31 +89,3 @@
 	font-size: 14px;
 	text-align: center;
 }
-
-@media (max-width: 480px) {
-	.signup-container {
-		padding: 16px;
-	}
-
-	.signup-card {
-		padding: 24px 20px;
-		border-radius: 10px;
-	}
-
-	.signup-title {
-		font-size: 22px;
-	}
-
-	.signup-subtitle {
-		font-size: 13px;
-	}
-
-	.form-row {
-		flex-direction: column;
-		gap: 0;
-	}
-
-	.create-account-button {
-		padding: 14px 24px;
-	}
-}

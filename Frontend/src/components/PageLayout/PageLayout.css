@@ -11,27 +11,3 @@
 	margin-left: var(--sidebar-width);
 	margin-right: 320px;
 }
-
-@media (max-width: 1200px) {
-	.page-main-content {
-		margin-right: 0;
-		max-width: 900px;
-	}
-}
-
-@media (max-width: 1024px) {
-	.page-main-content {
-		max-width: 100%;
-		margin-left: 80px;
-		margin-right: 0;
-		padding: var(--spacing-xl);
-	}
-}
-
-@media (max-width: 768px) {
-	.page-main-content {
-		margin-left: 0;
-		padding: var(--spacing-lg);
-		padding-bottom: 80px;
-	}
-}

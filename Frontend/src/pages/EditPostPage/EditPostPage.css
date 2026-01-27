@@ -96,32 +96,3 @@
 	justify-content: flex-end;
 	margin-top: var(--spacing-md);
 }
-
-@media (max-width: 768px) {
-	.edit-post-header .page-title {
-		font-size: 20px;
-	}
-
-	.edit-post-preview,
-	.edit-post-form {
-		max-width: 100%;
-	}
-
-	.form-actions {
-		flex-direction: column;
-	}
-
-	.form-actions button {
-		width: 100%;
-	}
-}
-
-@media (max-width: 480px) {
-	.edit-post-header {
-		margin-bottom: var(--spacing-lg);
-	}
-
-	.form-textarea {
-		min-height: 80px;
-	}
-}

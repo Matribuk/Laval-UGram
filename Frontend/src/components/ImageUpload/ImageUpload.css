@@ -65,29 +65,3 @@
 	font-size: 12px;
 	margin-top: var(--spacing-xs);
 }
-
-@media (max-width: 768px) {
-	.image-upload-zone {
-		min-height: 250px;
-	}
-
-	.image-preview {
-		max-height: 350px;
-	}
-}
-
-@media (max-width: 480px) {
-	.image-upload-zone {
-		min-height: 200px;
-	}
-
-	.image-preview {
-		max-height: 300px;
-	}
-
-	.upload-placeholder p {
-		font-size: 13px;
-		text-align: center;
-		padding: 0 var(--spacing-md);
-	}
-}

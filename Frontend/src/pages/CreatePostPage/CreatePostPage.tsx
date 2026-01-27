@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { CreatePostFormValues } from '../../types/api.types';
-import { currentUser } from '../../utils/mockData';
+import { useUser } from '../../components/UserContext';
 import { createPostSchema } from '../../utils/validationSchemas';
 import { parseMentions, parseTags } from '../../utils/helpers';
 import PageLayout from '../../components/PageLayout';
@@ -10,10 +11,13 @@ import PageHeader from '../../components/PageHeader';
 import ImageUpload from '../../components/ImageUpload';
 import MentionTextarea from '../../components/MentionTextarea';
 import FormActions from '../../components/FormActions';
+import { postsService } from '../../services/postsService';
+import { usersService } from '../../services/usersService';
 import './CreatePostPage.css';
 
 const CreatePostPage: React.FC = () => {
 	const navigate = useNavigate();
+	const { user: currentUser } = useUser();
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [imageError, setImageError] = useState<string>('');
 
@@ -38,30 +42,42 @@ const CreatePostPage: React.FC = () => {
 		}
 	};
 
-	const handleSubmit = (values: CreatePostFormValues) => {
+	const handleSubmit = async (values: CreatePostFormValues) => {
 		if (!values.imageFile || !imagePreview) {
 			setImageError('Image is required');
 			return;
 		}
 
-		const mentions = parseMentions(values.caption);
-		const tags = parseTags(values.tags);
+		try {
+			const mentionUsernames = parseMentions(values.caption);
+			const tags = parseTags(values.tags);
 
-		const newPost = {
-			id: Date.now(),
-			authorUsername: currentUser.name,
-			createdAt: new Date().toISOString(),
-			imageUrl: imagePreview,
-			caption: values.caption,
-			tags,
-			mentions,
-		};
+			const mentionedUserIds: string[] = [];
+			for (const username of mentionUsernames) {
+				try {
+					const users = await usersService.searchUsers(username);
+					const user = users.find((u) => u.username.toLowerCase() === username.toLowerCase());
+					if (user) {
+						mentionedUserIds.push(user.id);
+					}
+				} catch (error) {
+					console.warn(`User @${username} not found`);
+				}
+			}
 
-		const existingPosts = JSON.parse(localStorage.getItem('posts') || '[]');
-		existingPosts.unshift(newPost);
-		localStorage.setItem('posts', JSON.stringify(existingPosts));
+			await postsService.createPost({
+				file: values.imageFile,
+				description: values.caption,
+				hashtags: tags,
+				mentions: mentionedUserIds,
+			});
 
-		navigate('/feed');
+			toast.success('Post created successfully');
+			navigate('/feed');
+		} catch (error) {
+			console.error('Failed to create post:', error);
+			toast.error('Failed to create post');
+		}
 	};
 
 	return (

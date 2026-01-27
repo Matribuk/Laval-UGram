@@ -1,28 +1,77 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { EditPostFormValues } from '../../types/api.types';
-import { currentUser, isCurrentUser } from '../../utils/mockData';
+import { EditPostFormValues, Post } from '../../types/api.types';
+import { useUser } from '../../components/UserContext';
 import { editPostSchema } from '../../utils/validationSchemas';
-import { parseMentions, parseTags } from '../../utils/helpers';
+import { parseTags } from '../../utils/helpers';
 import PageLayout from '../../components/PageLayout';
 import PageHeader from '../../components/PageHeader';
 import MentionTextarea from '../../components/MentionTextarea';
 import FormActions from '../../components/FormActions';
 import EmptyState from '../../components/EmptyState';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { GridIcon } from '../../utils/SvgFile';
-import postsData from '../../__data__/posts.json';
+import { postsService } from '../../services/postsService';
 import './EditPostPage.css';
 
 const EditPostPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
+	const { user: currentUser } = useUser();
+	const [post, setPost] = useState<Post | null>(null);
+	const [loading, setLoading] = useState(true);
 
-	const localPosts = JSON.parse(localStorage.getItem('posts') || '[]');
-	const allPosts = [...localPosts, ...postsData.posts];
+	useEffect(() => {
+		const fetchPost = async () => {
+			if (!id) {
+				return;
+			}
 
-	const post = allPosts.find((p) => p.id === Number(id));
-	const isLocalPost = localPosts.some((p: { id: number }) => p.id === Number(id));
+			try {
+				setLoading(true);
+				const data = await postsService.getPostById(id);
+				setPost(data);
+			} catch (error) {
+				console.error('Failed to fetch post:', error);
+				toast.error('Failed to load post');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchPost();
+	}, [id]);
+
+	const handleSubmit = async (values: EditPostFormValues) => {
+		if (!post) {
+			return;
+		}
+
+		try {
+			const tags = parseTags(values.tags);
+
+			await postsService.updatePost(post.id, {
+				description: values.caption,
+				hashtags: tags,
+			});
+
+			toast.success('Post updated successfully');
+			navigate(`/post/${post.id}`);
+		} catch (error) {
+			console.error('Failed to update post:', error);
+			toast.error('Failed to update post');
+		}
+	};
+
+	if (loading) {
+		return (
+			<PageLayout activePage="feed" user={currentUser}>
+				<LoadingSpinner message="Loading post..." />
+			</PageLayout>
+		);
+	}
 
 	if (!post) {
 		return (
@@ -36,7 +85,9 @@ const EditPostPage: React.FC = () => {
 		);
 	}
 
-	if (!isCurrentUser(post.authorUsername)) {
+	const isOwner = post.author.username === currentUser?.username;
+
+	if (!isOwner) {
 		return (
 			<PageLayout activePage="feed" user={currentUser}>
 				<EmptyState
@@ -51,28 +102,6 @@ const EditPostPage: React.FC = () => {
 	const initialValues: EditPostFormValues = {
 		caption: post.caption,
 		tags: post.tags?.join(', ') || '',
-	};
-
-	const handleSubmit = (values: EditPostFormValues) => {
-		const mentions = parseMentions(values.caption);
-		const tags = parseTags(values.tags);
-
-		if (isLocalPost) {
-			const updatedLocalPosts = localPosts.map((p: { id: number }) => {
-				if (p.id === post.id) {
-					return {
-						...p,
-						caption: values.caption,
-						tags,
-						mentions,
-					};
-				}
-				return p;
-			});
-			localStorage.setItem('posts', JSON.stringify(updatedLocalPosts));
-		}
-
-		navigate(`/post/${post.id}`);
 	};
 
 	return (

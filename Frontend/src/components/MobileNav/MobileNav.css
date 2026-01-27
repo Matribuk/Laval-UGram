@@ -48,15 +48,3 @@
 .mobile-nav-create:hover {
 	background-color: var(--color-primary-dark);
 }
-
-.mobile-nav-create svg {
-	stroke: white;
-}
-
-@media (max-width: 768px) {
-	.mobile-nav {
-		display: flex;
-		justify-content: space-around;
-		align-items: flex-end;
-	}
-}

@@ -140,9 +140,3 @@
 	gap: var(--spacing-md);
 	margin-top: var(--spacing-sm);
 }
-
-@media (max-width: 768px) {
-	.edit-profile-form .form-row {
-		flex-direction: column;
-	}
-}

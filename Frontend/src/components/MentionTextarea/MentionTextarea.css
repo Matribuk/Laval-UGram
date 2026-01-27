@@ -94,13 +94,3 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
-
-@media (max-width: 768px) {
-	.mention-suggestions {
-		max-height: 200px;
-	}
-
-	.mention-suggestion-item {
-		padding: var(--spacing-md);
-	}
-}

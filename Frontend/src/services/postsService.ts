@@ -1,0 +1,66 @@
+import api from './api';
+import { Post } from '../types/api.types';
+import { BackendPost, PaginatedResponse, transformBackendPost } from '../utils/transformers';
+
+interface CreatePostData {
+	description: string;
+	hashtags?: string[];
+	mentions?: string[];
+	file: File;
+}
+
+interface UpdatePostData {
+	description?: string;
+	hashtags?: string[];
+	mentions?: string[];
+}
+
+export const postsService = {
+	async getAllPosts(): Promise<Post[]> {
+		const response = await api.get<PaginatedResponse<BackendPost>>('/images?limit=100');
+		return response.data.data.map(transformBackendPost);
+	},
+
+	async getPostById(id: string): Promise<Post> {
+		const response = await api.get<BackendPost>(`/images/${id}`);
+		return transformBackendPost(response.data);
+	},
+
+	async getUserPosts(userId: string): Promise<Post[]> {
+		const response = await api.get<PaginatedResponse<BackendPost>>(`/users/${userId}/images?limit=100`);
+		return response.data.data.map(transformBackendPost);
+	},
+
+	async getPostsByHashtag(hashtag: string): Promise<Post[]> {
+		const response = await api.get<PaginatedResponse<BackendPost>>(`/images/hashtag/${hashtag}?limit=100`);
+		return response.data.data.map(transformBackendPost);
+	},
+
+	async createPost(data: CreatePostData): Promise<Post> {
+		const formData = new FormData();
+		formData.append('image', data.file);
+		formData.append('description', data.description);
+		if (data.hashtags && data.hashtags.length > 0) {
+			data.hashtags.forEach((tag) => formData.append('hashtags', tag));
+		}
+		if (data.mentions && data.mentions.length > 0) {
+			data.mentions.forEach((mention) => formData.append('mentionedUserIds', mention));
+		}
+
+		const response = await api.post<BackendPost>('/images', formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+			},
+		});
+		return transformBackendPost(response.data);
+	},
+
+	async updatePost(id: string, data: UpdatePostData): Promise<Post> {
+		const response = await api.patch<BackendPost>(`/images/${id}`, data);
+		return transformBackendPost(response.data);
+	},
+
+	async deletePost(id: string): Promise<void> {
+		await api.delete(`/images/${id}`);
+	},
+};

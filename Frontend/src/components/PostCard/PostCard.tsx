@@ -6,7 +6,7 @@ import MentionText from '../MentionText';
 import './PostCard.css';
 
 interface PostCardProps {
-	id: number;
+	id: string;
 	author: PostAuthor;
 	timeAgo: string;
 	imageUrl: string;
@@ -46,8 +46,8 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 				</p>
 				{tags.length > 0 && (
 					<div className="post-tags">
-						{tags.map((tag, index) => (
-							<span key={index} className="post-tag">
+						{tags.map((tag) => (
+							<span key={tag} className="post-tag">
 								#{tag}
 							</span>
 						))}
@@ -58,4 +58,4 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 	);
 };
 
-export default PostCard;
+export default React.memo(PostCard);

@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, MessageIcon } from '../../utils/SvgFile';
+import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon } from '../../utils/SvgFile';
 import './MobileNav.css';
 
 interface MobileNavProps {
-	activePage: 'feed' | 'users' | 'profile' | 'messages';
+	activePage: 'feed' | 'users' | 'profile';
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({ activePage }) => {
@@ -32,15 +32,6 @@ const MobileNav: React.FC<MobileNavProps> = ({ activePage }) => {
 
 			<button type="button" className="mobile-nav-item mobile-nav-create" onClick={() => navigate('/post/create')}>
 				<PlusIcon />
-			</button>
-
-			<button
-				type="button"
-				className={`mobile-nav-item ${activePage === 'messages' ? 'active' : ''}`}
-				onClick={() => navigate('/messages')}
-			>
-				<MessageIcon />
-				<span>Messages</span>
 			</button>
 
 			<button

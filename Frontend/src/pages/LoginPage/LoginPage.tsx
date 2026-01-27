@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
+import { toast } from 'react-toastify';
 import { LoginFormValues } from '../../types/api.types';
 import { loginSchema } from '../../utils/validationSchemas';
 import { useUser } from '../../components/UserContext';
@@ -12,15 +13,14 @@ import './LoginPage.css';
 const LoginPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { login } = useUser();
-	const [error, setError] = useState<string | null>(null);
 
 	const handleSubmit = async (values: LoginFormValues) => {
 		try {
-			setError(null);
 			await login({ email: values.email, password: values.password });
+			toast.success('Successfully logged in!');
 			navigate('/feed');
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Login failed');
+			toast.error(err instanceof Error ? err.message : 'Login failed. Please check your credentials.');
 		}
 	};
 
@@ -31,8 +31,6 @@ const LoginPage: React.FC = () => {
 			<div className="login-card">
 				<h2 className="login-title">Sign in</h2>
 				<p className="login-subtitle">Enter your email and password to access your account</p>
-
-				{error && <div className="login-error">{error}</div>}
 
 				<Formik initialValues={{ email: '', password: '' }} validationSchema={loginSchema} onSubmit={handleSubmit}>
 					{({ errors, touched }) => (

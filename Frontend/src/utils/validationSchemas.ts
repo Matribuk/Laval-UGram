@@ -24,8 +24,8 @@ export const editProfileSchema = Yup.object({
 	firstName: Yup.string().max(50, 'Maximum 50 characters'),
 	lastName: Yup.string().max(50, 'Maximum 50 characters'),
 	email: Yup.string().email('Invalid email').required('Email is required'),
-	phoneNumber: Yup.string().matches(/^(\+?[1-9]\d{0,2}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/, {
-		message: 'Invalid phone number',
+	phoneNumber: Yup.string().matches(/^[+]?[0-9\s-]+$/, {
+		message: 'Phone number can only contain digits, spaces, dashes, and an optional leading +',
 		excludeEmptyString: true,
 	}),
 });

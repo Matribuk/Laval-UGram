@@ -129,25 +129,3 @@
 .mention-link:hover {
 	text-decoration: underline;
 }
-
-@media (max-width: 768px) {
-	.post-card {
-		border-radius: 0;
-		border-left: none;
-		border-right: none;
-		margin-bottom: 8px;
-	}
-
-	.post-header {
-		padding: 12px;
-	}
-
-	.post-content {
-		padding: 12px;
-	}
-
-	.post-tag {
-		font-size: 12px;
-		padding: 3px 10px;
-	}
-}
