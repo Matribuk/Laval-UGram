@@ -85,8 +85,21 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
+    "transformIgnorePatterns": [
+      "node_modules/(?!(uuid)/)"
+    ],
+    "moduleNameMapper": {
+      "^uuid$": "<rootDir>/../node_modules/uuid/dist/index.js"
+    },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!**/*.module.ts",
+      "!**/main.ts",
+      "!**/index.ts",
+      "!**/*.entity.ts",
+      "!**/*.dto.ts",
+      "!**/*.interface.ts",
+      "!**/config/*.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
