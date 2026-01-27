@@ -1,11 +1,5 @@
 # 📋 TODO - Ugram Project
 
-## 🚀 Tâches prioritaires
-
-- [ ] Implement photo change functionality
-
----
-
 ## ✅ Livrable 1 — Bases de l'application
 
 ---
@@ -83,6 +77,16 @@
   * [ ] 1920x1080
   * [ ] 1366x768
   * [ ] 1024x780
+
+---
+
+### Test unitaire
+
+ * [ ] 40% de coverage
+ * [ ] 50% de coverage
+ * [ ] 60% de coverage
+ * [ ] 70% de coverage
+ * [ ] 80% de coverage
 
 ---
 
