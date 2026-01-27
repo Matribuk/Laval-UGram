@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { LocalStorageProvider } from '../providers/local-storage.provider';
 import { createMockConfigService } from '../../../../test/mocks/config.mock';
 
-// Mock fs/promises
 jest.mock('fs/promises', () => ({
   access: jest.fn(),
   mkdir: jest.fn(),
@@ -24,7 +23,6 @@ describe('LocalStorageProvider', () => {
       'storage.local.uploadPath': './test-uploads',
     });
 
-    // Default: directory exists
     mockFs.access.mockResolvedValue(undefined);
     mockFs.mkdir.mockResolvedValue(undefined);
     mockFs.writeFile.mockResolvedValue(undefined);
@@ -168,7 +166,6 @@ describe('LocalStorageProvider', () => {
     });
 
     it('should not throw if directory exists', async () => {
-       - mockFs.access resolves (directory exists)
       mockFs.access.mockResolvedValue(undefined);
 
       
