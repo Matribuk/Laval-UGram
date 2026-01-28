@@ -5,6 +5,7 @@ import { User, LoginRequest, SignupRequest } from '../types/api.types';
 interface UserContextType {
 	user: User | null;
 	setUser: (user: User | null) => void;
+	updateUser: (user: User) => void;
 	login: (credentials: LoginRequest) => Promise<void>;
 	signup: (userData: SignupRequest) => Promise<void>;
 	logout: () => Promise<void>;
@@ -99,6 +100,11 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 		}
 	};
 
+	const updateUser = (updatedUser: User) => {
+		setUser(updatedUser);
+		localStorage.setItem('auth_user', JSON.stringify(updatedUser));
+	};
+
 	const logout = async () => {
 		try {
 			await authService.logout();
@@ -111,7 +117,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 	const isAuthenticated = !!user && !!authService.getStoredToken();
 
 	return (
-		<UserContext.Provider value={{ user, setUser, login, signup, logout, loading, error, isAuthenticated }}>
+		<UserContext.Provider value={{ user, setUser, updateUser, login, signup, logout, loading, error, isAuthenticated }}>
 			{children}
 		</UserContext.Provider>
 	);

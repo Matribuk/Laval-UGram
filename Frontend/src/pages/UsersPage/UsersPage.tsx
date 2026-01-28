@@ -1,35 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { User } from '../../types/api.types';
-import { currentUser } from '../../utils/mockData';
-import PageLayout from '../../components/PageLayout';
-import SearchInput from '../../components/SearchInput';
-import UserCard from '../../components/UserCard';
-import usersData from '../../__data__/users.json';
+import { useUser } from '../../components/UserContext';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import SearchInput from '../../components/SearchInput/SearchInput';
+import UserCard from '../../components/UserCard/UserCard';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
+import { usersService } from '../../services/usersService';
 import './UsersPage.css';
 
 const UsersPage: React.FC = () => {
 	const navigate = useNavigate();
+	const { user: currentUser } = useUser();
+	const [users, setUsers] = useState<User[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
+	const [loading, setLoading] = useState(true);
 
-	const users: User[] = usersData.users.map((u) => ({
-		id: u.id,
-		username: u.username,
-		fullName: u.fullName,
-		email: u.email,
-		avatar: u.avatar || undefined,
-	}));
+	useEffect(() => {
+		const fetchUsers = async () => {
+			try {
+				setLoading(true);
+				const data = await usersService.getAllUsers();
+				setUsers(Array.isArray(data) ? data : []);
+			} catch (error) {
+				console.error('Failed to fetch users:', error);
+				toast.error('Failed to load users');
+				setUsers([]);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchUsers();
+	}, []);
 
 	const filteredUsers = users.filter(
 		(user) =>
-			user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			user.email.toLowerCase().includes(searchQuery.toLowerCase()),
+			user.id !== currentUser?.id &&
+			(user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				user.email.toLowerCase().includes(searchQuery.toLowerCase())),
 	);
 
 	const handleUserClick = (user: User) => {
 		navigate(`/profile/${user.username}`);
 	};
+
+	if (loading) {
+		return (
+			<PageLayout activePage="users" user={currentUser}>
+				<LoadingSpinner message="Loading users..." />
+			</PageLayout>
+		);
+	}
 
 	return (
 		<PageLayout activePage="users" user={currentUser}>
@@ -38,16 +62,20 @@ const UsersPage: React.FC = () => {
 			<SearchInput value={searchQuery} onChange={setSearchQuery} placeholder="Search users..." />
 
 			<div className="users-list">
-				{filteredUsers.map((user) => (
-					<UserCard
-						key={user.id}
-						username={user.username}
-						fullName={user.fullName}
-						email={user.email}
-						avatar={user.avatar}
-						onClick={() => handleUserClick(user)}
-					/>
-				))}
+				{filteredUsers.length === 0 ? (
+					<p className="users-empty">No users found</p>
+				) : (
+					filteredUsers.map((user) => (
+						<UserCard
+							key={user.id}
+							username={user.username}
+							fullName={user.fullName}
+							email={user.email}
+							avatar={user.avatar}
+							onClick={() => handleUserClick(user)}
+						/>
+					))
+				)}
 			</div>
 		</PageLayout>
 	);

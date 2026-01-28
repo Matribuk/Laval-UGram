@@ -1,6 +1,13 @@
-import { User, LoginRequest, SignupRequest, AuthResponse } from '../types/api.types';
+import { User, LoginRequest, SignupRequest, AuthResponse, BackendUser } from '../types/api.types';
+import api from './api';
+import { AxiosError } from 'axios';
+import { transformBackendUser } from '../utils/transformers';
 
-// TODO: Remplacer par de vrais appels API quand le backend sera disponible
+interface BackendAuthResponse {
+	accessToken: string;
+	user: BackendUser;
+}
+
 class AuthService {
 	private readonly TOKEN_KEY = 'auth_token';
 	private readonly USER_KEY = 'auth_user';
@@ -22,35 +29,39 @@ class AuthService {
 	}
 
 	async login(credentials: LoginRequest): Promise<AuthResponse> {
-		// TODO: Appeler le vrai endpoint API
-		const mockUser: User = {
-			id: 1,
-			username: 'johndoe',
-			fullName: 'John Doe',
-			email: credentials.email,
-		};
-		const mockToken = 'mock_token_' + Date.now();
+		try {
+			const response = await api.post<BackendAuthResponse>('/auth/login', credentials);
+			const { accessToken, user: backendUser } = response.data;
 
-		localStorage.setItem(this.TOKEN_KEY, mockToken);
-		localStorage.setItem(this.USER_KEY, JSON.stringify(mockUser));
+			const user = transformBackendUser(backendUser);
 
-		return { user: mockUser, token: mockToken };
+			localStorage.setItem(this.TOKEN_KEY, accessToken);
+			localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+
+			return { user, token: accessToken };
+		} catch (error) {
+			const axiosError = error as AxiosError<{ message?: string }>;
+			const errorMessage = axiosError.response?.data?.message || 'Login failed. Please check your credentials.';
+			throw new Error(errorMessage);
+		}
 	}
 
 	async signup(userData: SignupRequest): Promise<AuthResponse> {
-		// TODO: Appeler le vrai endpoint API
-		const mockUser: User = {
-			id: Date.now(),
-			username: userData.username,
-			fullName: userData.fullName,
-			email: userData.email,
-		};
-		const mockToken = 'mock_token_' + Date.now();
+		try {
+			const response = await api.post<BackendAuthResponse>('/auth/register', userData);
+			const { accessToken, user: backendUser } = response.data;
 
-		localStorage.setItem(this.TOKEN_KEY, mockToken);
-		localStorage.setItem(this.USER_KEY, JSON.stringify(mockUser));
+			const user = transformBackendUser(backendUser);
 
-		return { user: mockUser, token: mockToken };
+			localStorage.setItem(this.TOKEN_KEY, accessToken);
+			localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+
+			return { user, token: accessToken };
+		} catch (error) {
+			const axiosError = error as AxiosError<{ message?: string }>;
+			const errorMessage = axiosError.response?.data?.message || 'Signup failed. Please try again.';
+			throw new Error(errorMessage);
+		}
 	}
 
 	async logout(): Promise<void> {
@@ -59,7 +70,6 @@ class AuthService {
 	}
 
 	async getTokenInfo(): Promise<AuthResponse> {
-		// TODO: Appeler le vrai endpoint API pour valider le token
 		const token = this.getStoredToken();
 		const user = this.getStoredUser();
 

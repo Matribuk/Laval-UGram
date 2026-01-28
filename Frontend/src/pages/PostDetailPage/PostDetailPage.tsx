@@ -1,26 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import { currentUser, isCurrentUser } from '../../utils/mockData';
+import { toast } from 'react-toastify';
+import { Post } from '../../types/api.types';
+import { useUser } from '../../components/UserContext';
 import { getTimeAgo } from '../../utils/helpers';
-import PageLayout from '../../components/PageLayout';
-import PageHeader from '../../components/PageHeader';
-import Avatar from '../../components/Avatar';
-import MentionText from '../../components/MentionText';
-import ConfirmModal from '../../components/ConfirmModal';
-import EmptyState from '../../components/EmptyState';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import PageHeader from '../../components/PageHeader/PageHeader';
+import Avatar from '../../components/Avatar/Avatar';
+import MentionText from '../../components/MentionText/MentionText';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
+import EmptyState from '../../components/EmptyState/EmptyState';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { GridIcon } from '../../utils/SvgFile';
-import postsData from '../../__data__/posts.json';
+import { postsService } from '../../services/postsService';
 import './PostDetailPage.css';
 
 const PostDetailPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
+	const { user: currentUser } = useUser();
+	const [post, setPost] = useState<Post | null>(null);
+	const [loading, setLoading] = useState(true);
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-	const localPosts = JSON.parse(localStorage.getItem('posts') || '[]');
-	const allPosts = [...localPosts, ...postsData.posts];
+	useEffect(() => {
+		const fetchPost = async () => {
+			if (!id) {
+				return;
+			}
 
-	const post = allPosts.find((p) => p.id === Number(id));
+			try {
+				setLoading(true);
+				const data = await postsService.getPostById(id);
+				setPost(data);
+			} catch (error) {
+				console.error('Failed to fetch post:', error);
+				toast.error('Failed to load post');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchPost();
+	}, [id]);
+
+	const handleConfirmDelete = async () => {
+		if (!post) {
+			return;
+		}
+
+		try {
+			await postsService.deletePost(post.id);
+			toast.success('Post deleted successfully');
+			navigate('/feed');
+		} catch (error) {
+			console.error('Failed to delete post:', error);
+			toast.error('Failed to delete post');
+		}
+	};
+
+	if (loading) {
+		return (
+			<PageLayout activePage="feed" user={currentUser}>
+				<LoadingSpinner message="Loading post..." />
+			</PageLayout>
+		);
+	}
 
 	if (!post) {
 		return (
@@ -34,14 +79,8 @@ const PostDetailPage: React.FC = () => {
 		);
 	}
 
-	const isOwner = isCurrentUser(post.authorUsername);
-	const timeAgo = post.createdAt ? getTimeAgo(post.createdAt) : post.timeAgo;
-
-	const handleConfirmDelete = () => {
-		const updatedLocalPosts = localPosts.filter((p: { id: number }) => p.id !== post.id);
-		localStorage.setItem('posts', JSON.stringify(updatedLocalPosts));
-		navigate('/feed');
-	};
+	const isOwner = post.author.username === currentUser?.username;
+	const timeAgo = getTimeAgo(post.createdAt);
 
 	return (
 		<PageLayout activePage="feed" user={currentUser}>
@@ -49,10 +88,10 @@ const PostDetailPage: React.FC = () => {
 
 			<article className="post-detail">
 				<div className="post-detail-author">
-					<Link to={`/profile/${post.authorUsername}`} className="author-link">
-						<Avatar name={post.authorUsername} size="medium" />
+					<Link to={`/profile/${post.author.username}`} className="author-link">
+						<Avatar src={post.author.avatar} name={post.author.username} size="medium" />
 						<div className="author-info">
-							<span className="author-username">{post.authorUsername}</span>
+							<span className="author-username">{post.author.username}</span>
 							<span className="post-time">{timeAgo}</span>
 						</div>
 					</Link>
@@ -79,8 +118,8 @@ const PostDetailPage: React.FC = () => {
 
 				<div className="post-detail-content">
 					<p className="post-caption">
-						<Link to={`/profile/${post.authorUsername}`} className="caption-username">
-							{post.authorUsername}
+						<Link to={`/profile/${post.author.username}`} className="caption-username">
+							{post.author.username}
 						</Link>{' '}
 						<MentionText text={post.caption} />
 					</p>

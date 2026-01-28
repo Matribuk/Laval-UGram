@@ -26,3 +26,13 @@ export const RestrictedRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
 	return !isAuthenticated || !user ? <>{children}</> : <Navigate to="/feed" />;
 };
+
+export const NotFoundRedirect: React.FC = () => {
+	const { user, loading, isAuthenticated } = useUser();
+
+	if (loading) {
+		return <LoadingSpinner fullScreen message="Loading..." />;
+	}
+
+	return <Navigate to={isAuthenticated && user ? '/feed' : '/login'} replace />;
+};

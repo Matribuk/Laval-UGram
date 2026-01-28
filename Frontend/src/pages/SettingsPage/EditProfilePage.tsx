@@ -1,39 +1,86 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { Formik, Form } from 'formik';
 import { EditProfileFormValues } from '../../types/api.types';
 import { editProfileSchema } from '../../utils/validationSchemas';
-import { currentUser } from '../../utils/mockData';
-import PageLayout from '../../components/PageLayout';
-import Avatar from '../../components/Avatar';
-import FormField from '../../components/FormField';
+import { useUser } from '../../components/UserContext';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import Avatar from '../../components/Avatar/Avatar';
+import FormField from '../../components/FormField/FormField';
 import { BackArrowIcon, CameraIcon } from '../../utils/SvgFile';
+import { usersService } from '../../services/usersService';
 import './EditProfilePage.css';
 
 const EditProfilePage: React.FC = () => {
 	const navigate = useNavigate();
-
-	const profileUser = {
-		username: currentUser.name,
-		avatar: currentUser.avatar,
-	};
+	const { user: currentUser, updateUser } = useUser();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [avatarPreview, setAvatarPreview] = useState<string | undefined>(currentUser?.avatar);
 
 	const handleGoBack = () => {
 		navigate('/profile');
 	};
 
 	const handleChangePhoto = () => {
-		// TODO: Implement photo change functionality
+		fileInputRef.current?.click();
+	};
+
+	const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+		const file = event.target.files?.[0];
+		if (!file || !currentUser) {
+			return;
+		}
+
+		try {
+			const updatedUser = await usersService.uploadProfilePicture(currentUser.id, file);
+			setAvatarPreview(updatedUser.avatar);
+			updateUser(updatedUser);
+			toast.success('Profile picture updated successfully');
+		} catch (error) {
+			console.error('Failed to upload profile picture:', error);
+			toast.error('Failed to upload profile picture');
+		}
 	};
 
 	const handleCancel = () => {
 		navigate('/profile');
 	};
 
-	const handleSubmit = (_values: EditProfileFormValues) => {
-		// TODO: Implement save changes API call
-		navigate('/profile');
+	const handleSubmit = async (values: EditProfileFormValues) => {
+		if (!currentUser) {
+			return;
+		}
+
+		try {
+			const updateData: Partial<{
+				firstName: string;
+				lastName: string;
+				email: string;
+				phoneNumber: string;
+			}> = {
+				firstName: values.firstName,
+				lastName: values.lastName,
+				email: values.email,
+			};
+
+			if (values.phoneNumber && values.phoneNumber.trim() !== '') {
+				updateData.phoneNumber = values.phoneNumber;
+			}
+
+			const updatedUser = await usersService.updateUser(currentUser.id, updateData);
+			updateUser(updatedUser);
+			toast.success('Profile updated successfully');
+			navigate('/profile');
+		} catch (error) {
+			console.error('Failed to update profile:', error);
+			toast.error('Failed to update profile');
+		}
 	};
+
+	if (!currentUser) {
+		return null;
+	}
 
 	return (
 		<PageLayout activePage="profile" user={currentUser}>
@@ -47,18 +94,25 @@ const EditProfilePage: React.FC = () => {
 			<div className="edit-profile-card">
 				<div className="avatar-section">
 					<div className="avatar-container">
-						<Avatar src={profileUser.avatar} name={profileUser.username} size="large" className="avatar-large" />
+						<Avatar src={avatarPreview} name={currentUser.username} size="large" className="avatar-large" />
 						<button type="button" className="avatar-change-button" onClick={handleChangePhoto}>
 							<CameraIcon />
 						</button>
 					</div>
 					<div className="avatar-info">
-						<span className="avatar-username">{profileUser.username}</span>
+						<span className="avatar-username">{currentUser.username}</span>
 						<button type="button" className="change-photo-link" onClick={handleChangePhoto}>
 							Change profile photo
 						</button>
 					</div>
 				</div>
+				<input
+					ref={fileInputRef}
+					type="file"
+					accept="image/*"
+					style={{ display: 'none' }}
+					onChange={handleFileChange}
+				/>
 			</div>
 
 			<div className="edit-profile-card">
@@ -69,10 +123,10 @@ const EditProfilePage: React.FC = () => {
 
 				<Formik
 					initialValues={{
-						firstName: 'killian',
-						lastName: 'cottrelle',
+						firstName: currentUser.firstName,
+						lastName: currentUser.lastName,
 						email: currentUser.email,
-						phoneNumber: '',
+						phoneNumber: currentUser.phoneNumber || '',
 					}}
 					validationSchema={editProfileSchema}
 					onSubmit={handleSubmit}
@@ -90,7 +144,7 @@ const EditProfilePage: React.FC = () => {
 								name="phoneNumber"
 								label="Phone Number"
 								type="tel"
-								placeholder="+1 (555) 000-0000"
+								placeholder="+1 234-567-8900"
 								error={errors.phoneNumber}
 								touched={touched.phoneNumber}
 							/>

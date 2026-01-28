@@ -1,66 +1,101 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ProfilePost, ProfileUser } from '../../types/api.types';
-import { currentUser, isCurrentUser } from '../../utils/mockData';
-import PageLayout from '../../components/PageLayout';
-import Avatar from '../../components/Avatar';
-import EmptyState from '../../components/EmptyState';
+import { toast } from 'react-toastify';
+import { ProfilePost, User } from '../../types/api.types';
+import { useUser } from '../../components/UserContext';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import Avatar from '../../components/Avatar/Avatar';
+import EmptyState from '../../components/EmptyState/EmptyState';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { GridIcon, SettingsIcon, EmailIcon, CalendarIcon, PhoneIcon } from '../../utils/SvgFile';
-import usersData from '../../__data__/users.json';
-import postsData from '../../__data__/posts.json';
+import { usersService } from '../../services/usersService';
+import { postsService } from '../../services/postsService';
 import './ProfilePage.css';
-
-interface RawPost {
-	id: number;
-	authorUsername: string;
-	imageUrl: string;
-}
 
 const ProfilePage: React.FC = () => {
 	const navigate = useNavigate();
 	const { username } = useParams<{ username: string }>();
+	const { user: currentUser } = useUser();
 
-	const profileUsername = username || currentUser.name;
-	const isOwnProfile = isCurrentUser(profileUsername);
+	const [profileUser, setProfileUser] = useState<User | null>(null);
+	const [posts, setPosts] = useState<ProfilePost[]>([]);
+	const [loading, setLoading] = useState(true);
 
-	const foundUser = usersData.users.find((u) => u.username === profileUsername);
-	const profileUser: ProfileUser = foundUser
-		? {
-				username: foundUser.username,
-				fullName: foundUser.fullName,
-				email: foundUser.email,
-				phoneNumber: foundUser.phoneNumber || undefined,
-				joinedDate: foundUser.joinedDate,
-				avatar: foundUser.avatar || undefined,
+	const profileUsername = username || currentUser?.username;
+	const isOwnProfile = profileUsername === currentUser?.username;
+
+	useEffect(() => {
+		const fetchProfileData = async () => {
+			if (!profileUsername) {
+				return;
 			}
-		: {
-				username: profileUsername,
-				fullName: 'Unknown User',
-				email: '',
-				phoneNumber: undefined,
-				joinedDate: 'Unknown',
-				avatar: undefined,
-			};
 
-	const localPosts: RawPost[] = JSON.parse(localStorage.getItem('posts') || '[]');
-	const allPosts: RawPost[] = [...localPosts, ...postsData.posts];
+			try {
+				setLoading(true);
 
-	const userPosts = allPosts.filter((p) => p.authorUsername === profileUsername);
-	const posts: ProfilePost[] = userPosts.map((p) => ({
-		id: p.id,
-		imageUrl: p.imageUrl,
-	}));
+				const usersData = await usersService.getAllUsers();
+				const users = Array.isArray(usersData) ? usersData : [];
+				const user = users.find((u) => u.username === profileUsername);
+
+				if (user) {
+					setProfileUser(user);
+
+					const userPosts = await postsService.getUserPosts(user.id);
+					const postsArray = Array.isArray(userPosts) ? userPosts : [];
+					setPosts(
+						postsArray.map((p) => ({
+							id: p.id,
+							imageUrl: p.imageUrl,
+						})),
+					);
+				} else {
+					toast.error('User not found');
+					navigate('/users');
+				}
+			} catch (error) {
+				console.error('Failed to fetch profile data:', error);
+				toast.error('Failed to load profile');
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchProfileData();
+	}, [profileUsername, navigate]);
 
 	const handleEditProfile = () => {
 		navigate('/profile/edit');
 	};
 
-	const handlePostClick = (postId: number) => {
+	const handlePostClick = (postId: string) => {
 		navigate(`/post/${postId}`);
 	};
 
+	if (loading) {
+		return (
+			<PageLayout activePage={isOwnProfile ? 'profile' : 'users'} user={currentUser}>
+				<LoadingSpinner message="Loading profile..." />
+			</PageLayout>
+		);
+	}
+
+	if (!profileUser) {
+		return (
+			<PageLayout activePage={isOwnProfile ? 'profile' : 'users'} user={currentUser}>
+				<EmptyState
+					icon={<GridIcon width={48} height={48} />}
+					title="User not found"
+					subtitle="This user doesn't exist"
+				/>
+			</PageLayout>
+		);
+	}
+
+	const fullName = profileUser.fullName;
+	const joinedDate = profileUser.createdAt ? new Date(profileUser.createdAt).toLocaleDateString() : 'Unknown';
+
 	return (
-		<PageLayout activePage="profile" user={currentUser}>
+		<PageLayout activePage={isOwnProfile ? 'profile' : 'users'} user={currentUser}>
 			<div className="profile-header">
 				<Avatar src={profileUser.avatar} name={profileUser.username} size="large" className="profile-avatar-large" />
 
@@ -81,7 +116,7 @@ const ProfilePage: React.FC = () => {
 					</div>
 
 					<div className="profile-details">
-						<h2 className="profile-fullname">{profileUser.fullName}</h2>
+						<h2 className="profile-fullname">{fullName}</h2>
 						<div className="profile-meta">
 							<span className="profile-email">
 								<EmailIcon />
@@ -95,7 +130,7 @@ const ProfilePage: React.FC = () => {
 							)}
 							<span className="profile-joined">
 								<CalendarIcon />
-								Joined {profileUser.joinedDate}
+								Joined {joinedDate}
 							</span>
 						</div>
 					</div>

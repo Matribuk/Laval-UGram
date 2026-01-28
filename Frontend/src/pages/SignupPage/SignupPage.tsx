@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Form } from 'formik';
+import { toast } from 'react-toastify';
 import { SignupFormValues } from '../../types/api.types';
 import { signupSchema } from '../../utils/validationSchemas';
 import { useUser } from '../../components/UserContext';
-import AuthHeader from '../../components/AuthHeader';
-import FormField from '../../components/FormField';
-import PasswordInput from '../../components/PasswordInput';
+import AuthHeader from '../../components/AuthHeader/AuthHeader';
+import FormField from '../../components/FormField/FormField';
+import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import './SignupPage.css';
 
 const SignupPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { signup } = useUser();
-	const [error, setError] = useState<string | null>(null);
 
 	const handleSubmit = async (values: SignupFormValues) => {
 		try {
-			setError(null);
 			await signup({
 				email: values.email,
 				password: values.password,
 				username: values.username,
-				fullName: `${values.firstName} ${values.lastName}`,
+				firstName: values.firstName,
+				lastName: values.lastName,
 			});
+			toast.success('Account created successfully! Welcome to Ugram!');
 			navigate('/feed');
 		} catch (err) {
-			setError(err instanceof Error ? err.message : 'Signup failed');
+			toast.error(err instanceof Error ? err.message : 'Signup failed. Please try again.');
 		}
 	};
 
@@ -36,8 +37,6 @@ const SignupPage: React.FC = () => {
 			<div className="signup-card">
 				<h2 className="signup-title">Create an account</h2>
 				<p className="signup-subtitle">Enter your details to get started</p>
-
-				{error && <div className="signup-error">{error}</div>}
 
 				<Formik
 					initialValues={{

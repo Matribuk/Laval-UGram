@@ -1,8 +1,13 @@
 export interface User {
-	id: number;
+	id: string;
 	username: string;
-	fullName: string;
 	email: string;
+	firstName: string;
+	lastName: string;
+	phoneNumber?: string;
+	profilePictureUrl?: string;
+	createdAt?: string;
+	fullName: string;
 	avatar?: string;
 }
 
@@ -27,7 +32,7 @@ export interface PostAuthor {
 }
 
 export interface Post {
-	id: number;
+	id: string;
 	author: PostAuthor;
 	timeAgo: string;
 	createdAt: string;
@@ -38,7 +43,7 @@ export interface Post {
 }
 
 export interface ProfilePost {
-	id: number;
+	id: string;
 	imageUrl: string;
 }
 
@@ -83,7 +88,8 @@ export interface SignupRequest {
 	email: string;
 	password: string;
 	username: string;
-	fullName: string;
+	firstName: string;
+	lastName: string;
 }
 
 export interface AuthResponse {
@@ -91,23 +97,44 @@ export interface AuthResponse {
 	token: string;
 }
 
-export interface Message {
-	id: number;
-	senderId: number;
-	senderUsername: string;
-	content: string;
-	timestamp: string;
-	read: boolean;
+export interface BackendUser {
+	id: string;
+	username: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	phoneNumber?: string;
+	profilePictureUrl?: string;
+	createdAt?: string;
 }
 
-export interface Conversation {
-	id: number;
-	participantId: number;
-	participantUsername: string;
-	participantFullName: string;
-	participantAvatar?: string | null;
-	lastMessage: string;
-	lastMessageTime: string;
-	unreadCount: number;
-	messages: Message[];
+export interface BackendHashtag {
+	id: string;
+	name: string;
+}
+
+export interface BackendMention {
+	id: string;
+	mentionedUser: BackendUser;
+}
+
+export interface BackendPost {
+	id: string;
+	url: string;
+	description?: string;
+	user: BackendUser;
+	hashtags: BackendHashtag[];
+	mentions: BackendMention[];
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface PaginatedResponse<T> {
+	data: T[];
+	meta: {
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
+	};
 }

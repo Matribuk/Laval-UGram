@@ -9,8 +9,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 36px;
-	height: 36px;
+	width: 2.25rem;
+	height: 2.25rem;
 	background: none;
 	border: none;
 	cursor: pointer;
@@ -50,8 +50,8 @@
 }
 
 .avatar-large {
-	width: 80px;
-	height: 80px;
+	width: 5rem;
+	height: 5rem;
 	font-size: var(--font-4xl);
 }
 
@@ -59,12 +59,12 @@
 	position: absolute;
 	bottom: 0;
 	right: 0;
-	width: 28px;
-	height: 28px;
+	width: 1.75rem;
+	height: 1.75rem;
 	border-radius: var(--radius-full);
 	background-color: var(--color-primary);
-	border: 2px solid white;
-	color: white;
+	border: 2px solid var(--color-bg-white);
+	color: var(--color-bg-white);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -139,10 +139,4 @@
 	justify-content: flex-end;
 	gap: var(--spacing-md);
 	margin-top: var(--spacing-sm);
-}
-
-@media (max-width: 768px) {
-	.edit-profile-form .form-row {
-		flex-direction: column;
-	}
 }

@@ -14,17 +14,17 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: var(--radius-sm);
-	transition: background-color 0.2s;
+	transition: background-color var(--transition-fast);
 }
 
 .page-header .back-button:hover {
-	background-color: var(--color-background-hover);
+	background-color: var(--color-bg-primary);
 }
 
 .page-header .page-title {
 	margin: 0;
-	font-family: 'Times New Roman', Georgia, serif;
-	font-size: 32px;
-	font-weight: 600;
+	font-family: var(--font-serif);
+	font-size: 2rem;
+	font-weight: var(--font-semibold);
 	color: var(--color-text-primary);
 }

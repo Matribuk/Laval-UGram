@@ -1,14 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CurrentUser } from '../../types/api.types';
-import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon, MessageIcon } from '../../utils/SvgFile';
+import { User } from '../../types/api.types';
+import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon } from '../../utils/SvgFile';
 import { useUser } from '../UserContext';
-import Avatar from '../Avatar';
+import Avatar from '../Avatar/Avatar';
 import './Sidebar.css';
 
 interface SidebarProps {
-	activePage: 'feed' | 'users' | 'profile' | 'messages';
-	user: CurrentUser;
+	activePage: 'feed' | 'users' | 'profile';
+	user: User | null;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 	return (
 		<aside className="sidebar">
 			<div className="sidebar-content">
-				<h1 className="sidebar-logo">Lumina</h1>
+				<h1 className="sidebar-logo">Ugram</h1>
 
 				<nav className="sidebar-nav">
 					<button
@@ -61,15 +61,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 						<span>Profile</span>
 					</button>
 
-					<button
-						type="button"
-						className={`nav-item messages-nav-item ${activePage === 'messages' ? 'active' : ''}`}
-						onClick={() => navigate('/messages')}
-					>
-						<MessageIcon />
-						<span>Messages</span>
-					</button>
-
 					<button type="button" className="new-post-button" onClick={handleNewPost}>
 						<PlusIcon />
 						<span>New Post</span>
@@ -78,13 +69,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 			</div>
 
 			<div className="sidebar-footer">
-				<div className="user-info">
-					<Avatar src={user.avatar} name={user.name} size="medium" className="user-avatar" />
-					<div className="user-details">
-						<span className="user-name">{user.name}</span>
-						<span className="user-email">{user.email}</span>
+				{user && (
+					<div className="user-info">
+						<Avatar src={user.avatar} name={user.username} size="medium" className="user-avatar" />
+						<div className="user-details">
+							<span className="user-name">{user.username}</span>
+							<span className="user-email">{user.email}</span>
+						</div>
 					</div>
-				</div>
+				)}
 
 				<button type="button" className="logout-button" onClick={handleLogout}>
 					<LogoutIcon />
