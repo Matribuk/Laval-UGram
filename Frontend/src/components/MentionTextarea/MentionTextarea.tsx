@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { User } from '../../types/api.types';
 import { usersService } from '../../services/usersService';
-import Avatar from '../Avatar';
+import Avatar from '../Avatar/Avatar';
 import './MentionTextarea.css';
 
 interface MentionTextareaProps {
@@ -84,7 +84,7 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 			const filteredUsers = users.filter(
 				(user) =>
 					user.username.toLowerCase().includes(mentionInfo.query) ||
-					(user.fullName || '').toLowerCase().includes(mentionInfo.query),
+					user.fullName.toLowerCase().includes(mentionInfo.query),
 			);
 
 			if (filteredUsers.length > 0) {
@@ -195,10 +195,10 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 							onClick={() => insertMention(user.username)}
 							onMouseEnter={() => setSelectedIndex(index)}
 						>
-							<Avatar name={user.fullName || user.username} src={user.avatar || undefined} size="small" />
+							<Avatar name={user.fullName} src={user.avatar || undefined} size="small" />
 							<div className="mention-suggestion-info">
 								<span className="mention-suggestion-username">@{user.username}</span>
-								<span className="mention-suggestion-fullname">{user.fullName || user.username}</span>
+								<span className="mention-suggestion-fullname">{user.fullName}</span>
 							</div>
 						</button>
 					))}

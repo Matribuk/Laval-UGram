@@ -7,7 +7,7 @@
 .page-main-content {
 	flex: 1;
 	padding: var(--spacing-3xl);
-	max-width: 700px;
+	max-width: 43.75rem;
 	margin-left: var(--sidebar-width);
-	margin-right: 320px;
+	margin-right: 20rem;
 }

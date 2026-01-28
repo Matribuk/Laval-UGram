@@ -2,12 +2,12 @@ export interface User {
 	id: string;
 	username: string;
 	email: string;
-	firstName?: string;
-	lastName?: string;
+	firstName: string;
+	lastName: string;
 	phoneNumber?: string;
 	profilePictureUrl?: string;
 	createdAt?: string;
-	fullName?: string;
+	fullName: string;
 	avatar?: string;
 }
 
@@ -88,11 +88,53 @@ export interface SignupRequest {
 	email: string;
 	password: string;
 	username: string;
-	firstName?: string;
-	lastName?: string;
+	firstName: string;
+	lastName: string;
 }
 
 export interface AuthResponse {
 	user: User;
 	token: string;
+}
+
+export interface BackendUser {
+	id: string;
+	username: string;
+	email: string;
+	firstName: string;
+	lastName: string;
+	phoneNumber?: string;
+	profilePictureUrl?: string;
+	createdAt?: string;
+}
+
+export interface BackendHashtag {
+	id: string;
+	name: string;
+}
+
+export interface BackendMention {
+	id: string;
+	mentionedUser: BackendUser;
+}
+
+export interface BackendPost {
+	id: string;
+	url: string;
+	description?: string;
+	user: BackendUser;
+	hashtags: BackendHashtag[];
+	mentions: BackendMention[];
+	createdAt: string;
+	updatedAt: string;
+}
+
+export interface PaginatedResponse<T> {
+	data: T[];
+	meta: {
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
+	};
 }

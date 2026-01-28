@@ -1,27 +1,27 @@
 .user-card {
 	display: flex;
 	align-items: center;
-	gap: 16px;
-	padding: 16px 20px;
-	background: white;
-	border: 1px solid #e9ecef;
-	border-radius: 12px;
+	gap: 1rem;
+	padding: 1rem 1.25rem;
+	background: var(--color-bg-white);
+	border: 1px solid var(--color-border);
+	border-radius: 0.75rem;
 	cursor: pointer;
 	transition:
-		background-color 0.2s,
-		box-shadow 0.2s;
+		background-color var(--transition-fast),
+		box-shadow var(--transition-fast);
 }
 
 .user-card:hover {
-	background-color: #f8f9fa;
+	background-color: var(--color-bg-primary);
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .user-card-avatar {
-	width: 48px;
-	height: 48px;
-	border-radius: 50%;
-	background-color: #1a1a8e;
+	width: 3rem;
+	height: 3rem;
+	border-radius: var(--radius-full);
+	background-color: var(--color-primary);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -36,9 +36,9 @@
 }
 
 .user-card-avatar span {
-	color: white;
-	font-size: 18px;
-	font-weight: 500;
+	color: var(--color-bg-white);
+	font-size: 1.125rem;
+	font-weight: var(--font-medium);
 }
 
 .user-card-info {
@@ -48,17 +48,17 @@
 }
 
 .user-card-username {
-	font-size: 15px;
-	font-weight: 600;
-	color: #1a1a2e;
+	font-size: var(--font-md);
+	font-weight: var(--font-semibold);
+	color: var(--color-text-primary);
 }
 
 .user-card-fullname {
-	font-size: 14px;
-	color: #495057;
+	font-size: var(--font-sm);
+	color: var(--color-text-dark);
 }
 
 .user-card-email {
-	font-size: 13px;
-	color: #6c757d;
+	font-size: 0.8125rem;
+	color: var(--color-text-secondary);
 }

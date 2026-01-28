@@ -5,9 +5,9 @@ import { Formik, Form } from 'formik';
 import { EditProfileFormValues } from '../../types/api.types';
 import { editProfileSchema } from '../../utils/validationSchemas';
 import { useUser } from '../../components/UserContext';
-import PageLayout from '../../components/PageLayout';
-import Avatar from '../../components/Avatar';
-import FormField from '../../components/FormField';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import Avatar from '../../components/Avatar/Avatar';
+import FormField from '../../components/FormField/FormField';
 import { BackArrowIcon, CameraIcon } from '../../utils/SvgFile';
 import { usersService } from '../../services/usersService';
 import './EditProfilePage.css';
@@ -123,8 +123,8 @@ const EditProfilePage: React.FC = () => {
 
 				<Formik
 					initialValues={{
-						firstName: currentUser.firstName || '',
-						lastName: currentUser.lastName || '',
+						firstName: currentUser.firstName,
+						lastName: currentUser.lastName,
 						email: currentUser.email,
 						phoneNumber: currentUser.phoneNumber || '',
 					}}

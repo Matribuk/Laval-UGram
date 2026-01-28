@@ -14,11 +14,11 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: var(--radius-sm);
-	transition: background-color 0.2s;
+	transition: background-color var(--transition-fast);
 }
 
 .post-detail-header .back-button:hover {
-	background-color: var(--color-background-hover);
+	background-color: var(--color-bg-primary);
 }
 
 .post-detail-header .page-title {
@@ -26,11 +26,11 @@
 }
 
 .post-detail {
-	background: white;
+	background: var(--color-bg-white);
 	border-radius: var(--radius-lg);
 	overflow: hidden;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-	max-width: 600px;
+	box-shadow: var(--shadow-sm);
+	max-width: 37.5rem;
 }
 
 .post-detail-author {
@@ -59,12 +59,12 @@
 }
 
 .author-username {
-	font-weight: 600;
+	font-weight: var(--font-semibold);
 	color: var(--color-text-primary);
 }
 
 .post-time {
-	font-size: 12px;
+	font-size: 0.75rem;
 	color: var(--color-text-secondary);
 }
 
@@ -75,16 +75,16 @@
 
 .btn-sm {
 	padding: var(--spacing-xs) var(--spacing-md);
-	font-size: 13px;
+	font-size: 0.8125rem;
 }
 
 .btn-danger {
 	background-color: var(--color-error);
-	color: white;
+	color: var(--color-bg-white);
 	border: none;
 	border-radius: var(--radius-md);
 	cursor: pointer;
-	transition: background-color 0.2s;
+	transition: background-color var(--transition-fast);
 }
 
 .btn-danger:hover {
@@ -110,7 +110,7 @@
 }
 
 .caption-username {
-	font-weight: 600;
+	font-weight: var(--font-semibold);
 	color: var(--color-text-primary);
 	text-decoration: none;
 }
@@ -122,7 +122,7 @@
 .mention-link {
 	color: var(--color-primary);
 	text-decoration: none;
-	font-weight: 500;
+	font-weight: var(--font-medium);
 }
 
 .mention-link:hover {
@@ -138,11 +138,11 @@
 
 .post-tag {
 	color: var(--color-primary);
-	font-size: 14px;
+	font-size: 0.875rem;
 }
 
 .post-mentions {
-	font-size: 14px;
+	font-size: 0.875rem;
 	color: var(--color-text-secondary);
 	display: flex;
 	flex-wrap: wrap;
@@ -168,12 +168,12 @@
 }
 
 .delete-confirm-modal {
-	background: white;
+	background: var(--color-bg-white);
 	border-radius: var(--radius-lg);
 	padding: var(--spacing-xl);
-	max-width: 400px;
+	max-width: 25rem;
 	width: 90%;
-	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+	box-shadow: var(--shadow-md);
 }
 
 .delete-confirm-modal h3 {

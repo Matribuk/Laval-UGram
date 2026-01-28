@@ -5,9 +5,9 @@ import { toast } from 'react-toastify';
 import { LoginFormValues } from '../../types/api.types';
 import { loginSchema } from '../../utils/validationSchemas';
 import { useUser } from '../../components/UserContext';
-import AuthHeader from '../../components/AuthHeader';
-import FormField from '../../components/FormField';
-import PasswordInput from '../../components/PasswordInput';
+import AuthHeader from '../../components/AuthHeader/AuthHeader';
+import FormField from '../../components/FormField/FormField';
+import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import './LoginPage.css';
 
 const LoginPage: React.FC = () => {

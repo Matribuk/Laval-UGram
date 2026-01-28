@@ -1,7 +1,7 @@
-import { User, LoginRequest, SignupRequest, AuthResponse } from '../types/api.types';
+import { User, LoginRequest, SignupRequest, AuthResponse, BackendUser } from '../types/api.types';
 import api from './api';
 import { AxiosError } from 'axios';
-import { BackendUser, transformBackendUser } from '../utils/transformers';
+import { transformBackendUser } from '../utils/transformers';
 
 interface BackendAuthResponse {
 	accessToken: string;

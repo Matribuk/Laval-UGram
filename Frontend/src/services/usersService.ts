@@ -1,6 +1,6 @@
 import api from './api';
-import { User } from '../types/api.types';
-import { BackendUser, PaginatedResponse, transformBackendUser } from '../utils/transformers';
+import { User, BackendUser, PaginatedResponse } from '../types/api.types';
+import { transformBackendUser } from '../utils/transformers';
 
 export const usersService = {
 	async getAllUsers(): Promise<User[]> {

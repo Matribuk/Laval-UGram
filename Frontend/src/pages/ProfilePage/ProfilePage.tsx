@@ -3,9 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ProfilePost, User } from '../../types/api.types';
 import { useUser } from '../../components/UserContext';
-import PageLayout from '../../components/PageLayout';
-import Avatar from '../../components/Avatar';
-import EmptyState from '../../components/EmptyState';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import Avatar from '../../components/Avatar/Avatar';
+import EmptyState from '../../components/EmptyState/EmptyState';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { GridIcon, SettingsIcon, EmailIcon, CalendarIcon, PhoneIcon } from '../../utils/SvgFile';
 import { usersService } from '../../services/usersService';
@@ -91,10 +91,7 @@ const ProfilePage: React.FC = () => {
 		);
 	}
 
-	const fullName =
-		profileUser.fullName ||
-		`${profileUser.firstName || ''} ${profileUser.lastName || ''}`.trim() ||
-		profileUser.username;
+	const fullName = profileUser.fullName;
 	const joinedDate = profileUser.createdAt ? new Date(profileUser.createdAt).toLocaleDateString() : 'Unknown';
 
 	return (

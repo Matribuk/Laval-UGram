@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { User } from '../../types/api.types';
 import { useUser } from '../../components/UserContext';
-import PageLayout from '../../components/PageLayout';
-import SearchInput from '../../components/SearchInput';
-import UserCard from '../../components/UserCard';
+import PageLayout from '../../components/PageLayout/PageLayout';
+import SearchInput from '../../components/SearchInput/SearchInput';
+import UserCard from '../../components/UserCard/UserCard';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { usersService } from '../../services/usersService';
 import './UsersPage.css';
@@ -39,7 +39,7 @@ const UsersPage: React.FC = () => {
 		(user) =>
 			user.id !== currentUser?.id &&
 			(user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				(user.fullName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+				user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				user.email.toLowerCase().includes(searchQuery.toLowerCase())),
 	);
 

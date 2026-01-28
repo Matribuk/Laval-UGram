@@ -1,7 +1,7 @@
 import React from 'react';
 import { User } from '../../types/api.types';
-import Sidebar from '../Sidebar';
-import MobileNav from '../MobileNav';
+import Sidebar from '../Sidebar/Sidebar';
+import MobileNav from '../MobileNav/MobileNav';
 import './PageLayout.css';
 
 interface PageLayoutProps {

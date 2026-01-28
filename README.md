@@ -13,6 +13,7 @@ Le projet est organisé en monorepo avec deux parties principales:
 - Node.js >= 20.x
 - npm >= 9.x
 - PostgreSQL >= 14.x (ou Docker pour lancer la base de données)
+- Docker et Docker Compose
 
 ## Installation
 
@@ -45,7 +46,7 @@ npm install
 
 ```bash
 cd backend
-docker-compose up -d
+docker compose up -d
 ```
 
 Cela démarre un conteneur PostgreSQL sur le port 5433.

@@ -4,6 +4,7 @@
 	--color-primary-darkest: #0f0f54;
 
 	--color-text-primary: #1a1a2e;
+	--color-text-dark: #495057;
 	--color-text-secondary: #6c757d;
 	--color-text-muted: #adb5bd;
 
@@ -15,6 +16,7 @@
 	--color-border-light: #dee2e6;
 
 	--color-error: #dc3545;
+	--color-error-bg: #fee2e2;
 	--color-success: #28a745;
 
 	--spacing-xs: 4px;

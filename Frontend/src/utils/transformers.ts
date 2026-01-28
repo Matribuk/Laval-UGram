@@ -1,47 +1,5 @@
-import { User, Post, PostAuthor } from '../types/api.types';
+import { User, Post, PostAuthor, BackendUser, BackendPost } from '../types/api.types';
 import { buildImageUrl } from './constants';
-
-export interface BackendUser {
-	id: string;
-	username: string;
-	email: string;
-	firstName?: string;
-	lastName?: string;
-	phoneNumber?: string;
-	profilePictureUrl?: string;
-	createdAt?: string;
-}
-
-export interface BackendHashtag {
-	id: string;
-	name: string;
-}
-
-export interface BackendMention {
-	id: string;
-	mentionedUser: BackendUser;
-}
-
-export interface BackendPost {
-	id: string;
-	url: string;
-	description?: string;
-	user: BackendUser;
-	hashtags: BackendHashtag[];
-	mentions: BackendMention[];
-	createdAt: string;
-	updatedAt: string;
-}
-
-export interface PaginatedResponse<T> {
-	data: T[];
-	meta: {
-		total: number;
-		page: number;
-		limit: number;
-		totalPages: number;
-	};
-}
 
 export const transformBackendUser = (backendUser: BackendUser): User => {
 	const avatar = backendUser.profilePictureUrl ? buildImageUrl(backendUser.profilePictureUrl) : undefined;
@@ -55,10 +13,7 @@ export const transformBackendUser = (backendUser: BackendUser): User => {
 		phoneNumber: backendUser.phoneNumber,
 		profilePictureUrl: avatar,
 		createdAt: backendUser.createdAt,
-		fullName:
-			backendUser.firstName && backendUser.lastName
-				? `${backendUser.firstName} ${backendUser.lastName}`
-				: backendUser.firstName || backendUser.lastName || '',
+		fullName: `${backendUser.firstName} ${backendUser.lastName}`,
 		avatar,
 	};
 };

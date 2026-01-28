@@ -21,7 +21,7 @@
 	background: none;
 	border: none;
 	color: var(--color-text-secondary);
-	font-size: 10px;
+	font-size: 0.625rem;
 	cursor: pointer;
 	transition: color var(--transition-fast);
 }
@@ -31,17 +31,17 @@
 }
 
 .mobile-nav-item svg {
-	width: 24px;
-	height: 24px;
+	width: 1.5rem;
+	height: 1.5rem;
 }
 
 .mobile-nav-create {
 	background-color: var(--color-primary);
-	color: white;
+	color: var(--color-bg-white);
 	border-radius: var(--radius-full);
-	width: 48px;
-	height: 48px;
-	margin-top: -24px;
+	width: 3rem;
+	height: 3rem;
+	margin-top: -1.5rem;
 	flex: 0 0 auto;
 }
 

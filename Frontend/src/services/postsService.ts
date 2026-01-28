@@ -1,6 +1,6 @@
 import api from './api';
-import { Post } from '../types/api.types';
-import { BackendPost, PaginatedResponse, transformBackendPost } from '../utils/transformers';
+import { Post, BackendPost, PaginatedResponse } from '../types/api.types';
+import { transformBackendPost } from '../utils/transformers';
 
 interface CreatePostData {
 	description: string;

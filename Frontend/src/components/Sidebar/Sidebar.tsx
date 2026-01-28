@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { User } from '../../types/api.types';
 import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon } from '../../utils/SvgFile';
 import { useUser } from '../UserContext';
-import Avatar from '../Avatar';
+import Avatar from '../Avatar/Avatar';
 import './Sidebar.css';
 
 interface SidebarProps {

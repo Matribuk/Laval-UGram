@@ -1,8 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PostAuthor } from '../../types/api.types';
-import Avatar from '../Avatar';
-import MentionText from '../MentionText';
+import Avatar from '../Avatar/Avatar';
+import MentionText from '../MentionText/MentionText';
 import './PostCard.css';
 
 interface PostCardProps {
