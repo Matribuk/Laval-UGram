@@ -1,12 +1,13 @@
 import { registerAs } from '@nestjs/config';
+import { DATABASE_CONFIG } from './defaults';
 
 export default registerAs('database', () => ({
   type: 'postgres' as const,
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT ?? '5432', 10),
-  username: process.env.DB_USERNAME || 'ugram',
-  password: process.env.DB_PASSWORD || 'ugram_password',
-  database: process.env.DB_DATABASE || 'ugram',
+  host: DATABASE_CONFIG.HOST,
+  port: DATABASE_CONFIG.PORT,
+  username: DATABASE_CONFIG.USERNAME,
+  password: DATABASE_CONFIG.PASSWORD,
+  database: DATABASE_CONFIG.DATABASE,
   autoLoadEntities: true,
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: DATABASE_CONFIG.SYNCHRONIZE,
 }));

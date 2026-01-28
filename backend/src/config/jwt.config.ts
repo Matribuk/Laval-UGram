@@ -1,6 +1,7 @@
 import { registerAs } from '@nestjs/config';
+import { JWT_CONFIG } from './defaults';
 
 export default registerAs('jwt', () => ({
-  secret: process.env.JWT_SECRET || 'default-secret-change-me',
-  expiresIn: process.env.JWT_EXPIRATION || '1d',
+  secret: JWT_CONFIG.SECRET,
+  expiresIn: JWT_CONFIG.EXPIRES_IN,
 }));
