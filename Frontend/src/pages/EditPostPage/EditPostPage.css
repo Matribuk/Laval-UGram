@@ -1,33 +1,6 @@
-.edit-post-header {
-	display: flex;
-	align-items: center;
-	gap: var(--spacing-md);
-	margin-bottom: var(--spacing-xl);
-}
-
-.edit-post-header .back-button {
-	background: none;
-	border: none;
-	cursor: pointer;
-	padding: var(--spacing-xs);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	border-radius: var(--radius-sm);
-	transition: background-color var(--transition-fast);
-}
-
-.edit-post-header .back-button:hover {
-	background-color: var(--color-bg-primary);
-}
-
-.edit-post-header .page-title {
-	margin: 0;
-}
-
 .edit-post-preview {
-	max-width: 37.5rem;
-	margin-bottom: var(--spacing-lg);
+	max-width: 100%;
+	margin-bottom: var(--spacing-md);
 	border-radius: var(--radius-md);
 	overflow: hidden;
 }
@@ -40,59 +13,52 @@
 .edit-post-form {
 	display: flex;
 	flex-direction: column;
-	gap: var(--spacing-lg);
-	max-width: 37.5rem;
+	gap: var(--spacing-md);
+	max-width: 100%;
 }
 
-.form-group {
+.edit-post-form .form-group {
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-xs);
 }
 
-.form-group label {
+.edit-post-form .form-group label {
 	font-weight: var(--font-medium);
 	color: var(--color-text-primary);
 }
 
-.form-textarea {
+.edit-post-form .form-input {
 	width: 100%;
 	padding: var(--spacing-md);
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-md);
 	font-family: inherit;
-	font-size: 0.875rem;
-	resize: vertical;
-	min-height: 6.25rem;
+	font-size: 1rem;
 }
 
-.form-textarea:focus {
+.edit-post-form .form-input:focus {
 	outline: none;
 	border-color: var(--color-primary);
 }
 
-.form-input {
-	width: 100%;
-	padding: var(--spacing-md);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius-md);
-	font-family: inherit;
-	font-size: 0.875rem;
-}
-
-.form-input:focus {
-	outline: none;
-	border-color: var(--color-primary);
-}
-
-.form-error {
+.edit-post-form .form-error {
 	color: var(--color-error);
 	font-size: 0.75rem;
 }
 
-.form-actions {
-	display: flex;
-	gap: var(--spacing-md);
-	justify-content: flex-end;
-	margin-top: var(--spacing-md);
+@media (min-width: 768px) {
+	.edit-post-preview {
+		max-width: 37.5rem;
+		margin-bottom: var(--spacing-lg);
+	}
+
+	.edit-post-form {
+		gap: var(--spacing-lg);
+		max-width: 37.5rem;
+	}
+
+	.edit-post-form .form-input {
+		font-size: 0.875rem;
+	}
 }
