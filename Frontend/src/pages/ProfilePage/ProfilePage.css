@@ -1,5 +1,3 @@
-/* ---- Base : mobile-first (< 768px) ---- */
-
 .profile-header {
 	display: flex;
 	flex-direction: column;
@@ -164,7 +162,6 @@
 	opacity: 0.8;
 }
 
-/* ---- Tablette (768px+) ---- */
 @media (min-width: 768px) {
 	.profile-header {
 		flex-direction: row;
@@ -215,7 +212,6 @@
 	}
 }
 
-/* ---- Desktop (1024px+) ---- */
 @media (min-width: 1024px) {
 	.profile-header {
 		gap: 3rem;

@@ -1,5 +1,3 @@
-/* ---- Base : mobile-first (< 768px) ---- */
-
 .edit-profile-header {
 	display: flex;
 	align-items: center;
@@ -148,7 +146,6 @@
 	width: 100%;
 }
 
-/* ---- Tablette (768px+) ---- */
 @media (min-width: 768px) {
 	.edit-profile-header {
 		gap: var(--spacing-lg);
@@ -210,7 +207,6 @@
 	}
 }
 
-/* ---- Desktop (1024px+) ---- */
 @media (min-width: 1024px) {
 	.edit-profile-header {
 		margin-bottom: var(--spacing-3xl);
