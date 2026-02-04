@@ -59,6 +59,12 @@
 	--transition-normal: 0.3s ease;
 
 	--sidebar-width: 240px;
+
+	--bp-phone-sm: 320px;
+	--bp-phone: 480px;
+	--bp-tablet: 768px;
+	--bp-desktop: 1024px;
+	--bp-desktop-lg: 1366px;
 }
 
 * {
@@ -144,4 +150,10 @@ body {
 
 .input-error {
 	border-color: var(--color-error);
+}
+
+@media (max-width: 767px) {
+	.input {
+		font-size: 1rem;
+	}
 }
