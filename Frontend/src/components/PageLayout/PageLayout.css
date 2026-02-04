@@ -16,6 +16,7 @@
 	background-color: var(--color-bg-white);
 	border-bottom: 1px solid var(--color-border);
 	z-index: 100;
+	padding: 0 var(--spacing-lg);
 }
 
 .mobile-header-logo {
@@ -24,6 +25,25 @@
 	font-weight: var(--font-normal);
 	color: var(--color-primary);
 	letter-spacing: -0.5px;
+}
+
+.mobile-header-logout {
+	position: absolute;
+	right: var(--spacing-lg);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: none;
+	border: none;
+	color: var(--color-text-secondary);
+	cursor: pointer;
+	padding: var(--spacing-sm);
+	border-radius: var(--radius-md);
+}
+
+.mobile-header-logout:hover {
+	color: var(--color-text-primary);
+	background-color: var(--color-bg-primary);
 }
 
 .page-main-content {
