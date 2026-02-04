@@ -162,3 +162,13 @@
 	background-color: var(--color-bg-primary);
 	color: var(--color-text-primary);
 }
+
+.sidebar {
+	transform: translateX(-100%);
+}
+
+@media (min-width: 768px) {
+	.sidebar {
+		transform: translateX(0);
+	}
+}

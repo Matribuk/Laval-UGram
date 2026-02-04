@@ -19,6 +19,9 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 }) => {
 	return (
 		<div className={`page-layout ${className}`}>
+			<header className="mobile-header">
+				<span className="mobile-header-logo">Ugram</span>
+			</header>
 			<Sidebar activePage={activePage} user={user} />
 			<main className="page-main-content">{children}</main>
 			<MobileNav activePage={activePage} />

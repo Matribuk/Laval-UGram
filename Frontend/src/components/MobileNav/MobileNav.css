@@ -1,5 +1,5 @@
 .mobile-nav {
-	display: none;
+	display: flex;
 	position: fixed;
 	bottom: 0;
 	left: 0;
@@ -36,15 +36,23 @@
 }
 
 .mobile-nav-create {
+	flex: 0 0 auto !important;
 	background-color: var(--color-primary);
 	color: var(--color-bg-white);
 	border-radius: var(--radius-full);
-	width: 3rem;
-	height: 3rem;
-	margin-top: -1.5rem;
-	flex: 0 0 auto;
+	width: 2.75rem;
+	height: 2.75rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .mobile-nav-create:hover {
 	background-color: var(--color-primary-dark);
+}
+
+@media (min-width: 768px) {
+	.mobile-nav {
+		display: none;
+	}
 }

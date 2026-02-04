@@ -4,10 +4,67 @@
 	background-color: var(--color-bg-secondary);
 }
 
+.mobile-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3.5rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-bg-white);
+	border-bottom: 1px solid var(--color-border);
+	z-index: 100;
+}
+
+.mobile-header-logo {
+	font-family: var(--font-serif);
+	font-size: var(--font-2xl);
+	font-weight: var(--font-normal);
+	color: var(--color-primary);
+	letter-spacing: -0.5px;
+}
+
 .page-main-content {
 	flex: 1;
-	padding: var(--spacing-3xl);
+	padding: var(--spacing-lg);
+	padding-top: 4.5rem;
+	padding-bottom: 5rem;
 	max-width: 43.75rem;
-	margin-left: var(--sidebar-width);
-	margin-right: 20rem;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+}
+
+@media (min-width: 768px) {
+	.mobile-header {
+		display: none;
+	}
+
+	.page-main-content {
+		margin-left: var(--sidebar-width);
+		margin-right: auto;
+		padding: var(--spacing-2xl);
+		padding-bottom: var(--spacing-2xl);
+		width: auto;
+	}
+}
+
+@media (min-width: 1024px) {
+	.page-main-content {
+		padding: var(--spacing-3xl);
+	}
+}
+
+@media (min-width: 1366px) {
+	.page-main-content {
+		margin-right: 10rem;
+	}
+}
+
+@media (min-width: 1920px) {
+	.page-main-content {
+		margin-right: 20rem;
+	}
 }
