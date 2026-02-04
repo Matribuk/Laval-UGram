@@ -69,14 +69,14 @@
 
 ### 🎨 Responsive Design
 
-* [ ] Petit téléphone (640x1136)
-* [ ] Téléphone régulier (750x1334)
-* [ ] Grand téléphone (1242x2208)
-* [ ] Tablette (1536x2049)
-* [ ] Desktop
-  * [ ] 1920x1080
-  * [ ] 1366x768
-  * [ ] 1024x780
+* [x] Petit téléphone (640x1136)
+* [x] Téléphone régulier (750x1334)
+* [x] Grand téléphone (1242x2208)
+* [x] Tablette (1536x2049)
+* [x] Desktop
+  * [x] 1920x1080
+  * [x] 1366x768
+  * [x] 1024x780
 
 ---
 
