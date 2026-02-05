@@ -324,7 +324,7 @@ describe('UsersController', () => {
     });
 
     it('should return updated user with new profile picture', async () => {
-      
+
       const currentUser = createUserFactory();
       const file = createMockFile();
       storageService.uploadImage.mockResolvedValue({
@@ -336,15 +336,47 @@ describe('UsersController', () => {
         profilePictureUrl: '/uploads/pic.jpg',
       });
 
-      
+
       const result = await controller.uploadProfilePicture(
         currentUser.id,
         file,
         currentUser,
       );
 
-      
+
       expect(result).toHaveProperty('profilePictureUrl', '/uploads/pic.jpg');
+    });
+  });
+
+  describe('DELETE /users/:id', () => {
+    it('should throw ForbiddenException when deleting other user', async () => {
+      const currentUser = createUserFactory({ id: 'current-user-id' });
+      const otherUserId = 'other-user-id';
+
+      await expect(controller.delete(otherUserId, currentUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+      await expect(controller.delete(otherUserId, currentUser)).rejects.toThrow(
+        'You can only delete your own account',
+      );
+    });
+
+    it('should allow user to delete own account', async () => {
+      const currentUser = createUserFactory({ id: 'user-id' });
+      usersService.delete.mockResolvedValue(undefined);
+
+      await controller.delete(currentUser.id, currentUser);
+
+      expect(usersService.delete).toHaveBeenCalledWith(currentUser.id);
+    });
+
+    it('should return undefined on successful deletion', async () => {
+      const currentUser = createUserFactory();
+      usersService.delete.mockResolvedValue(undefined);
+
+      const result = await controller.delete(currentUser.id, currentUser);
+
+      expect(result).toBeUndefined();
     });
   });
 });

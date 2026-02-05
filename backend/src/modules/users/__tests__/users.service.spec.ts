@@ -425,15 +425,94 @@ describe('UsersService', () => {
     });
 
     it('should use bcrypt.compare for validation', async () => {
-      
+
       const user = createUserFactory();
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
-      
+
       await service.validatePassword(user, 'anyPassword');
 
-      
+
       expect(bcrypt.compare).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findOrCreateOAuthUser', () => {
+    const oauthData = {
+      email: 'oauth@example.com',
+      firstName: 'OAuth',
+      lastName: 'User',
+      profilePictureUrl: 'https://example.com/pic.jpg',
+    };
+
+    it('should return existing user if email already exists', async () => {
+      const existingUser = createUserFactory({ email: oauthData.email });
+      repository.findByEmail.mockResolvedValue(existingUser);
+
+      const result = await service.findOrCreateOAuthUser(oauthData);
+
+      expect(result).toEqual(existingUser);
+      expect(repository.create).not.toHaveBeenCalled();
+    });
+
+    it('should create new user if email does not exist', async () => {
+      repository.findByEmail.mockResolvedValue(null);
+      repository.existsByUsername.mockResolvedValue(false);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedRandomPassword');
+      const newUser = createUserFactory(oauthData);
+      repository.create.mockResolvedValue(newUser);
+
+      const result = await service.findOrCreateOAuthUser(oauthData);
+
+      expect(result).toEqual(newUser);
+      expect(repository.create).toHaveBeenCalled();
+    });
+
+    it('should generate unique username from email', async () => {
+      repository.findByEmail.mockResolvedValue(null);
+      repository.existsByUsername.mockResolvedValue(false);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedRandomPassword');
+      repository.create.mockResolvedValue(createUserFactory());
+
+      await service.findOrCreateOAuthUser({ email: 'test.user@example.com' });
+
+      expect(repository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'test_user',
+        }),
+      );
+    });
+
+    it('should append number to username if already taken', async () => {
+      repository.findByEmail.mockResolvedValue(null);
+      repository.existsByUsername
+        .mockResolvedValueOnce(true)
+        .mockResolvedValueOnce(false);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedRandomPassword');
+      repository.create.mockResolvedValue(createUserFactory());
+
+      await service.findOrCreateOAuthUser({ email: 'test@example.com' });
+
+      expect(repository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: 'test1',
+        }),
+      );
+    });
+
+    it('should include profile picture url in created user', async () => {
+      repository.findByEmail.mockResolvedValue(null);
+      repository.existsByUsername.mockResolvedValue(false);
+      (bcrypt.hash as jest.Mock).mockResolvedValue('hashedRandomPassword');
+      repository.create.mockResolvedValue(createUserFactory());
+
+      await service.findOrCreateOAuthUser(oauthData);
+
+      expect(repository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          profilePictureUrl: oauthData.profilePictureUrl,
+        }),
+      );
     });
   });
 });
