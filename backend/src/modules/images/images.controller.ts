@@ -113,6 +113,38 @@ export class ImagesController {
     };
   }
 
+  @Get('search')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Search images by description' })
+  @ApiQuery({ name: 'description', required: true, type: String, description: 'Search query for image descriptions' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiResponse({
+    status: 200,
+    description: 'Images matching search query retrieved successfully',
+  })
+  async searchByDescription(
+    @Query('description') query: string,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const { images, total } = await this.imagesService.searchByDescription(
+      query || '',
+      Number(page) || 1,
+      Number(limit) || 10,
+    );
+    return {
+      data: images.map((image) => plainToInstance(ImageResponseDto, image)),
+      meta: {
+        total,
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        totalPages: Math.ceil(total / (Number(limit) || 10)),
+      },
+    };
+  }
+
   @Get('hashtag/:hashtag')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

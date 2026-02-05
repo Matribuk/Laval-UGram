@@ -88,6 +88,19 @@ export class ImagesService {
     return { images, total };
   }
 
+  async searchByDescription(
+    query: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ images: Image[]; total: number }> {
+    const [images, total] = await this.imagesRepository.searchByDescription(
+      query,
+      page,
+      limit,
+    );
+    return { images, total };
+  }
+
   async update(
     id: string,
     updateImageDto: UpdateImageDto,

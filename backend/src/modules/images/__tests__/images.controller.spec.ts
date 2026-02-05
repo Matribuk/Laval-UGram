@@ -133,16 +133,59 @@ describe('ImagesController', () => {
     });
 
     it('should transform images to ImageResponseDto', async () => {
-      
+
       const images = createManyImages(1);
       imagesService.findAll.mockResolvedValue({ images, total: 1 });
 
-      
+
       const result = await controller.findAll(1, 10);
 
-      
+
       expect(result.data[0]).toHaveProperty('id');
       expect(result.data[0]).toHaveProperty('url');
+    });
+  });
+
+  describe('GET /images/search', () => {
+    it('should search images by description query', async () => {
+      const images = createManyImages(2);
+      imagesService.searchByDescription.mockResolvedValue({ images, total: 2 });
+
+      const result = await controller.searchByDescription('sunset', 1, 10);
+
+      expect(result.data).toHaveLength(2);
+      expect(imagesService.searchByDescription).toHaveBeenCalledWith('sunset', 1, 10);
+    });
+
+    it('should handle empty search query', async () => {
+      imagesService.searchByDescription.mockResolvedValue({ images: [], total: 0 });
+
+      await controller.searchByDescription('', 1, 10);
+
+      expect(imagesService.searchByDescription).toHaveBeenCalledWith('', 1, 10);
+    });
+
+    it('should return paginated search results with meta', async () => {
+      const images = createManyImages(5);
+      imagesService.searchByDescription.mockResolvedValue({ images, total: 15 });
+
+      const result = await controller.searchByDescription('nature', 1, 5);
+
+      expect(result.meta).toEqual({
+        total: 15,
+        page: 1,
+        limit: 5,
+        totalPages: 3,
+      });
+    });
+
+    it('should return empty results when no matches found', async () => {
+      imagesService.searchByDescription.mockResolvedValue({ images: [], total: 0 });
+
+      const result = await controller.searchByDescription('nonexistent', 1, 10);
+
+      expect(result.data).toHaveLength(0);
+      expect(result.meta.total).toBe(0);
     });
   });
 

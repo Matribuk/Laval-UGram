@@ -9,6 +9,7 @@ export const createMockUsersService = () => ({
   updateProfilePicture: jest.fn(),
   delete: jest.fn(),
   validatePassword: jest.fn(),
+  findOrCreateOAuthUser: jest.fn(),
 });
 
 export const createMockUsersRepository = () => ({
@@ -29,6 +30,7 @@ export const createMockAuthService = () => ({
   validateUser: jest.fn(),
   register: jest.fn(),
   login: jest.fn(),
+  googleLogin: jest.fn(),
 });
 
 export const createMockImagesService = () => ({
@@ -37,6 +39,7 @@ export const createMockImagesService = () => ({
   findById: jest.fn(),
   findByUserId: jest.fn(),
   findByHashtag: jest.fn(),
+  searchByDescription: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
 });
@@ -47,6 +50,7 @@ export const createMockImagesRepository = () => ({
   findById: jest.fn(),
   findByUserId: jest.fn(),
   findByHashtag: jest.fn(),
+  searchByDescription: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
   findOrCreateHashtags: jest.fn(),
