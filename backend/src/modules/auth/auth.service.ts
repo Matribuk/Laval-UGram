@@ -43,6 +43,22 @@ export class AuthService {
     return this.generateAuthResponse(user);
   }
 
+  async googleLogin(googleProfile: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    picture: string;
+  }): Promise<AuthResponseDto> {
+    const user = await this.usersService.findOrCreateOAuthUser({
+      email: googleProfile.email,
+      firstName: googleProfile.firstName,
+      lastName: googleProfile.lastName,
+      profilePictureUrl: googleProfile.picture,
+    });
+
+    return this.generateAuthResponse(user);
+  }
+
   private generateAuthResponse(user: User): AuthResponseDto {
     const payload = { sub: user.id, email: user.email };
     const accessToken = this.jwtService.sign(payload);

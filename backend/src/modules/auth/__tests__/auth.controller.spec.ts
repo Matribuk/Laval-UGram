@@ -137,4 +137,87 @@ describe('AuthController', () => {
       );
     });
   });
+
+  describe('GET /auth/google', () => {
+    it('should be defined and handled by GoogleAuthGuard', () => {
+      expect(controller.googleAuth).toBeDefined();
+    });
+
+    it('should return undefined (guard handles redirect)', () => {
+      const result = controller.googleAuth();
+
+      expect(result).toBeUndefined();
+    });
+  });
+
+  describe('GET /auth/google/callback', () => {
+    const googleProfile = {
+      email: 'google@example.com',
+      firstName: 'Google',
+      lastName: 'User',
+      picture: 'https://example.com/photo.jpg',
+      googleId: 'google-123456',
+    };
+
+    it('should return auth response on successful Google login', async () => {
+      const expectedResponse = {
+        accessToken: 'jwt-token',
+        user: {
+          id: 'user-id',
+          username: 'googleuser',
+          email: 'google@example.com',
+        },
+      };
+      authService.googleLogin.mockResolvedValue(expectedResponse);
+
+      const result = await controller.googleAuthCallback({ user: googleProfile });
+
+      expect(result).toEqual(expectedResponse);
+      expect(authService.googleLogin).toHaveBeenCalledWith(googleProfile);
+    });
+
+    it('should delegate Google login to AuthService', async () => {
+      authService.googleLogin.mockResolvedValue({
+        accessToken: 'token',
+        user: createUserFactory(),
+      });
+
+      await controller.googleAuthCallback({ user: googleProfile });
+
+      expect(authService.googleLogin).toHaveBeenCalledTimes(1);
+      expect(authService.googleLogin).toHaveBeenCalledWith(googleProfile);
+    });
+
+    it('should handle user without profile picture', async () => {
+      const profileWithoutPicture = {
+        email: 'nophoto@example.com',
+        firstName: 'No',
+        lastName: 'Photo',
+        picture: '',
+        googleId: 'google-789',
+      };
+      authService.googleLogin.mockResolvedValue({
+        accessToken: 'token',
+        user: createUserFactory(),
+      });
+
+      await controller.googleAuthCallback({ user: profileWithoutPicture });
+
+      expect(authService.googleLogin).toHaveBeenCalledWith(profileWithoutPicture);
+    });
+  });
+
+  describe('POST /auth/logout', () => {
+    it('should return success message', () => {
+      const result = controller.logout();
+
+      expect(result).toEqual({ message: 'Logout successful' });
+    });
+
+    it('should be a stateless logout (JWT is client-side)', () => {
+      const result = controller.logout();
+
+      expect(result.message).toBe('Logout successful');
+    });
+  });
 });
