@@ -1,8 +1,8 @@
 .create-post-header {
 	display: flex;
 	align-items: center;
-	gap: var(--spacing-md);
-	margin-bottom: var(--spacing-xl);
+	gap: var(--spacing-sm);
+	margin-bottom: var(--spacing-lg);
 }
 
 .create-post-header .back-button {
@@ -28,8 +28,8 @@
 .create-post-form {
 	display: flex;
 	flex-direction: column;
-	gap: var(--spacing-lg);
-	max-width: 37.5rem;
+	gap: var(--spacing-md);
+	max-width: 100%;
 }
 
 .form-group {
@@ -49,9 +49,9 @@
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-md);
 	font-family: inherit;
-	font-size: 0.875rem;
+	font-size: 1rem;
 	resize: vertical;
-	min-height: 6.25rem;
+	min-height: 5rem;
 }
 
 .form-textarea:focus {
@@ -65,7 +65,7 @@
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius-md);
 	font-family: inherit;
-	font-size: 0.875rem;
+	font-size: 1rem;
 }
 
 .form-input:focus {
@@ -78,9 +78,29 @@
 	font-size: 0.75rem;
 }
 
-.form-actions {
-	display: flex;
-	gap: var(--spacing-md);
-	justify-content: flex-end;
-	margin-top: var(--spacing-md);
+@media (min-width: 768px) {
+	.create-post-header {
+		gap: var(--spacing-md);
+		margin-bottom: var(--spacing-xl);
+	}
+
+	.create-post-form {
+		gap: var(--spacing-lg);
+		max-width: 37.5rem;
+	}
+
+	.form-textarea {
+		font-size: 0.875rem;
+		min-height: 6.25rem;
+	}
+
+	.form-input {
+		font-size: 0.875rem;
+	}
+}
+
+@media (min-width: 1024px) {
+	.create-post-header {
+		margin-bottom: var(--spacing-2xl);
+	}
 }

@@ -58,7 +58,7 @@ const EditPostPage: React.FC = () => {
 			});
 
 			toast.success('Post updated successfully');
-			navigate(`/post/${post.id}`);
+			navigate(`/post/${post.id}`, { replace: true });
 		} catch (error) {
 			console.error('Failed to update post:', error);
 			toast.error('Failed to update post');

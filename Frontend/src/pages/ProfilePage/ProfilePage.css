@@ -1,32 +1,34 @@
 .profile-header {
 	display: flex;
-	gap: 3rem;
-	align-items: flex-start;
-	padding-bottom: 2rem;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	gap: 1rem;
+	padding-bottom: 1.5rem;
 }
 
 .profile-avatar-large {
-	width: 9.375rem;
-	height: 9.375rem;
-	font-size: 3.5rem;
+	width: 5rem;
+	height: 5rem;
+	font-size: 2rem;
 	flex-shrink: 0;
 }
 
 .profile-info {
 	flex: 1;
-	padding-top: 8px;
 }
 
 .profile-title-row {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 1rem;
+	gap: 0.5rem;
 	margin-bottom: 1rem;
 }
 
 .profile-username {
 	font-family: var(--font-serif);
-	font-size: 1.75rem;
+	font-size: 1.25rem;
 	font-weight: var(--font-normal);
 	color: var(--color-text-primary);
 	margin: 0;
@@ -35,8 +37,8 @@
 .edit-profile-button {
 	display: flex;
 	align-items: center;
-	gap: 8px;
-	padding: 8px 1rem;
+	gap: 6px;
+	padding: 6px 0.75rem;
 	font-size: 0.875rem;
 	font-weight: var(--font-medium);
 	color: var(--color-text-primary);
@@ -82,9 +84,9 @@
 
 .profile-meta {
 	display: flex;
+	flex-direction: column;
 	align-items: center;
-	gap: 1.5rem;
-	flex-wrap: wrap;
+	gap: 0.5rem;
 }
 
 .profile-email,
@@ -100,13 +102,13 @@
 .profile-divider {
 	height: 1px;
 	background-color: var(--color-border);
-	margin-bottom: 1.5rem;
+	margin-bottom: 1rem;
 }
 
 .profile-tabs {
 	display: flex;
 	justify-content: center;
-	margin-bottom: 2rem;
+	margin-bottom: 1rem;
 }
 
 .profile-tab {
@@ -140,7 +142,7 @@
 .posts-grid {
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
-	gap: 4px;
+	gap: 2px;
 }
 
 .post-thumbnail {
@@ -158,4 +160,70 @@
 
 .post-thumbnail:hover img {
 	opacity: 0.8;
+}
+
+@media (min-width: 768px) {
+	.profile-header {
+		flex-direction: row;
+		align-items: flex-start;
+		text-align: left;
+		gap: 2rem;
+		padding-bottom: 2rem;
+	}
+
+	.profile-avatar-large {
+		width: 7rem;
+		height: 7rem;
+		font-size: 2.5rem;
+	}
+
+	.profile-info {
+		padding-top: 8px;
+	}
+
+	.profile-title-row {
+		flex-direction: row;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.edit-profile-button {
+		padding: 8px 1rem;
+		gap: 8px;
+	}
+
+	.profile-meta {
+		flex-direction: row;
+		align-items: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+
+	.profile-divider {
+		margin-bottom: 1.5rem;
+	}
+
+	.profile-tabs {
+		margin-bottom: 2rem;
+	}
+
+	.posts-grid {
+		gap: 4px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.profile-header {
+		gap: 3rem;
+	}
+
+	.profile-avatar-large {
+		width: 9.375rem;
+		height: 9.375rem;
+		font-size: 3.5rem;
+	}
+
+	.profile-username {
+		font-size: 1.75rem;
+	}
 }
