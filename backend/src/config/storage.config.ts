@@ -1,18 +1,17 @@
 import { registerAs } from '@nestjs/config';
+import { STORAGE_CONFIG } from './defaults';
 
 export default registerAs('storage', () => ({
-  type: process.env.STORAGE_TYPE || 'local',
+  type: STORAGE_CONFIG.TYPE,
   local: {
-    uploadPath: process.env.UPLOAD_PATH || './uploads',
+    uploadPath: STORAGE_CONFIG.LOCAL.UPLOAD_PATH,
   },
   s3: {
-    region: process.env.AWS_REGION || 'us-east-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-    bucket: process.env.AWS_S3_BUCKET,
+    region: STORAGE_CONFIG.S3.REGION,
+    accessKeyId: STORAGE_CONFIG.S3.ACCESS_KEY_ID,
+    secretAccessKey: STORAGE_CONFIG.S3.SECRET_ACCESS_KEY,
+    bucket: STORAGE_CONFIG.S3.BUCKET,
   },
-  maxFileSize: parseInt(process.env.MAX_FILE_SIZE ?? String(5 * 1024 * 1024), 10),
-  allowedMimeTypes: (
-    process.env.ALLOWED_MIME_TYPES || 'image/jpeg,image/png,image/gif,image/webp'
-  ).split(','),
+  maxFileSize: STORAGE_CONFIG.MAX_FILE_SIZE,
+  allowedMimeTypes: [...STORAGE_CONFIG.ALLOWED_MIME_TYPES],
 }));

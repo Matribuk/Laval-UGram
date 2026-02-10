@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Param,
   Body,
   Query,
@@ -11,6 +12,8 @@ import {
   UploadedFile,
   ParseUUIDPipe,
   ForbiddenException,
+  HttpCode,
+  HttpStatus,
   Inject,
   forwardRef,
 } from '@nestjs/common';
@@ -226,5 +229,23 @@ export class UsersController {
     const { url } = await this.storageService.uploadImage(file);
     const user = await this.usersService.updateProfilePicture(id, url);
     return plainToInstance(UserResponseDto, user);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Delete user account' })
+  @ApiResponse({ status: 204, description: 'User deleted successfully' })
+  @ApiResponse({ status: 403, description: 'Forbidden - cannot delete other users' })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  async delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() currentUser: User,
+  ) {
+    if (currentUser.id !== id) {
+      throw new ForbiddenException('You can only delete your own account');
+    }
+    await this.usersService.delete(id);
   }
 }

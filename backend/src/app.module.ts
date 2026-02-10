@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { databaseConfig, jwtConfig, storageConfig } from './config';
+import { databaseConfig, jwtConfig, storageConfig, oauthConfig } from './config';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ImagesModule } from './modules/images/images.module';
@@ -11,7 +11,7 @@ import { StorageModule } from './modules/storage/storage.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, jwtConfig, storageConfig],
+      load: [databaseConfig, jwtConfig, storageConfig, oauthConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

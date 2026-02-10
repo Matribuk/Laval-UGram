@@ -18,7 +18,6 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   async upload(file: Buffer, filename: string, mimeType: string): Promise<string> {
-    // Dynamic import to avoid loading AWS SDK if not using S3
     const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
 
     const client = new S3Client({

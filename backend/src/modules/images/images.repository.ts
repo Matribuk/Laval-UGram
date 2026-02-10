@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository, In, ILike } from 'typeorm';
 import { Image, Hashtag, ImageMention } from './entities';
 
 @Injectable()
@@ -146,5 +146,19 @@ export class ImagesRepository {
       .take(limit);
 
     return queryBuilder.getManyAndCount();
+  }
+
+  async searchByDescription(
+    query: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[Image[], number]> {
+    return this.imageRepository.findAndCount({
+      where: { description: ILike(`%${query}%`) },
+      relations: ['user', 'hashtags', 'mentions', 'mentions.mentionedUser'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
   }
 }

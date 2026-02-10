@@ -4,9 +4,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
+
+export interface OAuthUserData {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  profilePictureUrl?: string;
+}
 
 @Injectable()
 export class UsersService {
@@ -93,6 +101,41 @@ export class UsersService {
 
   async validatePassword(user: User, password: string): Promise<boolean> {
     return bcrypt.compare(password, user.passwordHash);
+  }
+
+  async findOrCreateOAuthUser(oauthData: OAuthUserData): Promise<User> {
+    const existingUser = await this.usersRepository.findByEmail(oauthData.email);
+
+    if (existingUser) {
+      return existingUser;
+    }
+
+    const randomPassword = uuidv4();
+    const passwordHash = await bcrypt.hash(randomPassword, this.SALT_ROUNDS);
+
+    const username = await this.generateUniqueUsername(oauthData.email);
+
+    return this.usersRepository.create({
+      username,
+      email: oauthData.email,
+      passwordHash,
+      firstName: oauthData.firstName,
+      lastName: oauthData.lastName,
+      profilePictureUrl: oauthData.profilePictureUrl,
+    });
+  }
+
+  private async generateUniqueUsername(email: string): Promise<string> {
+    const baseUsername = email.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '_');
+    let username = baseUsername;
+    let counter = 1;
+
+    while (await this.usersRepository.existsByUsername(username)) {
+      username = `${baseUsername}${counter}`;
+      counter++;
+    }
+
+    return username;
   }
 
   private async validateUniqueConstraints(email: string, username: string): Promise<void> {
