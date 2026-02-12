@@ -82,11 +82,11 @@
 
 ### Test unitaire
 
- * [ ] 40% de coverage
- * [ ] 50% de coverage
- * [ ] 60% de coverage
- * [ ] 70% de coverage
- * [ ] 80% de coverage
+ * [x] 40% de coverage
+ * [x] 50% de coverage
+ * [x] 60% de coverage
+ * [x] 70% de coverage
+ * [x] 80% de coverage
 
 ---
 
