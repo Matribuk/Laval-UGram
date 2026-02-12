@@ -81,7 +81,7 @@ describe('UsersPage', () => {
 	});
 
 	it('shows loading spinner while fetching users', async () => {
-		mockUsersService.getAllUsers.mockImplementation(() => new Promise(() => {}));
+		mockUsersService.getAllUsers.mockImplementation(() => new Promise(jest.fn()));
 		render(<UsersPage />);
 		expect(screen.getByText('Loading users...')).toBeInTheDocument();
 	});
@@ -189,13 +189,15 @@ describe('UsersPage', () => {
 		});
 
 		const aliceCard = screen.getByText('alice').closest('.user-card');
-		fireEvent.click(aliceCard!);
+		if (aliceCard) {
+			fireEvent.click(aliceCard);
+		}
 
 		expect(mockNavigate).toHaveBeenCalledWith('/profile/alice');
 	});
 
 	it('shows error toast on fetch failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockUsersService.getAllUsers.mockRejectedValue(new Error('Network error'));
 		render(<UsersPage />);
 

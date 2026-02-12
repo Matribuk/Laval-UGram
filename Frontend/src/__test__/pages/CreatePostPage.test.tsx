@@ -3,9 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import CreatePostPage from '../../pages/CreatePostPage/CreatePostPage';
 import { mockNavigate } from '../../__mocks__/react-router-dom';
 import * as UserContext from '../../components/UserContext';
-import { postsService } from '../../services/postsService';
 import { usersService } from '../../services/usersService';
-import { toast } from 'react-toastify';
 
 jest.mock('react-router-dom');
 jest.mock('../../components/UserContext');
@@ -28,7 +26,6 @@ jest.mock('../../utils/SvgFile', () => ({
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
-const mockPostsService = postsService as jest.Mocked<typeof postsService>;
 const mockUsersService = usersService as jest.Mocked<typeof usersService>;
 
 describe('CreatePostPage', () => {

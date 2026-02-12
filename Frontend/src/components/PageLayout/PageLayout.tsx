@@ -14,12 +14,7 @@ interface PageLayoutProps {
 	className?: string;
 }
 
-const PageLayout: React.FC<PageLayoutProps> = ({
-	activePage,
-	user,
-	children,
-	className = '',
-}) => {
+const PageLayout: React.FC<PageLayoutProps> = ({ activePage, user, children, className = '' }) => {
 	const navigate = useNavigate();
 	const { logout } = useUser();
 

@@ -39,7 +39,7 @@ describe('PrivateRoute', () => {
 			render(
 				<PrivateRoute>
 					<div>Protected Content</div>
-				</PrivateRoute>
+				</PrivateRoute>,
 			);
 
 			expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -61,7 +61,7 @@ describe('PrivateRoute', () => {
 			render(
 				<PrivateRoute>
 					<div>Protected Content</div>
-				</PrivateRoute>
+				</PrivateRoute>,
 			);
 
 			expect(screen.getByText('Protected Content')).toBeInTheDocument();
@@ -83,7 +83,7 @@ describe('PrivateRoute', () => {
 			render(
 				<PrivateRoute>
 					<div>Protected Content</div>
-				</PrivateRoute>
+				</PrivateRoute>,
 			);
 
 			expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
@@ -107,7 +107,7 @@ describe('PrivateRoute', () => {
 			render(
 				<RestrictedRoute>
 					<div>Login Page</div>
-				</RestrictedRoute>
+				</RestrictedRoute>,
 			);
 
 			expect(screen.getByText('Loading...')).toBeInTheDocument();
@@ -129,7 +129,7 @@ describe('PrivateRoute', () => {
 			render(
 				<RestrictedRoute>
 					<div>Login Page</div>
-				</RestrictedRoute>
+				</RestrictedRoute>,
 			);
 
 			expect(screen.getByText('Login Page')).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('PrivateRoute', () => {
 			render(
 				<RestrictedRoute>
 					<div>Login Page</div>
-				</RestrictedRoute>
+				</RestrictedRoute>,
 			);
 
 			expect(screen.queryByText('Login Page')).not.toBeInTheDocument();

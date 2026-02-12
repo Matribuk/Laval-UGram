@@ -73,7 +73,7 @@ describe('HomePage', () => {
 	});
 
 	it('shows loading spinner while fetching posts', async () => {
-		mockPostsService.getAllPosts.mockImplementation(() => new Promise(() => {}));
+		mockPostsService.getAllPosts.mockImplementation(() => new Promise(jest.fn()));
 		render(<HomePage />);
 		expect(screen.getByText('Loading posts...')).toBeInTheDocument();
 	});
@@ -109,7 +109,7 @@ describe('HomePage', () => {
 	});
 
 	it('shows error toast on fetch failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockPostsService.getAllPosts.mockRejectedValue(new Error('Network error'));
 		render(<HomePage />);
 

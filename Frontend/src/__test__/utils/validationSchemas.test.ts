@@ -1,4 +1,10 @@
-import { loginSchema, signupSchema, editProfileSchema, createPostSchema, editPostSchema } from '../../utils/validationSchemas';
+import {
+	loginSchema,
+	signupSchema,
+	editProfileSchema,
+	createPostSchema,
+	editPostSchema,
+} from '../../utils/validationSchemas';
 
 describe('validationSchemas', () => {
 	describe('loginSchema', () => {
@@ -48,25 +54,25 @@ describe('validationSchemas', () => {
 
 		it('rejects long username', async () => {
 			await expect(signupSchema.validate({ ...validData, username: 'a'.repeat(31) })).rejects.toThrow(
-				'Maximum 30 characters'
+				'Maximum 30 characters',
 			);
 		});
 
 		it('rejects invalid username characters', async () => {
 			await expect(signupSchema.validate({ ...validData, username: 'user@name' })).rejects.toThrow(
-				'Only letters, numbers and underscores'
+				'Only letters, numbers and underscores',
 			);
 		});
 
 		it('rejects mismatched passwords', async () => {
 			await expect(signupSchema.validate({ ...validData, confirmPassword: 'different' })).rejects.toThrow(
-				'Passwords do not match'
+				'Passwords do not match',
 			);
 		});
 
 		it('rejects long firstName', async () => {
 			await expect(signupSchema.validate({ ...validData, firstName: 'a'.repeat(51) })).rejects.toThrow(
-				'Maximum 50 characters'
+				'Maximum 50 characters',
 			);
 		});
 	});
@@ -89,7 +95,7 @@ describe('validationSchemas', () => {
 
 		it('rejects invalid phone number', async () => {
 			await expect(editProfileSchema.validate({ ...validData, phoneNumber: 'abc123' })).rejects.toThrow(
-				'Phone number can only contain digits'
+				'Phone number can only contain digits',
 			);
 		});
 
@@ -110,7 +116,7 @@ describe('validationSchemas', () => {
 
 		it('rejects invalid mention format', async () => {
 			await expect(createPostSchema.validate({ caption: 'Hello @user@name', tags: '' })).rejects.toThrow(
-				'Invalid mention format'
+				'Invalid mention format',
 			);
 		});
 
@@ -121,7 +127,7 @@ describe('validationSchemas', () => {
 
 		it('rejects invalid hashtag format', async () => {
 			await expect(createPostSchema.validate({ caption: 'Hello', tags: '#tag@invalid' })).rejects.toThrow(
-				'Invalid hashtag format'
+				'Invalid hashtag format',
 			);
 		});
 

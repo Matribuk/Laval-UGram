@@ -70,7 +70,7 @@ describe('authService', () => {
 			});
 
 			await expect(authService.login({ email: 'wrong@example.com', password: 'wrong' })).rejects.toThrow(
-				'Invalid credentials'
+				'Invalid credentials',
 			);
 		});
 
@@ -78,7 +78,7 @@ describe('authService', () => {
 			mockApi.post.mockRejectedValue({});
 
 			await expect(authService.login({ email: 'test@example.com', password: 'test' })).rejects.toThrow(
-				'Login failed. Please check your credentials.'
+				'Login failed. Please check your credentials.',
 			);
 		});
 	});
@@ -112,7 +112,7 @@ describe('authService', () => {
 					username: 'test',
 					firstName: 'Test',
 					lastName: 'User',
-				})
+				}),
 			).rejects.toThrow('Email already exists');
 		});
 
@@ -126,7 +126,7 @@ describe('authService', () => {
 					username: 'test',
 					firstName: 'Test',
 					lastName: 'User',
-				})
+				}),
 			).rejects.toThrow('Signup failed. Please try again.');
 		});
 	});

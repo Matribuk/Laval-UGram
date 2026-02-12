@@ -9,9 +9,33 @@ const mockUsersService = usersService as jest.Mocked<typeof usersService>;
 
 describe('MentionTextarea', () => {
 	const mockUsers = [
-		{ id: 'user-1', username: 'johndoe', email: 'john@test.com', firstName: 'John', lastName: 'Doe', fullName: 'John Doe', avatar: '/avatar1.jpg' },
-		{ id: 'user-2', username: 'janedoe', email: 'jane@test.com', firstName: 'Jane', lastName: 'Doe', fullName: 'Jane Doe', avatar: '/avatar2.jpg' },
-		{ id: 'user-3', username: 'bobsmith', email: 'bob@test.com', firstName: 'Bob', lastName: 'Smith', fullName: 'Bob Smith', avatar: null },
+		{
+			id: 'user-1',
+			username: 'johndoe',
+			email: 'john@test.com',
+			firstName: 'John',
+			lastName: 'Doe',
+			fullName: 'John Doe',
+			avatar: '/avatar1.jpg',
+		},
+		{
+			id: 'user-2',
+			username: 'janedoe',
+			email: 'jane@test.com',
+			firstName: 'Jane',
+			lastName: 'Doe',
+			fullName: 'Jane Doe',
+			avatar: '/avatar2.jpg',
+		},
+		{
+			id: 'user-3',
+			username: 'bobsmith',
+			email: 'bob@test.com',
+			firstName: 'Bob',
+			lastName: 'Smith',
+			fullName: 'Bob Smith',
+			avatar: null,
+		},
 	];
 
 	const defaultProps = {
@@ -93,7 +117,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -113,7 +137,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -133,7 +157,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -155,7 +179,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -178,7 +202,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -202,7 +226,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -227,7 +251,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -251,7 +275,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -274,7 +298,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -297,7 +321,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -314,7 +338,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -331,7 +355,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -359,7 +383,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -372,7 +396,7 @@ describe('MentionTextarea', () => {
 	});
 
 	it('handles user fetch error gracefully', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockUsersService.getAllUsers.mockRejectedValue(new Error('Network error'));
 
 		render(<MentionTextarea {...defaultProps} />);
@@ -392,7 +416,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -403,9 +427,10 @@ describe('MentionTextarea', () => {
 		});
 
 		const janeButton = screen.getByText('@janedoe').closest('button');
-		fireEvent.mouseEnter(janeButton!);
-
-		expect(janeButton).toHaveClass('selected');
+		if (janeButton) {
+			fireEvent.mouseEnter(janeButton);
+			expect(janeButton).toHaveClass('selected');
+		}
 	});
 
 	it('does nothing for keydown when suggestions are hidden', async () => {
@@ -424,7 +449,7 @@ describe('MentionTextarea', () => {
 			<div>
 				<div data-testid="outside">Outside</div>
 				<MentionTextarea {...defaultProps} />
-			</div>
+			</div>,
 		);
 
 		await waitFor(() => {
@@ -432,7 +457,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;
@@ -457,7 +482,7 @@ describe('MentionTextarea', () => {
 		});
 
 		await act(async () => {
-			await new Promise(resolve => setTimeout(resolve, 0));
+			await new Promise((resolve) => setTimeout(resolve, 0));
 		});
 
 		const textarea = screen.getByRole('textbox') as HTMLTextAreaElement;

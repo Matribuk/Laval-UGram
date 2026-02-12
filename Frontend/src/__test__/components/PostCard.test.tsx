@@ -58,7 +58,9 @@ describe('PostCard', () => {
 	it('navigates to post detail on image click', () => {
 		render(<PostCard {...defaultProps} />);
 		const postImage = screen.getByRole('img', { name: 'This is a test caption' });
-		fireEvent.click(postImage.parentElement!);
+		if (postImage.parentElement) {
+			fireEvent.click(postImage.parentElement);
+		}
 		expect(mockNavigate).toHaveBeenCalledWith('/post/post-123');
 	});
 

@@ -5,9 +5,9 @@ import FormField from '../../components/FormField/FormField';
 
 const renderWithFormik = (ui: React.ReactElement, initialValues = { testField: '' }) => {
 	return render(
-		<Formik initialValues={initialValues} onSubmit={() => {}}>
+		<Formik initialValues={initialValues} onSubmit={jest.fn()}>
 			<Form>{ui}</Form>
-		</Formik>
+		</Formik>,
 	);
 };
 

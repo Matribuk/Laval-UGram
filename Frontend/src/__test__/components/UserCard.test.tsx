@@ -39,7 +39,9 @@ describe('UserCard', () => {
 		const handleClick = jest.fn();
 		render(<UserCard {...defaultProps} onClick={handleClick} />);
 		const card = screen.getByText('johndoe').closest('.user-card');
-		fireEvent.click(card!);
+		if (card) {
+			fireEvent.click(card);
+		}
 		expect(handleClick).toHaveBeenCalledTimes(1);
 	});
 

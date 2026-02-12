@@ -11,11 +11,7 @@ describe('EmptyState', () => {
 
 	it('renders subtitle when provided', () => {
 		render(
-			<EmptyState
-				icon={<span>📭</span>}
-				title="No items found"
-				subtitle="Try adding some items to get started"
-			/>
+			<EmptyState icon={<span>📭</span>} title="No items found" subtitle="Try adding some items to get started" />,
 		);
 		expect(screen.getByText('Try adding some items to get started')).toBeInTheDocument();
 	});

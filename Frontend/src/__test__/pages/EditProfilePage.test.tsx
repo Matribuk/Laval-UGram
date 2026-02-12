@@ -88,7 +88,9 @@ describe('EditProfilePage', () => {
 	it('navigates back on back button click', () => {
 		render(<EditProfilePage />);
 		const backButton = screen.getByTestId('back-arrow-icon').closest('button');
-		fireEvent.click(backButton!);
+		if (backButton) {
+			fireEvent.click(backButton);
+		}
 		expect(mockNavigate).toHaveBeenCalledWith('/profile');
 	});
 
@@ -122,7 +124,7 @@ describe('EditProfilePage', () => {
 	});
 
 	it('shows error toast on submission failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockUsersService.updateUser.mockRejectedValue(new Error('Network error'));
 
 		render(<EditProfilePage />);
@@ -157,7 +159,7 @@ describe('EditProfilePage', () => {
 	});
 
 	it('shows error toast on picture upload failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockUsersService.uploadProfilePicture.mockRejectedValue(new Error('Upload failed'));
 
 		const { container } = render(<EditProfilePage />);

@@ -10,39 +10,41 @@ jest.mock('../../utils/SvgFile', () => ({
 
 describe('ImageUpload', () => {
 	it('renders upload placeholder when no preview', () => {
-		render(<ImageUpload preview={null} onFileSelect={() => {}} />);
+		render(<ImageUpload preview={null} onFileSelect={jest.fn()} />);
 		expect(screen.getByText('Click or drag an image here')).toBeInTheDocument();
 		expect(screen.getByTestId('camera-icon')).toBeInTheDocument();
 	});
 
 	it('renders preview image when provided', () => {
-		render(<ImageUpload preview="https://example.com/image.jpg" onFileSelect={() => {}} />);
+		render(<ImageUpload preview="https://example.com/image.jpg" onFileSelect={jest.fn()} />);
 		const img = screen.getByRole('img', { name: 'Preview' });
 		expect(img).toHaveAttribute('src', 'https://example.com/image.jpg');
 	});
 
 	it('renders error message when provided', () => {
-		render(<ImageUpload preview={null} onFileSelect={() => {}} error="Image is required" />);
+		render(<ImageUpload preview={null} onFileSelect={jest.fn()} error="Image is required" />);
 		expect(screen.getByText('Image is required')).toBeInTheDocument();
 	});
 
 	it('applies has-preview class when preview exists', () => {
-		const { container } = render(<ImageUpload preview="test.jpg" onFileSelect={() => {}} />);
+		const { container } = render(<ImageUpload preview="test.jpg" onFileSelect={jest.fn()} />);
 		expect(container.querySelector('.has-preview')).toBeInTheDocument();
 	});
 
 	it('applies has-error class when error exists', () => {
-		const { container } = render(<ImageUpload preview={null} onFileSelect={() => {}} error="Error" />);
+		const { container } = render(<ImageUpload preview={null} onFileSelect={jest.fn()} error="Error" />);
 		expect(container.querySelector('.has-error')).toBeInTheDocument();
 	});
 
 	it('opens file dialog on click', () => {
-		render(<ImageUpload preview={null} onFileSelect={() => {}} />);
+		render(<ImageUpload preview={null} onFileSelect={jest.fn()} />);
 		const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
 		const clickSpy = jest.spyOn(fileInput, 'click');
 
 		const dropZone = document.querySelector('.image-upload-zone');
-		fireEvent.click(dropZone!);
+		if (dropZone) {
+			fireEvent.click(dropZone);
+		}
 
 		expect(clickSpy).toHaveBeenCalled();
 	});
@@ -61,13 +63,15 @@ describe('ImageUpload', () => {
 	});
 
 	it('handles drag over event', () => {
-		const { container } = render(<ImageUpload preview={null} onFileSelect={() => {}} />);
+		const { container } = render(<ImageUpload preview={null} onFileSelect={jest.fn()} />);
 		const dropZone = container.querySelector('.image-upload-zone');
 
 		const dragOverEvent = new Event('dragover', { bubbles: true });
 		Object.defineProperty(dragOverEvent, 'preventDefault', { value: jest.fn() });
 
-		fireEvent.dragOver(dropZone!);
+		if (dropZone) {
+			fireEvent.dragOver(dropZone);
+		}
 	});
 
 	it('handles file drop', () => {
@@ -77,9 +81,11 @@ describe('ImageUpload', () => {
 
 		const file = new File(['test'], 'test.png', { type: 'image/png' });
 
-		fireEvent.drop(dropZone!, {
-			dataTransfer: { files: [file] },
-		});
+		if (dropZone) {
+			fireEvent.drop(dropZone, {
+				dataTransfer: { files: [file] },
+			});
+		}
 
 		expect(handleFileSelect).toHaveBeenCalledWith(file);
 	});
@@ -91,15 +97,17 @@ describe('ImageUpload', () => {
 
 		const file = new File(['test'], 'test.txt', { type: 'text/plain' });
 
-		fireEvent.drop(dropZone!, {
-			dataTransfer: { files: [file] },
-		});
+		if (dropZone) {
+			fireEvent.drop(dropZone, {
+				dataTransfer: { files: [file] },
+			});
+		}
 
 		expect(handleFileSelect).not.toHaveBeenCalled();
 	});
 
 	it('accepts only images via input', () => {
-		render(<ImageUpload preview={null} onFileSelect={() => {}} />);
+		render(<ImageUpload preview={null} onFileSelect={jest.fn()} />);
 		const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
 		expect(fileInput).toHaveAttribute('accept', 'image/*');
 	});

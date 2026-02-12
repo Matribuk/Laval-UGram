@@ -4,13 +4,13 @@ import FormActions from '../../components/FormActions/FormActions';
 
 describe('FormActions', () => {
 	it('renders default button labels', () => {
-		render(<FormActions onCancel={() => {}} />);
+		render(<FormActions onCancel={jest.fn()} />);
 		expect(screen.getByText('Save')).toBeInTheDocument();
 		expect(screen.getByText('Cancel')).toBeInTheDocument();
 	});
 
 	it('renders custom button labels', () => {
-		render(<FormActions onCancel={() => {}} submitLabel="Create" cancelLabel="Back" />);
+		render(<FormActions onCancel={jest.fn()} submitLabel="Create" cancelLabel="Back" />);
 		expect(screen.getByText('Create')).toBeInTheDocument();
 		expect(screen.getByText('Back')).toBeInTheDocument();
 	});
@@ -23,31 +23,31 @@ describe('FormActions', () => {
 	});
 
 	it('submit button has type submit', () => {
-		render(<FormActions onCancel={() => {}} />);
+		render(<FormActions onCancel={jest.fn()} />);
 		const submitButton = screen.getByText('Save');
 		expect(submitButton).toHaveAttribute('type', 'submit');
 	});
 
 	it('cancel button has type button', () => {
-		render(<FormActions onCancel={() => {}} />);
+		render(<FormActions onCancel={jest.fn()} />);
 		const cancelButton = screen.getByText('Cancel');
 		expect(cancelButton).toHaveAttribute('type', 'button');
 	});
 
 	it('disables submit button when isSubmitting is true', () => {
-		render(<FormActions onCancel={() => {}} isSubmitting />);
+		render(<FormActions onCancel={jest.fn()} isSubmitting />);
 		const submitButton = screen.getByText('Save');
 		expect(submitButton).toBeDisabled();
 	});
 
 	it('enables submit button when isSubmitting is false', () => {
-		render(<FormActions onCancel={() => {}} isSubmitting={false} />);
+		render(<FormActions onCancel={jest.fn()} isSubmitting={false} />);
 		const submitButton = screen.getByText('Save');
 		expect(submitButton).not.toBeDisabled();
 	});
 
 	it('applies correct CSS classes', () => {
-		const { container } = render(<FormActions onCancel={() => {}} />);
+		const { container } = render(<FormActions onCancel={jest.fn()} />);
 		expect(container.querySelector('.form-actions')).toBeInTheDocument();
 		expect(container.querySelector('.btn-primary')).toBeInTheDocument();
 		expect(container.querySelector('.btn-secondary')).toBeInTheDocument();

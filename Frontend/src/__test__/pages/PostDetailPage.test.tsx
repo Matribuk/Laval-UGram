@@ -67,7 +67,7 @@ describe('PostDetailPage', () => {
 	});
 
 	it('shows loading spinner while fetching post', async () => {
-		mockPostsService.getPostById.mockImplementation(() => new Promise(() => {}));
+		mockPostsService.getPostById.mockImplementation(() => new Promise(jest.fn()));
 		render(<PostDetailPage />);
 		expect(screen.getByText('Loading post...')).toBeInTheDocument();
 	});
@@ -135,7 +135,9 @@ describe('PostDetailPage', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
 		expect(screen.getByText('Delete Post')).toBeInTheDocument();
-		expect(screen.getByText('Are you sure you want to delete this post? This action cannot be undone.')).toBeInTheDocument();
+		expect(
+			screen.getByText('Are you sure you want to delete this post? This action cannot be undone.'),
+		).toBeInTheDocument();
 	});
 
 	it('deletes post successfully', async () => {
@@ -161,7 +163,7 @@ describe('PostDetailPage', () => {
 	});
 
 	it('shows error toast on delete failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockPostsService.getPostById.mockResolvedValue(mockPost);
 		mockPostsService.deletePost.mockRejectedValue(new Error('Delete failed'));
 
@@ -194,7 +196,7 @@ describe('PostDetailPage', () => {
 	});
 
 	it('shows error toast on fetch failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockPostsService.getPostById.mockRejectedValue(new Error('Network error'));
 
 		render(<PostDetailPage />);
