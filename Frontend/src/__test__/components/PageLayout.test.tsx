@@ -1,7 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PageLayout from '../../components/PageLayout/PageLayout';
-import { mockNavigate } from '../../__mocks__/react-router-dom';
 import * as UserContext from '../../components/UserContext';
 
 jest.mock('react-router-dom');
@@ -47,7 +46,7 @@ describe('PageLayout', () => {
 		render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Page Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(screen.getByText('Page Content')).toBeInTheDocument();
 	});
@@ -56,7 +55,7 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(container.querySelector('.mobile-header-logo')).toHaveTextContent('Ugram');
 	});
@@ -65,7 +64,7 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(container.querySelector('.sidebar')).toBeInTheDocument();
 	});
@@ -74,7 +73,7 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(container.querySelector('.mobile-nav')).toBeInTheDocument();
 	});
@@ -83,7 +82,7 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser} className="custom-layout">
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(container.querySelector('.page-layout.custom-layout')).toBeInTheDocument();
 	});
@@ -92,11 +91,13 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 
 		const logoutButton = container.querySelector('.mobile-header-logout');
-		fireEvent.click(logoutButton!);
+		if (logoutButton) {
+			fireEvent.click(logoutButton);
+		}
 
 		expect(mockLogout).toHaveBeenCalled();
 	});
@@ -105,7 +106,7 @@ describe('PageLayout', () => {
 		const { container } = render(
 			<PageLayout activePage="feed" user={mockUser}>
 				<div>Content</div>
-			</PageLayout>
+			</PageLayout>,
 		);
 		expect(container.querySelector('.page-layout')).toBeInTheDocument();
 		expect(container.querySelector('.mobile-header')).toBeInTheDocument();

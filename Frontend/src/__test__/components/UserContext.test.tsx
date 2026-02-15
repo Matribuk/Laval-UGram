@@ -36,7 +36,7 @@ describe('UserContext', () => {
 
 	describe('useUser hook', () => {
 		it('throws error when used outside provider', () => {
-			const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+			const consoleError = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 
 			expect(() => render(<TestConsumer />)).toThrow('useUser must be used within a UserProvider');
 
@@ -52,7 +52,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			expect(screen.getByTestId('loading')).toHaveTextContent('loading');
@@ -70,7 +70,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -85,7 +85,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -100,7 +100,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -113,12 +113,12 @@ describe('UserContext', () => {
 			mockAuthService.getStoredUser.mockReturnValue(mockUser);
 			mockAuthService.getTokenInfo.mockRejectedValue(new Error('Network error'));
 
-			const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+			const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -133,12 +133,12 @@ describe('UserContext', () => {
 			mockAuthService.getStoredUser.mockReturnValue(mockUser);
 			mockAuthService.getTokenInfo.mockRejectedValue({ response: { status: 401 } });
 
-			const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+			const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -155,7 +155,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<TestConsumer />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -174,7 +174,9 @@ describe('UserContext', () => {
 				const { login, user } = useUser();
 				return (
 					<>
-						<button onClick={() => login({ email: 'test@example.com', password: 'password' })}>Login</button>
+						<button type="button" onClick={() => login({ email: 'test@example.com', password: 'password' })}>
+							Login
+						</button>
 						<span data-testid="user">{user?.username || 'no-user'}</span>
 					</>
 				);
@@ -183,7 +185,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<LoginButton />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -211,7 +213,9 @@ describe('UserContext', () => {
 				const { logout, user } = useUser();
 				return (
 					<>
-						<button onClick={() => logout()}>Logout</button>
+						<button type="button" onClick={() => logout()}>
+							Logout
+						</button>
 						<span data-testid="user">{user?.username || 'no-user'}</span>
 					</>
 				);
@@ -220,7 +224,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<LogoutButton />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {
@@ -247,7 +251,9 @@ describe('UserContext', () => {
 				const { updateUser, user } = useUser();
 				return (
 					<>
-						<button onClick={() => updateUser({ ...mockUser, username: 'updateduser' })}>Update</button>
+						<button type="button" onClick={() => updateUser({ ...mockUser, username: 'updateduser' })}>
+							Update
+						</button>
 						<span data-testid="user">{user?.username || 'no-user'}</span>
 					</>
 				);
@@ -256,7 +262,7 @@ describe('UserContext', () => {
 			render(
 				<UserProvider>
 					<UpdateButton />
-				</UserProvider>
+				</UserProvider>,
 			);
 
 			await waitFor(() => {

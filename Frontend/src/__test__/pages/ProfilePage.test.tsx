@@ -58,8 +58,26 @@ describe('ProfilePage', () => {
 	};
 
 	const mockPosts = [
-		{ id: 'post-1', imageUrl: '/image1.jpg', caption: '', tags: [], mentions: [], author: { username: 'johndoe' }, timeAgo: '', createdAt: '' },
-		{ id: 'post-2', imageUrl: '/image2.jpg', caption: '', tags: [], mentions: [], author: { username: 'johndoe' }, timeAgo: '', createdAt: '' },
+		{
+			id: 'post-1',
+			imageUrl: '/image1.jpg',
+			caption: '',
+			tags: [],
+			mentions: [],
+			author: { username: 'johndoe' },
+			timeAgo: '',
+			createdAt: '',
+		},
+		{
+			id: 'post-2',
+			imageUrl: '/image2.jpg',
+			caption: '',
+			tags: [],
+			mentions: [],
+			author: { username: 'johndoe' },
+			timeAgo: '',
+			createdAt: '',
+		},
 	];
 
 	beforeEach(() => {
@@ -79,7 +97,7 @@ describe('ProfilePage', () => {
 	});
 
 	it('shows loading spinner while fetching profile', async () => {
-		mockUsersService.getAllUsers.mockImplementation(() => new Promise(() => {}));
+		mockUsersService.getAllUsers.mockImplementation(() => new Promise(jest.fn()));
 		render(<ProfilePage />);
 		expect(screen.getByText('Loading profile...')).toBeInTheDocument();
 	});
@@ -147,7 +165,9 @@ describe('ProfilePage', () => {
 		});
 
 		const firstThumbnail = container.querySelector('.post-thumbnail');
-		fireEvent.click(firstThumbnail!);
+		if (firstThumbnail) {
+			fireEvent.click(firstThumbnail);
+		}
 		expect(mockNavigate).toHaveBeenCalledWith('/post/post-1');
 	});
 
@@ -175,7 +195,7 @@ describe('ProfilePage', () => {
 	});
 
 	it('shows error toast on fetch failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockUsersService.getAllUsers.mockRejectedValue(new Error('Network error'));
 
 		render(<ProfilePage />);

@@ -94,7 +94,7 @@ describe('usersService', () => {
 				expect.any(FormData),
 				expect.objectContaining({
 					headers: { 'Content-Type': 'multipart/form-data' },
-				})
+				}),
 			);
 			expect(user.username).toBe('johndoe');
 		});

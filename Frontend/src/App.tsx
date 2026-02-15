@@ -32,89 +32,89 @@ function App(): React.JSX.Element {
 			/>
 			<Suspense fallback={<LoadingSpinner message="Loading..." />}>
 				<Routes>
-				<Route path="/" element={<Navigate to="/login" replace />} />
-				<Route
-					path="/login"
-					element={
-						<RestrictedRoute>
-							<LoginPage />
-						</RestrictedRoute>
-					}
-				/>
-				<Route
-					path="/signup"
-					element={
-						<RestrictedRoute>
-							<SignupPage />
-						</RestrictedRoute>
-					}
-				/>
-				<Route
-					path="/feed"
-					element={
-						<PrivateRoute>
-							<HomePage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/users"
-					element={
-						<PrivateRoute>
-							<UsersPage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/profile"
-					element={
-						<PrivateRoute>
-							<ProfilePage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/profile/edit"
-					element={
-						<PrivateRoute>
-							<EditProfilePage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/profile/:username"
-					element={
-						<PrivateRoute>
-							<ProfilePage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/post/create"
-					element={
-						<PrivateRoute>
-							<CreatePostPage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/post/:id"
-					element={
-						<PrivateRoute>
-							<PostDetailPage />
-						</PrivateRoute>
-					}
-				/>
-				<Route
-					path="/post/:id/edit"
-					element={
-						<PrivateRoute>
-							<EditPostPage />
-						</PrivateRoute>
-					}
-				/>
-				<Route path="*" element={<NotFoundRedirect />} />
-			</Routes>
+					<Route path="/" element={<Navigate to="/login" replace />} />
+					<Route
+						path="/login"
+						element={
+							<RestrictedRoute>
+								<LoginPage />
+							</RestrictedRoute>
+						}
+					/>
+					<Route
+						path="/signup"
+						element={
+							<RestrictedRoute>
+								<SignupPage />
+							</RestrictedRoute>
+						}
+					/>
+					<Route
+						path="/feed"
+						element={
+							<PrivateRoute>
+								<HomePage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/users"
+						element={
+							<PrivateRoute>
+								<UsersPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/profile"
+						element={
+							<PrivateRoute>
+								<ProfilePage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/profile/edit"
+						element={
+							<PrivateRoute>
+								<EditProfilePage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/profile/:username"
+						element={
+							<PrivateRoute>
+								<ProfilePage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/post/create"
+						element={
+							<PrivateRoute>
+								<CreatePostPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/post/:id"
+						element={
+							<PrivateRoute>
+								<PostDetailPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/post/:id/edit"
+						element={
+							<PrivateRoute>
+								<EditPostPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route path="*" element={<NotFoundRedirect />} />
+				</Routes>
 			</Suspense>
 		</>
 	);

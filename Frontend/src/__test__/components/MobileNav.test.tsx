@@ -70,7 +70,9 @@ describe('MobileNav', () => {
 	it('navigates to create post on plus click', () => {
 		render(<MobileNav activePage="feed" />);
 		const createButton = screen.getByTestId('plus-icon').closest('button');
-		fireEvent.click(createButton!);
+		if (createButton) {
+			fireEvent.click(createButton);
+		}
 		expect(mockNavigate).toHaveBeenCalledWith('/post/create');
 	});
 

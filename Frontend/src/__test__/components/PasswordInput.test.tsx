@@ -10,9 +10,9 @@ jest.mock('../../utils/SvgFile', () => ({
 
 const renderWithFormik = (ui: React.ReactElement, initialValues = { password: '' }) => {
 	return render(
-		<Formik initialValues={initialValues} onSubmit={() => {}}>
+		<Formik initialValues={initialValues} onSubmit={jest.fn()}>
 			<Form>{ui}</Form>
-		</Formik>
+		</Formik>,
 	);
 };
 
@@ -67,9 +67,7 @@ describe('PasswordInput', () => {
 	});
 
 	it('does not show error when not touched', () => {
-		renderWithFormik(
-			<PasswordInput name="password" label="Password" error="Password is required" touched={false} />
-		);
+		renderWithFormik(<PasswordInput name="password" label="Password" error="Password is required" touched={false} />);
 		expect(screen.queryByText('Password is required')).not.toBeInTheDocument();
 	});
 

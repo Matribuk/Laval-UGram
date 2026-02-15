@@ -71,7 +71,7 @@ describe('EditPostPage', () => {
 	});
 
 	it('shows loading spinner while fetching post', async () => {
-		mockPostsService.getPostById.mockImplementation(() => new Promise(() => {}));
+		mockPostsService.getPostById.mockImplementation(() => new Promise(jest.fn()));
 		render(<EditPostPage />);
 		expect(screen.getByText('Loading post...')).toBeInTheDocument();
 	});
@@ -139,7 +139,7 @@ describe('EditPostPage', () => {
 	});
 
 	it('shows error toast on update failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockPostsService.getPostById.mockResolvedValue(mockPost);
 		mockPostsService.updatePost.mockRejectedValue(new Error('Update failed'));
 
@@ -159,7 +159,7 @@ describe('EditPostPage', () => {
 	});
 
 	it('shows error toast on fetch failure', async () => {
-		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const consoleSpy = jest.spyOn(console, 'error').mockImplementation(jest.fn());
 		mockPostsService.getPostById.mockRejectedValue(new Error('Network error'));
 
 		render(<EditPostPage />);
