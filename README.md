@@ -69,10 +69,10 @@ npm start
 
 Le frontend sera accessible sur `http://localhost:3000`
 
-### Option 2: Avec Docker Compose (à venir)
+### Option 2: Avec Docker Compose
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 ## Scripts disponibles
