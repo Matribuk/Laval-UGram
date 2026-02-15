@@ -91,7 +91,7 @@ describe('EditPostPage', () => {
 	});
 
 	it('shows empty state when post not found', async () => {
-		mockPostsService.getPostById.mockResolvedValue(null);
+		mockPostsService.getPostById.mockResolvedValue(null as any);
 
 		render(<EditPostPage />);
 
@@ -196,7 +196,7 @@ describe('EditPostPage', () => {
 
 	it('renders with empty tags', async () => {
 		const postWithoutTags = { ...mockPost, tags: undefined };
-		mockPostsService.getPostById.mockResolvedValue(postWithoutTags);
+		mockPostsService.getPostById.mockResolvedValue(postWithoutTags as any);
 
 		render(<EditPostPage />);
 
