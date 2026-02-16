@@ -1,19 +1,20 @@
 # Ugram - Application de partage d'images
 
-Application web de type Instagram permettant aux utilisateurs de partager des images avec descriptions, hashtags et mentions.
+Application web de type Instagram permettant aux utilisateurs de partager des images avec des descriptions, des hashtags et des mentions.
 
 ## Architecture
 
-Le projet est organisé en monorepo avec deux parties principales:
-- **Frontend**: Application React en TypeScript
-- **Backend**: API REST NestJS avec base de données PostgreSQL
+Le projet est organisé en monorepo avec deux parties principales :
+
+* **Frontend** : Application React en TypeScript
+* **Backend** : API REST NestJS avec base de données PostgreSQL
 
 ## Prérequis
 
-- Node.js >= 20.x
-- npm >= 9.x
-- PostgreSQL >= 14.x (ou Docker pour lancer la base de données)
-- Docker et Docker Compose
+* Node.js >= 20.x
+* npm >= 9.x
+* PostgreSQL >= 14.x (ou Docker pour lancer la base de données)
+* Docker et Docker Compose
 
 ## Installation
 
@@ -24,14 +25,14 @@ git clone <url-du-repo>
 cd ugram-h2026-team-12
 ```
 
-### 2. Configuration Backend
+### 2. Configuration du backend
 
 ```bash
 cd backend
 npm install
 ```
 
-### 3. Configuration Frontend
+### 3. Configuration du frontend
 
 ```bash
 cd ../Frontend
@@ -40,7 +41,7 @@ npm install
 
 ## Lancement de l'application
 
-### Option 1: Lancement manuel
+### Option 1 : Lancement manuel
 
 #### 1. Démarrer la base de données PostgreSQL
 
@@ -58,7 +59,7 @@ cd backend
 npm run start:dev
 ```
 
-Le backend sera accessible sur `http://localhost:8080`
+Le backend sera accessible sur `http://localhost:8080`.
 
 #### 3. Démarrer le frontend
 
@@ -67,9 +68,9 @@ cd Frontend
 npm start
 ```
 
-Le frontend sera accessible sur `http://localhost:3000`
+Le frontend sera accessible sur `http://localhost:3000`.
 
-### Option 2: Avec Docker Compose
+### Option 2 : Avec Docker Compose
 
 ```bash
 docker compose up --build
@@ -115,7 +116,7 @@ ugram-h2026-team-12/
 │   │   ├── mentions/          # Module mentions
 │   │   ├── storage/           # Module stockage (local/S3)
 │   │   └── config/            # Configuration
-│   ├── uploads/               # Dossier uploads locaux
+│   ├── uploads/               # Dossier d'uploads locaux
 │   ├── docker-compose.yml     # PostgreSQL
 │   └── .env.example
 │
@@ -157,74 +158,83 @@ ugram-h2026-team-12/
 ## Fonctionnalités
 
 ### Authentification
-- Inscription avec validation (email, username unique, mot de passe)
-- Connexion avec JWT
-- Routes protégées
+
+* Inscription avec validation (email, username unique, mot de passe)
+* Connexion avec JWT
+* Routes protégées
 
 ### Gestion des utilisateurs
-- Profil utilisateur (photo, nom, email, téléphone, date d'inscription)
-- Édition du profil
-- Upload de photo de profil
-- Liste des utilisateurs avec recherche (nom, username, email)
-- Profil public d'un utilisateur
+
+* Profil utilisateur (photo, nom, email, téléphone, date d'inscription)
+* Édition du profil
+* Upload d'une photo de profil
+* Liste des utilisateurs avec recherche (nom, username, email)
+* Profil public d'un utilisateur
 
 ### Gestion des images
-- Publication d'images avec description
-- Ajout de hashtags (#tag)
-- Mention d'utilisateurs (@username avec résolution UUID)
-- Modification d'une image (description, hashtags uniquement pour le propriétaire)
-- Suppression d'une image (propriétaire uniquement)
-- Feed global des images trié par date
-- Grille d'images par utilisateur
-- Page de détail d'une image
+
+* Publication d'images avec description
+* Ajout de hashtags (#tag)
+* Mention d'utilisateurs (@username avec résolution UUID)
+* Modification d'une image (description et hashtags uniquement pour le propriétaire)
+* Suppression d'une image (propriétaire uniquement)
+* Feed global des images triées par date
+* Grille d'images par utilisateur
+* Page de détail d'une image
 
 ### Validation & UX
-- Validation côté client (Yup) et serveur (class-validator)
-- Messages d'erreur clairs avec react-toastify
-- États de chargement
-- Gestion des erreurs API (400, 401, 403, 404, 500)
+
+* Validation côté client (Yup) et serveur (class-validator)
+* Messages d'erreur clairs avec react-toastify
+* États de chargement
+* Gestion des erreurs API (400, 401, 403, 404, 500)
 
 ## Technologies utilisées
 
 ### Frontend
-- **React 19** - Framework UI
-- **TypeScript** - Typage statique
-- **React Router v7** - Routing
-- **Formik** - Gestion de formulaires
-- **Yup** - Validation de schémas
-- **Axios** - Client HTTP
-- **React Toastify** - Notifications
-- **CSS** - Styling (sans framework)
+
+* **React 19** - Framework UI
+* **TypeScript** - Typage statique
+* **React Router v7** - Routing
+* **Formik** - Gestion des formulaires
+* **Yup** - Validation de schémas
+* **Axios** - Client HTTP
+* **React Toastify** - Notifications
+* **CSS** - Styling (sans framework)
 
 ### Backend
-- **NestJS** - Framework Node.js
-- **TypeScript** - Typage statique
-- **TypeORM** - ORM pour PostgreSQL
-- **PostgreSQL** - Base de données
-- **JWT** - Authentification
-- **Passport** - Stratégies d'authentification
-- **class-validator** - Validation des DTOs
-- **Multer** - Upload de fichiers
-- **AWS SDK** - Support S3 (optionnel)
+
+* **NestJS** - Framework Node.js
+* **TypeScript** - Typage statique
+* **TypeORM** - ORM pour PostgreSQL
+* **PostgreSQL** - Base de données
+* **JWT** - Authentification
+* **Passport** - Stratégies d'authentification
+* **class-validator** - Validation des DTO
+* **Multer** - Upload de fichiers
+* **AWS SDK** - Support S3 (optionnel)
 
 ## API Endpoints
 
 ### Authentification
-- `POST /api/auth/register` - Inscription
-- `POST /api/auth/login` - Connexion
+
+* `POST /api/auth/register` - Inscription
+* `POST /api/auth/login` - Connexion
 
 ### Utilisateurs
-- `GET /api/users` - Liste des utilisateurs (avec pagination)
-- `GET /api/users/:id` - Profil utilisateur
-- `PATCH /api/users/:id` - Mise à jour profil
-- `POST /api/users/:id/profile-picture` - Upload photo de profil
+
+* `GET /api/users` - Liste des utilisateurs (avec pagination)
+* `GET /api/users/:id` - Profil utilisateur
+* `PATCH /api/users/:id` - Mise à jour du profil
+* `POST /api/users/:id/profile-picture` - Upload de la photo de profil
 
 ### Images
-- `GET /api/images` - Liste des images (feed)
-- `GET /api/images/:id` - Détail d'une image
-- `POST /api/images` - Upload d'une image
-- `PATCH /api/images/:id` - Mise à jour image
-- `DELETE /api/images/:id` - Suppression image
+
+* `GET /api/images` - Liste des images (feed)
+* `GET /api/images/:id` - Détail d'une image
+* `POST /api/images` - Upload d'une image
+* `PATCH /api/images/:id` - Mise à jour d'une image
+* `DELETE /api/images/:id` - Suppression d'une image
 
 ## Développement
 
