@@ -185,7 +185,7 @@ describe('PostDetailPage', () => {
 	});
 
 	it('shows empty state when post not found', async () => {
-		mockPostsService.getPostById.mockResolvedValue(null);
+		mockPostsService.getPostById.mockResolvedValue(null as any);
 
 		render(<PostDetailPage />);
 

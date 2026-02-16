@@ -11,13 +11,13 @@ dotenv.config();
 
 export const APP_PORT = 8080;
 export const DATABASE_CONFIG = {
-  HOST: 'localhost',
-  PORT: 5433,
-  USERNAME: 'ugram',
-  PASSWORD: 'ugram_password',
-  DATABASE: 'ugram',
+  HOST: process.env.DB_HOST || 'localhost',
+  PORT: parseInt(process.env.DB_PORT || '5433', 10),
+  USERNAME: process.env.DB_USERNAME || 'ugram',
+  PASSWORD: process.env.DB_PASSWORD || 'ugram_password',
+  DATABASE: process.env.DB_DATABASE || 'ugram',
   SYNCHRONIZE: true,
-} as const;
+};
 
 export const JWT_CONFIG = {
   SECRET: 'ugram-jwt-secret-key-for-school-project',

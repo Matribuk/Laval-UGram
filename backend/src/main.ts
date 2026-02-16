@@ -9,7 +9,7 @@ import { AppModule } from './app.module';
 import { GlobalExceptionFilter, CustomValidationPipe } from './common';
 
 const DEFAULT_PORT = 8080;
-const DEFAULT_CORS_ORIGIN = 'http://localhost:5173';
+const DEFAULT_CORS_ORIGIN = 'http://localhost:3000';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);

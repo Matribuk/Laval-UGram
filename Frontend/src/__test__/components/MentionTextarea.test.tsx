@@ -34,7 +34,7 @@ describe('MentionTextarea', () => {
 			firstName: 'Bob',
 			lastName: 'Smith',
 			fullName: 'Bob Smith',
-			avatar: null,
+			avatar: undefined,
 		},
 	];
 
@@ -372,7 +372,7 @@ describe('MentionTextarea', () => {
 			firstName: `User`,
 			lastName: `${i}`,
 			fullName: `User ${i}`,
-			avatar: null,
+			avatar: undefined,
 		}));
 		mockUsersService.getAllUsers.mockResolvedValue(manyUsers);
 
