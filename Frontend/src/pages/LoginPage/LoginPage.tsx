@@ -8,7 +8,10 @@ import { useUser } from '../../components/UserContext';
 import AuthHeader from '../../components/AuthHeader/AuthHeader';
 import FormField from '../../components/FormField/FormField';
 import PasswordInput from '../../components/PasswordInput/PasswordInput';
+import { GoogleIcon } from '../../utils/SvgFile';
 import './LoginPage.css';
+
+const API_BASE_URL = 'http://localhost:8080';
 
 const LoginPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -24,6 +27,10 @@ const LoginPage: React.FC = () => {
 		}
 	};
 
+	const handleGoogleLogin = () => {
+		window.location.href = `${API_BASE_URL}/api/auth/google`;
+	};
+
 	return (
 		<div className="login-container">
 			<AuthHeader tagline="Share your moments" />
@@ -31,6 +38,15 @@ const LoginPage: React.FC = () => {
 			<div className="login-card">
 				<h2 className="login-title">Sign in</h2>
 				<p className="login-subtitle">Enter your email and password to access your account</p>
+
+				<button type="button" className="google-sign-in-button" onClick={handleGoogleLogin}>
+					<GoogleIcon />
+					<span>Continue with Google</span>
+				</button>
+
+				<div className="divider">
+					<span>or</span>
+				</div>
 
 				<Formik initialValues={{ email: '', password: '' }} validationSchema={loginSchema} onSubmit={handleSubmit}>
 					{({ errors, touched }) => (

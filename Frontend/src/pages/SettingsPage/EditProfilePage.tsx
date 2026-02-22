@@ -8,15 +8,17 @@ import { useUser } from '../../components/UserContext';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import Avatar from '../../components/Avatar/Avatar';
 import FormField from '../../components/FormField/FormField';
+import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import { BackArrowIcon, CameraIcon } from '../../utils/SvgFile';
 import { usersService } from '../../services/usersService';
 import './EditProfilePage.css';
 
 const EditProfilePage: React.FC = () => {
 	const navigate = useNavigate();
-	const { user: currentUser, updateUser } = useUser();
+	const { user: currentUser, updateUser, logout } = useUser();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const [avatarPreview, setAvatarPreview] = useState<string | undefined>(currentUser?.avatar);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
 
 	const handleGoBack = () => {
 		navigate('/profile');
@@ -76,6 +78,23 @@ const EditProfilePage: React.FC = () => {
 			console.error('Failed to update profile:', error);
 			toast.error('Failed to update profile');
 		}
+	};
+
+	const handleDeleteAccount = async () => {
+		if (!currentUser) {
+			return;
+		}
+
+		try {
+			await usersService.deleteUser(currentUser.id);
+			toast.success('Account deleted successfully');
+			logout();
+			navigate('/login');
+		} catch (error) {
+			console.error('Failed to delete account:', error);
+			toast.error('Failed to delete account');
+		}
+		setShowDeleteModal(false);
 	};
 
 	if (!currentUser) {
@@ -161,6 +180,33 @@ const EditProfilePage: React.FC = () => {
 					)}
 				</Formik>
 			</div>
+
+			<div className="edit-profile-card danger-zone">
+				<div className="card-header">
+					<h2 className="card-title danger-title">Danger Zone</h2>
+					<p className="card-subtitle">Irreversible actions</p>
+				</div>
+				<div className="danger-zone-content">
+					<div className="danger-zone-info">
+						<h3>Delete Account</h3>
+						<p>Once you delete your account, there is no going back. All your data will be permanently removed.</p>
+					</div>
+					<button type="button" className="btn btn-danger" onClick={() => setShowDeleteModal(true)}>
+						Delete Account
+					</button>
+				</div>
+			</div>
+
+			<ConfirmModal
+				isOpen={showDeleteModal}
+				title="Delete Account"
+				message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost."
+				confirmLabel="Delete Account"
+				cancelLabel="Cancel"
+				onConfirm={handleDeleteAccount}
+				onCancel={() => setShowDeleteModal(false)}
+				isDangerous
+			/>
 		</PageLayout>
 	);
 };

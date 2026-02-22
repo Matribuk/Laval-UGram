@@ -204,6 +204,100 @@
 
 ---
 
+---
+
+## ✅ Livrable 2 — Fonctionnalités supplémentaires
+
+---
+
+## 🖥️ Frontend
+
+### 🔐 Authentification OAuth
+
+* [x] Authentification via Google OAuth (backend prêt)
+  * [x] Bouton Google Sign-In → redirige vers `GET /auth/google`
+  * [x] Page callback OAuth (`/oauth/callback`)
+  * [x] Gestion du token JWT retourné
+
+### 👤 Gestion du compte
+
+* [x] Inscription usager (signup)
+* [x] Déconnexion usager (logout)
+* [x] Suppression du compte (backend prêt: `DELETE /users/:id`)
+  * [x] Bouton supprimer compte (page settings)
+  * [x] Modal de confirmation
+  * [x] Appel API suppression
+
+### 🔍 Recherche avancée
+
+* [x] Recherche d'usagers (par nom, username, email)
+* [ ] Recherche d'images par description (backend prêt: `GET /images/search?description=`)
+  * [ ] Champ de recherche sur page feed/explore
+  * [ ] Intégration API recherche description
+* [ ] Recherche d'images par hashtag (backend prêt: `GET /images/hashtag/:hashtag`)
+  * [ ] Clic sur hashtag → recherche
+  * [ ] Page résultats hashtag
+
+### 🛡️ Gestion des privilèges
+
+* [x] Vérification propriétaire pour édition image
+* [x] Vérification propriétaire pour suppression image
+* [x] Boutons edit/delete visibles uniquement pour propriétaire
+
+---
+
+## 🧠 Backend
+
+### 🔐 Authentification OAuth
+
+* [x] Configuration OAuth (1 fournisseur requis)
+  * [x] Google Strategy (passport-google-oauth20)
+  * [x] Endpoint `GET /auth/google`
+  * [x] Callback `GET /auth/google/callback`
+  * [x] Création/liaison compte via OAuth
+  * [x] Génération JWT après OAuth
+
+### 👤 Gestion du compte
+
+* [x] Endpoint inscription (`POST /auth/signup`)
+* [x] Endpoint connexion (`POST /auth/login`)
+* [x] Endpoint déconnexion (`POST /auth/logout`)
+* [x] Endpoint suppression compte (`DELETE /users/:id`)
+  * [x] Suppression cascade (images via onDelete: CASCADE)
+
+### 🔍 Recherche avancée
+
+* [x] Recherche usagers (`GET /users?search=`)
+* [x] Recherche images par description (`GET /images/search?description=`)
+* [x] Recherche images par hashtag (`GET /images/hashtag/:hashtag`)
+
+### 🛡️ Gestion des privilèges
+
+* [x] Guard propriétaire pour modification image
+* [x] Guard propriétaire pour suppression image
+* [x] Guard propriétaire pour modification profil
+
+---
+
+## ⚙️ DevOps / Déploiement
+
+### 🐳 Docker & Déploiement automatisé
+
+* [ ] Dockerfile frontend
+* [ ] Dockerfile backend
+* [ ] Docker Compose fonctionnel
+  * [ ] Frontend
+  * [ ] Backend
+  * [ ] Base de données
+* [ ] Build automatisé (npm scripts)
+* [ ] Lancement du projet en une commande
+* [ ] Pipeline CI/CD (GitHub Actions)
+  * [ ] Build automatique
+  * [ ] Tests automatiques
+  * [ ] Déploiement automatisé
+
+---
+
 ## 🔧 Points techniques résolus
 
 * [x] Connexion Frontend ↔ Backend

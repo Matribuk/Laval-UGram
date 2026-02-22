@@ -16,6 +16,7 @@ jest.mock('react-toastify', () => ({
 jest.mock('../../utils/SvgFile', () => ({
 	EyeIcon: () => <svg data-testid="eye-icon" />,
 	EyeOffIcon: () => <svg data-testid="eye-off-icon" />,
+	GoogleIcon: () => <svg data-testid="google-icon" />,
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

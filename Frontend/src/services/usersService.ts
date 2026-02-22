@@ -40,4 +40,8 @@ export const usersService = {
 		});
 		return transformBackendUser(response.data);
 	},
+
+	async deleteUser(id: string): Promise<void> {
+		await api.delete(`/users/${id}`);
+	},
 };
