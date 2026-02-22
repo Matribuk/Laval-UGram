@@ -9,9 +9,8 @@ import AuthHeader from '../../components/AuthHeader/AuthHeader';
 import FormField from '../../components/FormField/FormField';
 import PasswordInput from '../../components/PasswordInput/PasswordInput';
 import { GoogleIcon } from '../../utils/SvgFile';
+import { OAUTH_URLS } from '../../services/endpoints';
 import './SignupPage.css';
-
-const API_BASE_URL = 'http://localhost:8080';
 
 const SignupPage: React.FC = () => {
 	const navigate = useNavigate();
@@ -34,7 +33,7 @@ const SignupPage: React.FC = () => {
 	};
 
 	const handleGoogleSignup = () => {
-		window.location.href = `${API_BASE_URL}/api/auth/google`;
+		window.location.href = OAUTH_URLS.GOOGLE;
 	};
 
 	return (
