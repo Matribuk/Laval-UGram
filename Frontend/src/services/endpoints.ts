@@ -1,4 +1,4 @@
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080/';
 
 export const ENDPOINTS = {
 	AUTH: {
@@ -6,7 +6,6 @@ export const ENDPOINTS = {
 		REGISTER: '/auth/register',
 		LOGOUT: '/auth/logout',
 		GOOGLE: '/auth/google',
-		GOOGLE_CALLBACK: '/auth/google/callback',
 	},
 
 	USERS: {
@@ -27,5 +26,5 @@ export const ENDPOINTS = {
 } as const;
 
 export const OAUTH_URLS = {
-	GOOGLE: `${API_BASE_URL}/api${ENDPOINTS.AUTH.GOOGLE}`,
+	GOOGLE: `${API_BASE_URL}/auth/google`,
 };
