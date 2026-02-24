@@ -7,6 +7,7 @@ import { LoadingSpinner } from './components/common/LoadingSpinner/LoadingSpinne
 
 const LoginPage = lazy(() => import('./pages/LoginPage/LoginPage'));
 const SignupPage = lazy(() => import('./pages/SignupPage/SignupPage'));
+const OAuthCallbackPage = lazy(() => import('./pages/OAuthCallbackPage/OAuthCallbackPage'));
 const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
 const UsersPage = lazy(() => import('./pages/UsersPage/UsersPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage'));
@@ -49,6 +50,7 @@ function App(): React.JSX.Element {
 							</RestrictedRoute>
 						}
 					/>
+					<Route path="/oauth/callback" element={<OAuthCallbackPage />} />
 					<Route
 						path="/feed"
 						element={

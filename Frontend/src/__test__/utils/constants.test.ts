@@ -1,4 +1,5 @@
-import { buildImageUrl, API_BASE_URL } from '../../utils/constants';
+import { buildImageUrl } from '../../utils/constants';
+import { API_BASE_URL } from '../../services/endpoints';
 
 describe('constants', () => {
 	describe('buildImageUrl', () => {

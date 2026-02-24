@@ -2,6 +2,7 @@ import { User, LoginRequest, SignupRequest, AuthResponse, BackendUser } from '..
 import api from './api';
 import { AxiosError } from 'axios';
 import { transformBackendUser } from '../utils/transformers';
+import { ENDPOINTS } from './endpoints'; // <-- import de ton fichier endpoints
 
 interface BackendAuthResponse {
 	accessToken: string;
@@ -30,7 +31,7 @@ class AuthService {
 
 	async login(credentials: LoginRequest): Promise<AuthResponse> {
 		try {
-			const response = await api.post<BackendAuthResponse>('/auth/login', credentials);
+			const response = await api.post<BackendAuthResponse>(ENDPOINTS.AUTH.LOGIN, credentials);
 			const { accessToken, user: backendUser } = response.data;
 
 			const user = transformBackendUser(backendUser);
@@ -48,7 +49,7 @@ class AuthService {
 
 	async signup(userData: SignupRequest): Promise<AuthResponse> {
 		try {
-			const response = await api.post<BackendAuthResponse>('/auth/register', userData);
+			const response = await api.post<BackendAuthResponse>(ENDPOINTS.AUTH.REGISTER, userData);
 			const { accessToken, user: backendUser } = response.data;
 
 			const user = transformBackendUser(backendUser);
@@ -65,6 +66,13 @@ class AuthService {
 	}
 
 	async logout(): Promise<void> {
+		try {
+			await api.post(ENDPOINTS.AUTH.LOGOUT);
+		} catch (error) {
+			// eslint-disable-next-line no-console
+			console.debug('Logout API failed, but proceeding anyway', error);
+		}
+
 		localStorage.removeItem(this.TOKEN_KEY);
 		localStorage.removeItem(this.USER_KEY);
 	}

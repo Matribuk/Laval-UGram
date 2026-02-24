@@ -3,11 +3,13 @@ import {
   Post,
   Get,
   Req,
+  Res,
   Body,
   UseGuards,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { Response } from 'express';
 import {
   ApiTags,
   ApiOperation,
@@ -68,12 +70,17 @@ export class AuthController {
   @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: 'Google OAuth callback' })
   @ApiResponse({
-    status: 200,
-    description: 'Google login successful',
-    type: AuthResponseDto,
+    status: 302,
+    description: 'Redirects to frontend with token',
   })
-  async googleAuthCallback(@Req() req: { user: GoogleProfile }): Promise<AuthResponseDto> {
-    return this.authService.googleLogin(req.user);
+  async googleAuthCallback(
+    @Req() req: { user: GoogleProfile },
+    @Res() res: Response,
+  ): Promise<void> {
+    const authData = await this.authService.googleLogin(req.user);
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const userParam = encodeURIComponent(JSON.stringify(authData.user));
+    res.redirect(`${frontendUrl}/oauth/callback?token=${authData.accessToken}&user=${userParam}`);
   }
 
   @Post('logout')

@@ -8,6 +8,8 @@ import { useUser } from '../../components/UserContext';
 import AuthHeader from '../../components/AuthHeader/AuthHeader';
 import FormField from '../../components/FormField/FormField';
 import PasswordInput from '../../components/PasswordInput/PasswordInput';
+import { GoogleIcon } from '../../utils/SvgFile';
+import { OAUTH_URLS } from '../../services/endpoints';
 import './SignupPage.css';
 
 const SignupPage: React.FC = () => {
@@ -30,6 +32,10 @@ const SignupPage: React.FC = () => {
 		}
 	};
 
+	const handleGoogleSignup = () => {
+		window.location.href = OAUTH_URLS.GOOGLE;
+	};
+
 	return (
 		<div className="signup-container">
 			<AuthHeader tagline="Join the community" />
@@ -37,6 +43,15 @@ const SignupPage: React.FC = () => {
 			<div className="signup-card">
 				<h2 className="signup-title">Create an account</h2>
 				<p className="signup-subtitle">Enter your details to get started</p>
+
+				<button type="button" className="google-sign-in-button" onClick={handleGoogleSignup}>
+					<GoogleIcon />
+					<span>Continue with Google</span>
+				</button>
+
+				<div className="divider">
+					<span>or</span>
+				</div>
 
 				<Formik
 					initialValues={{
