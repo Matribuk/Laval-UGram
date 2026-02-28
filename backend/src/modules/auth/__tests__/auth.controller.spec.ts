@@ -159,30 +159,30 @@ describe('AuthController', () => {
       googleId: 'google-123456',
     };
 
-    it('should return auth response on successful Google login', async () => {
-      const expectedResponse = {
+    const mockRes = () => ({ redirect: jest.fn() } as any);
+
+    it('should redirect to frontend with token on successful Google login', async () => {
+      const authData = {
         accessToken: 'jwt-token',
-        user: {
-          id: 'user-id',
-          username: 'googleuser',
-          email: 'google@example.com',
-        },
+        user: { id: 'user-id', username: 'googleuser', email: 'google@example.com' },
       };
-      authService.googleLogin.mockResolvedValue(expectedResponse);
+      authService.googleLogin.mockResolvedValue(authData);
+      const res = mockRes();
 
-      const result = await controller.googleAuthCallback({ user: googleProfile });
+      await controller.googleAuthCallback({ user: googleProfile }, res);
 
-      expect(result).toEqual(expectedResponse);
       expect(authService.googleLogin).toHaveBeenCalledWith(googleProfile);
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining('/oauth/callback?token=jwt-token'),
+      );
     });
 
     it('should delegate Google login to AuthService', async () => {
-      authService.googleLogin.mockResolvedValue({
-        accessToken: 'token',
-        user: createUserFactory(),
-      });
+      const user = createUserFactory();
+      authService.googleLogin.mockResolvedValue({ accessToken: 'token', user });
+      const res = mockRes();
 
-      await controller.googleAuthCallback({ user: googleProfile });
+      await controller.googleAuthCallback({ user: googleProfile }, res);
 
       expect(authService.googleLogin).toHaveBeenCalledTimes(1);
       expect(authService.googleLogin).toHaveBeenCalledWith(googleProfile);
@@ -200,8 +200,9 @@ describe('AuthController', () => {
         accessToken: 'token',
         user: createUserFactory(),
       });
+      const res = mockRes();
 
-      await controller.googleAuthCallback({ user: profileWithoutPicture });
+      await controller.googleAuthCallback({ user: profileWithoutPicture }, res);
 
       expect(authService.googleLogin).toHaveBeenCalledWith(profileWithoutPicture);
     });

@@ -295,6 +295,67 @@
   * [ ] Build automatique
   * [ ] Tests automatiques
   * [ ] Déploiement automatisé
+## ⚙️ DevOps / Déploiement (Livrable 2)
+
+> **Rappel de remise** : Le lien de l'application (S3 ou CloudFront) doit être inclus dans le README de la branche `release`. Le site **ne doit pas être modifié après la date de remise**.
+
+---
+
+### 🧠 Backend — Préparation au déploiement (Elastic Beanstalk)
+
+* [ ] Ajouter un `Procfile` à la racine du backend
+  * Contenu : `web: npm run start:prod`
+* [ ] Ajouter un `.ebignore` pour exclure les fichiers inutiles (node_modules, src, tests)
+* [ ] Mettre à jour `defaults.ts` pour lire **toutes** les configs depuis `process.env`
+  * [ ] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+  * [ ] `JWT_SECRET`
+  * [ ] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+  * [ ] `GOOGLE_CALLBACK_URL` (pointer vers l'URL EB en prod)
+* [ ] Mettre à jour le `.env.exemple` avec toutes les variables nécessaires
+* [ ] Vérifier que `npm run build` compile sans erreurs (`dist/` généré)
+* [ ] Tester `npm run start:prod` localement après build
+* [ ] Mettre à jour la config CORS pour accepter l'URL S3/CloudFront en production
+  * Variable `CORS_ORIGIN` dans `main.ts` (déjà lu depuis `process.env`)
+* [ ] Mettre à jour **Google Cloud Console** avec le nouveau callback URL EB après déploiement
+
+---
+
+### 🖥️ Frontend — Déploiement S3
+
+* [ ] Créer un fichier `.env.production` avec `REACT_APP_API_URL=<URL Elastic Beanstalk>`
+* [ ] Builder l'application : `npm run build`
+* [ ] Uploader le dossier `build/` dans le bucket S3
+* [ ] Activer l'hébergement de site statique sur le bucket S3
+* [ ] Configurer la politique du bucket pour accès public en lecture
+* [ ] (Optionnel) Configurer CloudFront devant le bucket S3
+
+---
+
+### 🐳 Docker/CI — Infrastructure AWS (équipe DevOps)
+
+* [ ] Créer une instance **RDS PostgreSQL** sur AWS
+* [ ] Créer un environnement **Elastic Beanstalk** (Node.js platform)
+* [ ] Configurer les variables d'environnement dans la console EB :
+  * `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+  * `JWT_SECRET`
+  * `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+  * `CORS_ORIGIN` (URL S3/CloudFront du frontend)
+  * `PORT=8080`
+* [ ] Déployer le backend sur EB (zip du projet buildé ou via EB CLI)
+* [ ] Créer le bucket S3 pour le frontend avec hébergement statique activé
+* [ ] Pipeline CI/CD (GitHub Actions)
+  * [ ] Build + tests automatiques sur chaque push
+  * [ ] Déploiement automatique sur EB (backend)
+  * [ ] Déploiement automatique sur S3 (frontend)
+
+---
+
+### 📋 Finalisation de la remise
+
+* [ ] Créer la branche `release` à partir de `main`
+* [ ] Ajouter le lien de l'application dans le README de la branche `release`
+* [ ] Vérifier que l'application fonctionne sur l'URL de production **avant** la date limite
+* [ ] Ne plus modifier le site après la date de remise
 
 ---
 
