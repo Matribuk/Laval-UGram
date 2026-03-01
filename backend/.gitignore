@@ -7,8 +7,6 @@
 .env
 .env.local
 .env.*.local
-
-# Don't ignore example env file
 !.env.exemple
 
 # Logs

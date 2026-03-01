@@ -15,11 +15,7 @@
 .env.test.local
 .env.production.local
 .env
-.env.production
-
-# Don't ignore example env files
 !.env.exemple
-!.env.production.exemple
 
 npm-debug.log*
 yarn-debug.log*
