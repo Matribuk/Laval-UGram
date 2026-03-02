@@ -27,7 +27,7 @@ export const JWT_CONFIG = {
 export const GOOGLE_OAUTH_CONFIG = {
   CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
   CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
-  CALLBACK_URL: 'http://localhost:8080/api/auth/google/callback',
+  CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:8080/api/auth/google/callback',
 };
 
 export const STORAGE_CONFIG = {
