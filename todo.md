@@ -309,9 +309,9 @@
 * [ ] Mettre à jour `defaults.ts` pour lire **toutes** les configs depuis `process.env`
   * [ ] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
   * [ ] `JWT_SECRET`
-  * [ ] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
-  * [ ] `GOOGLE_CALLBACK_URL` (pointer vers l'URL EB en prod)
-* [ ] Mettre à jour le `.env.exemple` avec toutes les variables nécessaires
+  * [x] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+  * [x] `GOOGLE_CALLBACK_URL` (pointer vers l'URL EB en prod)
+* [ ] Mettre à jour le `.env.example` avec toutes les variables nécessaires
 * [ ] Vérifier que `npm run build` compile sans erreurs (`dist/` généré)
 * [ ] Tester `npm run start:prod` localement après build
 * [ ] Mettre à jour la config CORS pour accepter l'URL S3/CloudFront en production
