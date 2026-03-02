@@ -6,6 +6,7 @@ let mockParams: Record<string, string> = {};
 export const useNavigate = (): jest.Mock => mockNavigate;
 export const useLocation = (): { pathname: string } => ({ pathname: '/' });
 export const useParams = jest.fn(() => mockParams);
+export const useSearchParams = jest.fn(() => [new URLSearchParams(), jest.fn()]);
 export const setMockParams = (params: Record<string, string>): void => {
 	mockParams = params;
 };

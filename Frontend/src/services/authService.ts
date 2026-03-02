@@ -2,7 +2,7 @@ import { User, LoginRequest, SignupRequest, AuthResponse, BackendUser } from '..
 import api from './api';
 import { AxiosError } from 'axios';
 import { transformBackendUser } from '../utils/transformers';
-import { ENDPOINTS } from './endpoints'; // <-- import de ton fichier endpoints
+import { ENDPOINTS } from './endpoints';
 
 interface BackendAuthResponse {
 	accessToken: string;

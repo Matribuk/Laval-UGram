@@ -37,6 +37,13 @@ export const postsService = {
 		return response.data.data.map(transformBackendPost);
 	},
 
+	async searchByDescription(description: string): Promise<Post[]> {
+		const response = await api.get<PaginatedResponse<BackendPost>>(
+			`${ENDPOINTS.IMAGES.SEARCH}?description=${encodeURIComponent(description)}&limit=100`,
+		);
+		return response.data.data.map(transformBackendPost);
+	},
+
 	async createPost(data: CreatePostData): Promise<Post> {
 		const formData = new FormData();
 		formData.append('image', data.file);

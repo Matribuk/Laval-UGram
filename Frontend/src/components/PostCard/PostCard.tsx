@@ -47,9 +47,9 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 				{tags.length > 0 && (
 					<div className="post-tags">
 						{tags.map((tag) => (
-							<span key={tag} className="post-tag">
+							<Link key={tag} to={`/hashtag/${tag}`} className="post-tag">
 								#{tag}
-							</span>
+							</Link>
 						))}
 					</div>
 				)}

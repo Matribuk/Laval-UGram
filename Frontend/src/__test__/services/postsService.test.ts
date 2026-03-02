@@ -79,6 +79,19 @@ describe('postsService', () => {
 		});
 	});
 
+	describe('searchByDescription', () => {
+		it('returns posts matching description', async () => {
+			mockApi.get.mockResolvedValue({
+				data: { data: [mockBackendPost] },
+			});
+
+			const posts = await postsService.searchByDescription('test query');
+
+			expect(mockApi.get).toHaveBeenCalledWith('/images/search?description=test%20query&limit=100');
+			expect(posts).toHaveLength(1);
+		});
+	});
+
 	describe('createPost', () => {
 		it('creates post with file and data', async () => {
 			mockApi.post.mockResolvedValue({ data: mockBackendPost });

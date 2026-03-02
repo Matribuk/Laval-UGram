@@ -15,6 +15,7 @@ const EditProfilePage = lazy(() => import('./pages/SettingsPage/EditProfilePage'
 const CreatePostPage = lazy(() => import('./pages/CreatePostPage/CreatePostPage'));
 const PostDetailPage = lazy(() => import('./pages/PostDetailPage/PostDetailPage'));
 const EditPostPage = lazy(() => import('./pages/EditPostPage/EditPostPage'));
+const SearchPage = lazy(() => import('./pages/SearchPage/SearchPage'));
 
 function App(): React.JSX.Element {
 	return (
@@ -112,6 +113,22 @@ function App(): React.JSX.Element {
 						element={
 							<PrivateRoute>
 								<EditPostPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/search"
+						element={
+							<PrivateRoute>
+								<SearchPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/hashtag/:hashtag"
+						element={
+							<PrivateRoute>
+								<SearchPage />
 							</PrivateRoute>
 						}
 					/>
