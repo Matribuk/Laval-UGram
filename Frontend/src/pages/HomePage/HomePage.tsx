@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Post } from '../../types/api.types';
 import { useUser } from '../../components/UserContext';
@@ -11,8 +12,24 @@ import './HomePage.css';
 
 const HomePage: React.FC = () => {
 	const { user } = useUser();
+	const navigate = useNavigate();
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [searchQuery, setSearchQuery] = useState('');
+
+	const isHashtagSearch = searchQuery.trim().startsWith('#') && searchQuery.trim().length > 1;
+
+	const handleSearch = (e: React.FormEvent) => {
+		e.preventDefault();
+		const query = searchQuery.trim();
+		if (query) {
+			if (query.startsWith('#') && query.length > 1) {
+				navigate(`/hashtag/${encodeURIComponent(query.slice(1))}`);
+			} else {
+				navigate(`/search?q=${encodeURIComponent(query)}`);
+			}
+		}
+	};
 
 	const postsWithTimeAgo = useMemo(
 		() =>
@@ -51,7 +68,24 @@ const HomePage: React.FC = () => {
 
 	return (
 		<PageLayout activePage="feed" user={user}>
-			<h1 className="page-title">Feed</h1>
+			<div className="feed-header">
+				<h1 className="page-title">Feed</h1>
+				<form className="search-form" onSubmit={handleSearch}>
+					<div className="search-input-wrapper">
+						<input
+							type="text"
+							className={`search-input ${isHashtagSearch ? 'search-input-hashtag' : ''}`}
+							placeholder="Search posts or #hashtag..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+						/>
+						{isHashtagSearch && <span className="search-hashtag-badge">#</span>}
+					</div>
+					<button type="submit" className="search-button">
+						{isHashtagSearch ? 'Hashtag' : 'Search'}
+					</button>
+				</form>
+			</div>
 
 			<div className="feed-container">
 				{postsWithTimeAgo.length === 0 ? (

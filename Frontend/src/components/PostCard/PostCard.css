@@ -96,10 +96,16 @@
 
 .post-tag {
 	font-size: 0.8125rem;
-	color: var(--color-text-primary);
+	color: var(--color-primary);
 	background-color: var(--color-bg-primary);
 	padding: 4px 0.75rem;
 	border-radius: 1rem;
+	text-decoration: none;
+	transition: background-color 0.2s ease;
+}
+
+.post-tag:hover {
+	background-color: var(--color-border);
 }
 
 .post-author-link {

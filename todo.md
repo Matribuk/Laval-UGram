@@ -231,12 +231,12 @@
 ### 🔍 Recherche avancée
 
 * [x] Recherche d'usagers (par nom, username, email)
-* [ ] Recherche d'images par description (backend prêt: `GET /images/search?description=`)
-  * [ ] Champ de recherche sur page feed/explore
-  * [ ] Intégration API recherche description
-* [ ] Recherche d'images par hashtag (backend prêt: `GET /images/hashtag/:hashtag`)
-  * [ ] Clic sur hashtag → recherche
-  * [ ] Page résultats hashtag
+* [x] Recherche d'images par description (backend prêt: `GET /images/search?description=`)
+  * [x] Champ de recherche sur page feed/explore
+  * [x] Intégration API recherche description
+* [x] Recherche d'images par hashtag (backend prêt: `GET /images/hashtag/:hashtag`)
+  * [x] Clic sur hashtag → recherche
+  * [x] Page résultats hashtag
 
 ### 🛡️ Gestion des privilèges
 
