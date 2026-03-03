@@ -1,0 +1,51 @@
+# Dependencies (will be reinstalled on EB)
+node_modules/
+
+# Source code (we deploy compiled code from dist/)
+src/
+
+# Tests
+test/
+coverage/
+.nyc_output/
+
+# Git
+.git/
+.gitignore
+
+# Environment files
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Config files (not needed in production)
+.eslintrc.js
+.prettierrc
+tsconfig.json
+tsconfig.build.json
+jest.config.js
+nest-cli.json
+
+# Temp
+.temp/
+.tmp/
+
+# Uploads (images will be on S3)
+uploads/*
+
+# Docker
+docker-compose.yml
+Dockerfile
