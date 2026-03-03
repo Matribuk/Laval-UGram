@@ -19,7 +19,6 @@ if [ ! -d "build" ]; then
   exit 1
 fi
 
-# Copy all files from build to upload directory
 cp -r build/* "$UPLOAD_DIR/"
 
 echo "✅ Files ready for upload in $UPLOAD_DIR/"
