@@ -303,46 +303,66 @@
 
 ### 🧠 Backend — Préparation au déploiement (Elastic Beanstalk)
 
-* [ ] Ajouter un `Procfile` à la racine du backend
+* [x] Ajouter un `Procfile` à la racine du backend
   * Contenu : `web: npm run start:prod`
-* [ ] Ajouter un `.ebignore` pour exclure les fichiers inutiles (node_modules, src, tests)
-* [ ] Mettre à jour `defaults.ts` pour lire **toutes** les configs depuis `process.env`
-  * [ ] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
-  * [ ] `JWT_SECRET`
+* [x] Ajouter un `.ebignore` pour exclure les fichiers inutiles (node_modules, src, tests)
+* [x] Mettre à jour `defaults.ts` pour lire **toutes** les configs depuis `process.env`
+  * [x] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+  * [x] `JWT_SECRET`
   * [x] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
   * [x] `GOOGLE_CALLBACK_URL` (pointer vers l'URL EB en prod)
-* [ ] Mettre à jour le `.env.example` avec toutes les variables nécessaires
-* [ ] Vérifier que `npm run build` compile sans erreurs (`dist/` généré)
-* [ ] Tester `npm run start:prod` localement après build
-* [ ] Mettre à jour la config CORS pour accepter l'URL S3/CloudFront en production
+* [x] Mettre à jour le `.env.example` avec toutes les variables nécessaires
+* [x] Vérifier que `npm run build` compile sans erreurs (`dist/` généré)
+* [x] Tester `npm run start:prod` localement après build
+* [x] Mettre à jour la config CORS pour accepter l'URL S3/CloudFront en production
   * Variable `CORS_ORIGIN` dans `main.ts` (déjà lu depuis `process.env`)
-* [ ] Mettre à jour **Google Cloud Console** avec le nouveau callback URL EB après déploiement
+* [x] Mettre à jour **Google Cloud Console** avec le nouveau callback URL EB après déploiement
+* [x] Script de déploiement créé (`zip-backend-for-deploy.sh`)
 
 ---
 
 ### 🖥️ Frontend — Déploiement S3
 
-* [ ] Créer un fichier `.env.production` avec `REACT_APP_API_URL=<URL Elastic Beanstalk>`
+* [x] Créer un fichier `.env.production` avec `REACT_APP_API_URL=<URL Elastic Beanstalk>`
+  * URL backend: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com`
 * [ ] Builder l'application : `npm run build`
 * [ ] Uploader le dossier `build/` dans le bucket S3
-* [ ] Activer l'hébergement de site statique sur le bucket S3
-* [ ] Configurer la politique du bucket pour accès public en lecture
+* [x] Activer l'hébergement de site statique sur le bucket S3
+* [x] Configurer la politique du bucket pour accès public en lecture
 * [ ] (Optionnel) Configurer CloudFront devant le bucket S3
 
 ---
 
 ### 🐳 Docker/CI — Infrastructure AWS (équipe DevOps)
 
-* [ ] Créer une instance **RDS PostgreSQL** sur AWS
-* [ ] Créer un environnement **Elastic Beanstalk** (Node.js platform)
-* [ ] Configurer les variables d'environnement dans la console EB :
-  * `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
-  * `JWT_SECRET`
-  * `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
-  * `CORS_ORIGIN` (URL S3/CloudFront du frontend)
-  * `PORT=8080`
-* [ ] Déployer le backend sur EB (zip du projet buildé ou via EB CLI)
-* [ ] Créer le bucket S3 pour le frontend avec hébergement statique activé
+* [x] Créer une instance **RDS PostgreSQL** sur AWS
+  * [x] PostgreSQL 16.13, db.t4g.micro (Free Tier)
+  * [x] Endpoint: `ugram-db-prod.cs7s8q406w8d.us-east-1.rds.amazonaws.com`
+  * [x] Parameter group custom créé (`ugram-pg16-no-ssl` avec `force_ssl=0`)
+  * [x] Security Group configuré pour autoriser EB
+* [x] Créer un environnement **Elastic Beanstalk** (Node.js platform)
+  * [x] Environnement: `ugram-backend-prod`
+  * [x] URL: http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
+  * [x] Platform: Node.js 20 on Amazon Linux 2023
+  * [x] Instance: t3.micro
+* [x] Configurer les variables d'environnement dans la console EB :
+  * [x] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
+  * [x] `JWT_SECRET`
+  * [x] `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+  * [x] `CORS_ORIGIN` (URL S3/CloudFront du frontend)
+  * [x] `PORT=8080`
+  * [x] `NODE_ENV=production`
+  * [x] `STORAGE_TYPE=s3`, `AWS_REGION`, `AWS_BUCKET_NAME`
+* [x] Déployer le backend sur EB (zip du projet buildé ou via EB CLI)
+* [x] Créer le bucket S3 pour le frontend avec hébergement statique activé
+  * [x] Bucket: `ugram-frontend-prod-team12`
+  * [x] URL: http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+  * [x] Hébergement statique activé
+  * [x] Politique publique configurée
+* [x] Créer le bucket S3 pour les images
+  * [x] Bucket: `ugram-images-prod-team12`
+  * [x] CORS configuré
+  * [x] IAM role EC2 avec accès S3
 * [ ] Pipeline CI/CD (GitHub Actions)
   * [ ] Build + tests automatiques sur chaque push
   * [ ] Déploiement automatique sur EB (backend)
