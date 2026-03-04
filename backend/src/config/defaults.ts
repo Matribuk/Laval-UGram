@@ -17,6 +17,7 @@ export const DATABASE_CONFIG = {
   PASSWORD: process.env.DB_PASSWORD || 'ugram_password',
   DATABASE: process.env.DB_DATABASE || 'ugram',
   SYNCHRONIZE: true,
+  SSL: process.env.DB_SSL === 'true',
 };
 
 export const JWT_CONFIG = {
