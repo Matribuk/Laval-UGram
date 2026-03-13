@@ -32,20 +32,20 @@ export const GOOGLE_OAUTH_CONFIG = {
 };
 
 export const STORAGE_CONFIG = {
-  TYPE: 'local' as const,
+  TYPE: process.env.STORAGE_TYPE || 'local',
 
   LOCAL: {
-    UPLOAD_PATH: './uploads',
+    UPLOAD_PATH: process.env.UPLOAD_DIR || './uploads',
   },
 
   S3: {
-    REGION: 'us-east-1',
-    ACCESS_KEY_ID: '',
-    SECRET_ACCESS_KEY: '',
-    BUCKET: '',
+    REGION: process.env.AWS_REGION || 'us-east-1',
+    ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID || '',
+    SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY || '',
+    BUCKET: process.env.AWS_BUCKET_NAME || '',
   },
 
   MAX_FILE_SIZE: 5 * 1024 * 1024,
 
   ALLOWED_MIME_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-} as const;
+};
