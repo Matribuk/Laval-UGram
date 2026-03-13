@@ -20,13 +20,21 @@ export class S3StorageProvider implements IStorageProvider {
   async upload(file: Buffer, filename: string, mimeType: string): Promise<string> {
     const { S3Client, PutObjectCommand } = await import('@aws-sdk/client-s3');
 
-    const client = new S3Client({
+    const s3Config: any = {
       region: this.region,
-      credentials: {
-        accessKeyId: this.configService.get<string>('storage.s3.accessKeyId', ''),
-        secretAccessKey: this.configService.get<string>('storage.s3.secretAccessKey', ''),
-      },
-    });
+    };
+
+    const accessKeyId = this.configService.get<string>('storage.s3.accessKeyId', '');
+    const secretAccessKey = this.configService.get<string>('storage.s3.secretAccessKey', '');
+
+    if (accessKeyId && secretAccessKey) {
+      s3Config.credentials = {
+        accessKeyId,
+        secretAccessKey,
+      };
+    }
+
+    const client = new S3Client(s3Config);
 
     const command = new PutObjectCommand({
       Bucket: this.bucket,
@@ -42,13 +50,21 @@ export class S3StorageProvider implements IStorageProvider {
   async delete(filename: string): Promise<void> {
     const { S3Client, DeleteObjectCommand } = await import('@aws-sdk/client-s3');
 
-    const client = new S3Client({
+    const s3Config: any = {
       region: this.region,
-      credentials: {
-        accessKeyId: this.configService.get<string>('storage.s3.accessKeyId', ''),
-        secretAccessKey: this.configService.get<string>('storage.s3.secretAccessKey', ''),
-      },
-    });
+    };
+
+    const accessKeyId = this.configService.get<string>('storage.s3.accessKeyId', '');
+    const secretAccessKey = this.configService.get<string>('storage.s3.secretAccessKey', '');
+
+    if (accessKeyId && secretAccessKey) {
+      s3Config.credentials = {
+        accessKeyId,
+        secretAccessKey,
+      };
+    }
+
+    const client = new S3Client(s3Config);
 
     const command = new DeleteObjectCommand({
       Bucket: this.bucket,
