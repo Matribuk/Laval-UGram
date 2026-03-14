@@ -20,6 +20,7 @@ if (process.env.REACT_APP_SENTRY_DSN) {
 		environment: process.env.NODE_ENV || 'development',
 		beforeSend(event) {
 			if (process.env.NODE_ENV === 'development') {
+				// eslint-disable-next-line no-console
 				console.log('Sentry event:', event);
 			}
 			return event;
