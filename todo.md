@@ -178,7 +178,7 @@
   * [x] Instructions de lancement
   * [x] Variables d'environnement
   * [x] Docker / Docker Compose
-* [x] README-AWS.md avec documentation complète déploiement
+* [x] DEPLOYMENT.md avec documentation complète déploiement
   * [x] Services AWS utilisés (RDS, EB, S3)
   * [x] IDs et endpoints exacts
   * [x] Variables d'environnement avec valeurs
@@ -385,10 +385,13 @@
   * [x] `/var/log/nginx/access.log` (logs nginx access)
   * [x] `/var/log/nginx/error.log` (logs nginx errors)
   * [x] `/var/log/eb-engine.log` (logs déploiement EB)
-* [ ] **Configuration explicite CloudWatch Logs (3 pts grille)** ⚠️
-  * [ ] Log group configuré dans EB
-  * [ ] Retention policy définie
-  * [ ] Documentation dans README-AWS.md
+* [x] **Configuration explicite CloudWatch Logs (3 pts grille)** ✅
+  * [x] Health reporting: Enhanced
+  * [x] Health event streaming activé
+  * [x] Instance log streaming activé
+  * [x] Retention: 7 jours
+  * [x] Lifecycle: Delete on terminate
+  * [x] Documentation complète dans DEPLOYMENT.md
 
 #### Logging Client (Sentry) - FRONTEND
 * [ ] **Installation Sentry dans frontend (3 pts grille)** ⚠️
@@ -437,7 +440,7 @@
 
 ## 📊 Résumé Grille de Correction - Livrable 2
 
-### ✅ Points Acquis (estimé: 83-86/100)
+### ✅ Points Acquis (estimé: 86-89/100)
 
 **Fonctionnalités (28-33/33):**
 - ✅ OAuth Google (5 pts)
@@ -449,12 +452,12 @@
 - ✅ Rechercher images par hashtag (5 pts)
 - ❓ Fonctionnalités L1 valides (4 pts) - À tester
 
-**Déploiement (11/22):**
+**Déploiement (14/22):**
 - ✅ README.md (1 pt)
 - ✅ Fichiers statiques S3 (5 pts)
 - ✅ Serveur Elastic Beanstalk (5 pts)
-- ❌ Logging serveur CloudWatch explicite (0/3 pts)
-- ❌ Logging client Sentry (0/3 pts)
+- ✅ **Logging serveur CloudWatch (3 pts)** ← FAIT!
+- ❌ Logging client Sentry (0/3 pts) - Frontend
 - ❌ Intégration continue (0/3 pts)
 - ❌ Déploiement continu (0/3 pts)
 
@@ -470,23 +473,19 @@
 
 ---
 
-### ⚠️ Points Manquants (14-17 pts)
+### ⚠️ Points Manquants (11-14 pts)
 
 **Backend/DevOps:**
-1. **CloudWatch logging explicite (3 pts)**
-   - EB log automatiquement mais config pourrait être plus explicite
-   - Ajouter documentation CloudWatch dans README-AWS.md
-
-2. **CI/CD GitHub Actions (6 pts total)**
+1. **CI/CD GitHub Actions (6 pts total)**
    - Intégration continue (build + tests) (3 pts)
    - Déploiement continu (EB + S3) (3 pts)
 
 **Frontend:**
-3. **Sentry logging client (3 pts)**
+2. **Sentry logging client (3 pts)**
    - Installation @sentry/react
    - Configuration error tracking
 
-4. **Points à valider manuellement (2-5 pts):**
+3. **Points à valider manuellement (2-5 pts):**
    - Validation téléphone frontend
    - Responsive design complet
    - Fonctionnalités L1 encore valides
