@@ -50,7 +50,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
 
           if [ "${{ inputs.build-result }}" == "success" ] && \
-             [ "${{ inputs.unit-tests-result }}" == "success" ] then
+             [ "${{ inputs.unit-tests-result }}" == "success" ]; then
             echo "### 🎉 All checks passed!" >> $GITHUB_STEP_SUMMARY
           else
             echo "### ⚠️ Some checks failed" >> $GITHUB_STEP_SUMMARY
