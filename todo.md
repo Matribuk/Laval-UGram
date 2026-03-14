@@ -172,25 +172,31 @@
 
 * [x] Dépôt GitHub initialisé
 * [x] Commits clairs et réguliers
-* [ ] README.md complet
-  * [ ] Description du projet
-  * [ ] Instructions d'installation
-  * [ ] Instructions de lancement
-  * [ ] Variables d'environnement
-  * [ ] Docker / Docker Compose
+* [x] README.md complet
+  * [x] Description du projet
+  * [x] Instructions d'installation
+  * [x] Instructions de lancement
+  * [x] Variables d'environnement
+  * [x] Docker / Docker Compose
+* [x] DEPLOYMENT.md avec documentation complète déploiement
+  * [x] Services AWS utilisés (RDS, EB, S3)
+  * [x] IDs et endpoints exacts
+  * [x] Variables d'environnement avec valeurs
+  * [x] Architecture réseau et security groups
+  * [x] Troubleshooting détaillé
 
 ---
 
 ### 🐳 Docker & Déploiement
 
-* [ ] Dockerfile frontend
-* [ ] Dockerfile backend
-* [ ] Docker Compose fonctionnel
-  * [ ] Frontend
-  * [ ] Backend
-  * [ ] Base de données
-* [ ] Build automatisé (npm scripts)
-* [ ] Lancement du projet en une commande
+* [x] Dockerfile frontend
+* [x] Dockerfile backend
+* [x] Docker Compose fonctionnel
+  * [x] Frontend
+  * [x] Backend
+  * [x] Base de données
+* [x] Build automatisé (npm scripts)
+* [x] Lancement du projet en une commande
 
 ---
 
@@ -325,15 +331,15 @@
 
 * [x] Créer un fichier `.env.production` avec `REACT_APP_API_URL=<URL Elastic Beanstalk>`
   * URL backend: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com`
-* [ ] Builder l'application : `npm run build`
-* [ ] Uploader le dossier `build/` dans le bucket S3
+* [x] Builder l'application : `npm run build`
+* [x] Uploader le dossier `build/` dans le bucket S3
 * [x] Activer l'hébergement de site statique sur le bucket S3
 * [x] Configurer la politique du bucket pour accès public en lecture
 * [ ] (Optionnel) Configurer CloudFront devant le bucket S3
 
 ---
 
-### 🐳 Docker/CI — Infrastructure AWS (équipe DevOps)
+### 🐳 Infrastructure AWS (équipe DevOps)
 
 * [x] Créer une instance **RDS PostgreSQL** sur AWS
   * [x] PostgreSQL 16.13, db.t4g.micro (Free Tier)
@@ -345,6 +351,7 @@
   * [x] URL: http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
   * [x] Platform: Node.js 20 on Amazon Linux 2023
   * [x] Instance: t3.micro
+  * [x] IAM role: `aws-elasticbeanstalk-ec2-role` avec `AmazonS3FullAccess`
 * [x] Configurer les variables d'environnement dans la console EB :
   * [x] `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, `DB_DATABASE`
   * [x] `JWT_SECRET`
@@ -353,7 +360,10 @@
   * [x] `PORT=8080`
   * [x] `NODE_ENV=production`
   * [x] `STORAGE_TYPE=s3`, `AWS_REGION`, `AWS_BUCKET_NAME`
-* [x] Déployer le backend sur EB (zip du projet buildé ou via EB CLI)
+* [x] Déployer le backend sur EB (zip du projet buildé)
+  * [x] Script de déploiement: `zip-backend-for-deploy.sh`
+  * [x] Fix nginx upload limit (10MB) via `.platform/nginx/conf.d/`
+  * [x] Fix S3 credentials (utilise EC2 instance profile)
 * [x] Créer le bucket S3 pour le frontend avec hébergement statique activé
   * [x] Bucket: `ugram-frontend-prod-team12`
   * [x] URL: http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
@@ -363,10 +373,53 @@
   * [x] Bucket: `ugram-images-prod-team12`
   * [x] CORS configuré
   * [x] IAM role EC2 avec accès S3
-* [ ] Pipeline CI/CD (GitHub Actions)
-  * [ ] Build + tests automatiques sur chaque push
-  * [ ] Déploiement automatique sur EB (backend)
-  * [ ] Déploiement automatique sur S3 (frontend)
+  * [x] Upload d'images fonctionnel
+
+---
+
+### 📊 Logging & Monitoring
+
+#### Logging Serveur (CloudWatch)
+* [x] Logs automatiques Elastic Beanstalk → CloudWatch
+  * [x] `/var/log/web.stdout.log` (logs applicatifs)
+  * [x] `/var/log/nginx/access.log` (logs nginx access)
+  * [x] `/var/log/nginx/error.log` (logs nginx errors)
+  * [x] `/var/log/eb-engine.log` (logs déploiement EB)
+* [x] **Configuration explicite CloudWatch Logs (3 pts grille)** ✅
+  * [x] Health reporting: Enhanced
+  * [x] Health event streaming activé
+  * [x] Instance log streaming activé
+  * [x] Retention: 7 jours
+  * [x] Lifecycle: Delete on terminate
+  * [x] Documentation complète dans DEPLOYMENT.md
+
+#### Logging Client (Sentry) - FRONTEND
+* [ ] **Installation Sentry dans frontend (3 pts grille)** ⚠️
+  * [ ] Package `@sentry/react` installé
+  * [ ] Sentry.init() dans index.tsx
+  * [ ] SENTRY_DSN configuré
+  * [ ] Error boundary Sentry
+  * [ ] Capture erreurs API
+  * [ ] Documentation dans README
+
+---
+
+### 🔄 CI/CD (Intégration & Déploiement Continu)
+
+* [ ] **Intégration Continue - GitHub Actions (3 pts grille)** ⚠️
+  * [ ] Workflow build automatique sur push/PR
+  * [ ] Tests automatiques backend (`npm test`)
+  * [ ] Tests automatiques frontend (`npm test`)
+  * [ ] Linting automatique (ESLint)
+  * [ ] Build validation (frontend & backend)
+  * [ ] Fichier `.github/workflows/ci.yml`
+
+* [ ] **Déploiement Continu - GitHub Actions (3 pts grille)** ⚠️
+  * [ ] Déploiement automatique backend vers EB sur push `main`
+  * [ ] Déploiement automatique frontend vers S3 sur push `main`
+  * [ ] Utilisation secrets GitHub pour credentials AWS
+  * [ ] Fichier `.github/workflows/deploy.yml`
+  * [ ] Documentation du processus CD
 
 ---
 
@@ -374,8 +427,68 @@
 
 * [ ] Créer la branche `release` à partir de `main`
 * [ ] Ajouter le lien de l'application dans le README de la branche `release`
-* [ ] Vérifier que l'application fonctionne sur l'URL de production **avant** la date limite
+* [x] Vérifier que l'application fonctionne sur l'URL de production
+  * [x] Upload images fonctionne (S3)
+  * [x] Authentification Google OAuth fonctionne
+  * [x] Recherche par description fonctionne
+  * [x] Recherche par hashtag fonctionne
+  * [x] CRUD posts fonctionne
+  * [x] CRUD profil fonctionne
 * [ ] Ne plus modifier le site après la date de remise
+
+---
+
+## 📊 Résumé Grille de Correction - Livrable 2
+
+### ✅ Points Acquis (estimé: 86-89/100)
+
+**Fonctionnalités (28-33/33):**
+- ✅ OAuth Google (5 pts)
+- ✅ Enregistrement (3 pts)
+- ✅ Déconnexion (2 pts)
+- ✅ Supprimer compte (2 pts)
+- ✅ Rechercher usager (3 pts)
+- ✅ Rechercher images par description (5 pts)
+- ✅ Rechercher images par hashtag (5 pts)
+- ❓ Fonctionnalités L1 valides (4 pts) - À tester
+
+**Déploiement (14/22):**
+- ✅ README.md (1 pt)
+- ✅ Fichiers statiques S3 (5 pts)
+- ✅ Serveur Elastic Beanstalk (5 pts)
+- ✅ **Logging serveur CloudWatch (3 pts)** ← FAIT!
+- ❌ Logging client Sentry (0/3 pts) - Frontend
+- ❌ Intégration continue (0/3 pts)
+- ❌ Déploiement continu (0/3 pts)
+
+**Architecture (estimé: 28-32/32):**
+- ✅ Backend complet (validation, exceptions, RESTful, config env)
+- ✅ Frontend complet (TypeScript, composants, responsive)
+- ✅ Architecture globale claire
+- ✅ Code propre et DRY
+
+**Utilisabilité (estimé: 2-4/4):**
+- ✅ Messages d'erreur clairs
+- ❓ Validation formulaires à vérifier
+
+---
+
+### ⚠️ Points Manquants (11-14 pts)
+
+**Backend/DevOps:**
+1. **CI/CD GitHub Actions (6 pts total)**
+   - Intégration continue (build + tests) (3 pts)
+   - Déploiement continu (EB + S3) (3 pts)
+
+**Frontend:**
+2. **Sentry logging client (3 pts)**
+   - Installation @sentry/react
+   - Configuration error tracking
+
+3. **Points à valider manuellement (2-5 pts):**
+   - Validation téléphone frontend
+   - Responsive design complet
+   - Fonctionnalités L1 encore valides
 
 ---
 

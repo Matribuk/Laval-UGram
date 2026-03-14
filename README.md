@@ -9,6 +9,10 @@ Le projet est organisé en monorepo avec deux parties principales :
 * **Frontend** : Application React en TypeScript
 * **Backend** : API REST NestJS avec base de données PostgreSQL
 
+## Déploiement
+
+L'application est déployée sur AWS. Pour les détails complets de l'infrastructure (RDS, Elastic Beanstalk, S3, CloudWatch), consultez **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
+
 ## Prérequis
 
 * Node.js >= 20.x
