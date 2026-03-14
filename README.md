@@ -9,9 +9,49 @@ Le projet est organisé en monorepo avec deux parties principales :
 * **Frontend** : Application React en TypeScript
 * **Backend** : API REST NestJS avec base de données PostgreSQL
 
-## Déploiement
+## 🚀 Application en production
 
-L'application est déployée sur AWS. Pour les détails complets de l'infrastructure (RDS, Elastic Beanstalk, S3, CloudWatch), consultez **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
+**URL de l'application**: http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+
+L'application est déployée sur AWS avec l'architecture suivante:
+- **Frontend**: S3 Static Website Hosting
+- **Backend**: Elastic Beanstalk (Node.js)
+- **Base de données**: RDS PostgreSQL
+- **Stockage images**: S3
+
+Pour les détails complets de l'infrastructure (RDS, Elastic Beanstalk, S3, CloudWatch, variables d'environnement), consultez **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)**.
+
+## 📊 Logging & Monitoring
+
+L'application utilise plusieurs systèmes de logging et monitoring pour assurer la fiabilité et faciliter le débogage:
+
+### Logging Serveur (CloudWatch)
+- **Environment Health Logs** → `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log`
+- Rétention: 7 jours (1 week)
+- Log streaming: Activé
+- Instance log streaming vers CloudWatch pour monitoring de la santé de l'application
+
+### Logging Client (Sentry)
+
+L'application frontend utilise **Sentry** pour le suivi des erreurs côté client. Toutes les erreurs sont automatiquement capturées et envoyées à Sentry avec leur contexte d'exécution.
+
+**Erreurs capturées:**
+- ✅ Erreurs React (via ErrorBoundary)
+- ✅ Erreurs globales (window.onerror)
+- ✅ Erreurs API avec contexte (URL, méthode, status HTTP)
+- ✅ console.error
+- ✅ Promises rejetées
+
+**Dashboard Sentry:**
+
+![Sentry Dashboard](./docs/assets/sentry.png)
+
+Le dashboard Sentry permet de:
+- Voir les erreurs en temps réel
+- Analyser les stack traces
+- Filtrer par environnement (production/development)
+- Voir les replays de session pour les erreurs
+- Suivre la performance de l'application
 
 ## Prérequis
 
@@ -204,6 +244,7 @@ ugram-h2026-team-12/
 * **Yup** - Validation de schémas
 * **Axios** - Client HTTP
 * **React Toastify** - Notifications
+* **Sentry** - Error tracking et monitoring
 * **CSS** - Styling (sans framework)
 
 ### Backend
