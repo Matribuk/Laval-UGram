@@ -9,7 +9,7 @@ Le projet est organisé en monorepo avec deux parties principales :
 * **Frontend** : Application React en TypeScript
 * **Backend** : API REST NestJS avec base de données PostgreSQL
 
-## 🚀 Application en production
+## Application en production
 
 **URL de l'application**: http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
 
@@ -21,7 +21,7 @@ L'application est déployée sur AWS avec l'architecture suivante:
 
 Pour les détails complets de l'infrastructure (RDS, Elastic Beanstalk, S3, CloudWatch, variables d'environnement), consultez **[docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md)**.
 
-## 📊 Logging & Monitoring
+## Logging & Monitoring
 
 L'application utilise plusieurs systèmes de logging et monitoring pour assurer la fiabilité et faciliter le débogage:
 
@@ -53,11 +53,11 @@ Le dashboard CloudWatch permet de:
 L'application frontend utilise **Sentry** pour le suivi des erreurs côté client. Toutes les erreurs sont automatiquement capturées et envoyées à Sentry avec leur contexte d'exécution.
 
 **Erreurs capturées:**
-- ✅ Erreurs React (via ErrorBoundary)
-- ✅ Erreurs globales (window.onerror)
-- ✅ Erreurs API avec contexte (URL, méthode, status HTTP)
-- ✅ console.error
-- ✅ Promises rejetées
+- Erreurs React (via ErrorBoundary)
+- Erreurs globales (window.onerror)
+- Erreurs API avec contexte (URL, méthode, status HTTP)
+- console.error
+- Promises rejetées
 
 **Dashboard Sentry:**
 
@@ -69,6 +69,48 @@ Le dashboard Sentry permet de:
 - Filtrer par environnement (production/development)
 - Voir les replays de session pour les erreurs
 - Suivre la performance de l'application
+
+## CI/CD - Déploiement Continu
+
+L'application utilise **GitHub Actions** pour l'intégration et le déploiement continu.
+
+### Intégration Continue (CI)
+
+**Déclenché sur:** Push sur `main` et toutes les Pull Requests
+
+**Pipeline CI:**
+1. **Build** - Compile Frontend + Backend
+2. **Unit Tests** - Exécute les tests unitaires
+3. **Summary** - Génère un résumé du pipeline
+
+Les PRs ne peuvent pas être mergées si le CI échoue.
+
+### Déploiement Continu (CD)
+
+**Déclenché sur:** Push sur `main` uniquement
+
+**Pipeline CD:**
+1. **Deploy Frontend** → S3 Static Website (~1-2 min)
+2. **Deploy Backend** → Elastic Beanstalk (~5-10 min)
+3. **Deployment Summary** → Résumé avec URLs de production
+
+**Processus:**
+```bash
+# 1. Développer sur une branche feature
+git checkout -b feature/ma-fonctionnalite
+git commit -m "feat: nouvelle fonctionnalité"
+git push origin feature/ma-fonctionnalite
+
+# 2. Créer une Pull Request
+# → Le CI s'exécute automatiquement
+
+# 3. Merger dans main après approbation
+# → Le CD déploie automatiquement en production
+```
+
+**Rollback:** En cas de problème, revert le commit et push sur `main` - le CD redéploie automatiquement la version précédente.
+
+**Documentation complète:** Voir [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md#cicd---déploiement-continu) pour les détails (configuration, secrets GitHub, monitoring, etc.)
 
 ## Prérequis
 
@@ -242,6 +284,12 @@ ugram-h2026-team-12/
 * Feed global des images triées par date
 * Grille d'images par utilisateur
 * Page de détail d'une image
+
+### Fonctions de recherches
+
+* L'usager peut rechercher un autre usager via la page users.
+* L'usager peut rechercher des images contenant un mot précis dans leur description.
+* L'usager peut rechercher des images contenant un mot clé (hashtag) précis (en utilisant '#' dans sa recherche).
 
 ### Validation & UX
 

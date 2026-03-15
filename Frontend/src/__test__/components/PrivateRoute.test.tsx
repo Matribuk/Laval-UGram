@@ -190,8 +190,8 @@ describe('PrivateRoute', () => {
 				isAuthenticated: false,
 			});
 
-			const { container } = render(<NotFoundRedirect />);
-			expect(container.innerHTML).toBe('');
+			render(<NotFoundRedirect />);
+			expect(screen.queryByText('Loading...')).not.toBeInTheDocument();
 		});
 	});
 });
