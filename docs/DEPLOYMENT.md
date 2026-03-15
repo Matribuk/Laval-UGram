@@ -560,9 +560,20 @@ Les logs suivants sont automatiquement streamés vers CloudWatch:
 
 | Log Group | Description |
 |-----------|-------------|
-| `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log` | Santé de l'environnement EB, logs applicatifs et événements système |
+| `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log` | Santé de l'environnement EB et événements système |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/web.stdout.log` | **Logs applicatifs NestJS** (stdout/stderr de l'application) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/access.log` | **Logs d'accès nginx** (requêtes HTTP) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/error.log` | **Logs d'erreur nginx** |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/eb-engine.log` | Logs de déploiement Elastic Beanstalk |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/eb-hooks.log` | Logs des hooks de déploiement |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/httpd/access_log` | Logs Apache (non utilisé, on utilise nginx) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/httpd/error_log` | Logs Apache errors (non utilisé) |
 
-**Note:** Elastic Beanstalk avec "Instance log streaming" activé consolide tous les logs de l'environnement (application, nginx, système) dans le log group `environment-health.log`. Les log streams à l'intérieur de ce groupe contiennent les différents types de logs.
+**Configuration:** Tous les log groups ont une rétention de **7 jours** et sont configurés pour être supprimés automatiquement lors de la terminaison de l'environnement.
+
+**Screenshot CloudWatch Log Groups:**
+
+![CloudWatch Log Groups](./assets/cloudwatch.png)
 
 ### Logging Client (Sentry)
 

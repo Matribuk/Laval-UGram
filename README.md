@@ -26,10 +26,27 @@ Pour les détails complets de l'infrastructure (RDS, Elastic Beanstalk, S3, Clou
 L'application utilise plusieurs systèmes de logging et monitoring pour assurer la fiabilité et faciliter le débogage:
 
 ### Logging Serveur (CloudWatch)
-- **Environment Health Logs** → `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log`
-- Rétention: 7 jours (1 week)
-- Log streaming: Activé
-- Instance log streaming vers CloudWatch pour monitoring de la santé de l'application
+
+Elastic Beanstalk stream automatiquement tous les logs vers CloudWatch avec une rétention de 7 jours:
+
+- **Logs applicatifs** → `/var/log/web.stdout.log` (NestJS stdout/stderr)
+- **Logs nginx access** → `/var/log/nginx/access.log` (requêtes HTTP)
+- **Logs nginx error** → `/var/log/nginx/error.log` (erreurs serveur)
+- **Logs déploiement** → `/var/log/eb-engine.log` (déploiements EB)
+- **Health monitoring** → `/environment-health.log` (santé de l'environnement)
+
+Configuration: Instance log streaming activé, rétention 7 jours, logs supprimés à la terminaison de l'environnement.
+
+**CloudWatch Log Groups:**
+
+![CloudWatch Log Groups](./docs/assets/cloudwatch.png)
+
+Le dashboard CloudWatch permet de:
+- Voir tous les log groups de l'environnement Elastic Beanstalk
+- Consulter les logs en temps réel avec log streaming
+- Rechercher dans les logs avec CloudWatch Logs Insights
+- Configurer des alertes basées sur les logs
+- Analyser les patterns d'erreurs et de requêtes
 
 ### Logging Client (Sentry)
 
