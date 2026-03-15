@@ -7,7 +7,9 @@
 3. [URLs de production](#urls-de-production)
 4. [Configuration détaillée](#configuration-détaillée)
 5. [Configuration SSL/TLS](#configuration-ssltls)
-6. [Logging & Monitoring (CloudWatch)](#logging--monitoring-cloudwatch)
+6. [Logging & Monitoring](#logging--monitoring-cloudwatch)
+   - [CloudWatch Logs (serveur)](#configuration-cloudwatch-logs)
+   - [Sentry (client)](#logging-client-sentry)
 7. [Résumé des coûts AWS](#résumé-des-coûts-aws-estimation)
 
 ---
@@ -558,11 +560,84 @@ Les logs suivants sont automatiquement streamés vers CloudWatch:
 
 | Log Group | Description |
 |-----------|-------------|
-| `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log` | Santé de l'environnement EB |
-| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/web.stdout.log` | Logs applicatifs NestJS (stdout) |
-| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/access.log` | Logs d'accès nginx (requêtes HTTP) |
-| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/error.log` | Logs d'erreur nginx |
-| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/eb-engine.log` | Logs de déploiement EB |
+| `/aws/elasticbeanstalk/ugram-backend-prod/environment-health.log` | Santé de l'environnement EB et événements système |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/web.stdout.log` | **Logs applicatifs NestJS** (stdout/stderr de l'application) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/access.log` | **Logs d'accès nginx** (requêtes HTTP) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/nginx/error.log` | **Logs d'erreur nginx** |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/eb-engine.log` | Logs de déploiement Elastic Beanstalk |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/eb-hooks.log` | Logs des hooks de déploiement |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/httpd/access_log` | Logs Apache (non utilisé, on utilise nginx) |
+| `/aws/elasticbeanstalk/ugram-backend-prod/var/log/httpd/error_log` | Logs Apache errors (non utilisé) |
+
+**Configuration:** Tous les log groups ont une rétention de **7 jours** et sont configurés pour être supprimés automatiquement lors de la terminaison de l'environnement.
+
+**Screenshot CloudWatch Log Groups:**
+
+![CloudWatch Log Groups](./assets/cloudwatch.png)
+
+### Logging Client (Sentry)
+
+**Sentry** est configuré dans le frontend pour capturer automatiquement toutes les erreurs côté client.
+
+**Configuration:**
+- **DSN:** `https://your-sentry-id@o4510432516177920.ingest.de.sentry.io/4511043340468304`
+- **Environnement:** `production` ou `development` selon `NODE_ENV`
+- **Sample Rate:** 100% des erreurs capturées
+- **Session Replay:** 10% normal, 100% sur erreur
+
+**Erreurs capturées automatiquement:**
+- ✅ Erreurs React (via `ErrorBoundary`)
+- ✅ Erreurs globales JavaScript (`window.onerror`)
+- ✅ Erreurs API avec contexte (URL, méthode HTTP, status)
+- ✅ `console.error`
+- ✅ Promises rejetées non gérées
+
+**Intégrations activées:**
+- `browserTracingIntegration()` - Performance monitoring
+- `replayIntegration()` - Session replay pour debugging
+- `captureConsoleIntegration()` - Capture console.error
+
+**Code d'initialisation** (`Frontend/src/index.tsx`):
+```typescript
+if (process.env.REACT_APP_SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.REACT_APP_SENTRY_DSN,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration(),
+      Sentry.captureConsoleIntegration({ levels: ['error'] }),
+    ],
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    environment: process.env.NODE_ENV || 'development',
+    attachStacktrace: true,
+  });
+}
+```
+
+**Interception automatique des erreurs API** (`Frontend/src/services/api.ts`):
+```typescript
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    Sentry.captureException(error, {
+      tags: {
+        type: 'api_error',
+        status: error.response?.status,
+      },
+      contexts: {
+        api: {
+          url: error.config?.url,
+          method: error.config?.method,
+          baseURL: error.config?.baseURL,
+        },
+      },
+    });
+    // ... reste du code
+  },
+);
+```
 
 ### Coûts CloudWatch Logs
 

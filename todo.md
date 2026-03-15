@@ -394,13 +394,13 @@
   * [x] Documentation complète dans DEPLOYMENT.md
 
 #### Logging Client (Sentry) - FRONTEND
-* [ ] **Installation Sentry dans frontend (3 pts grille)** ⚠️
-  * [ ] Package `@sentry/react` installé
-  * [ ] Sentry.init() dans index.tsx
-  * [ ] SENTRY_DSN configuré
-  * [ ] Error boundary Sentry
-  * [ ] Capture erreurs API
-  * [ ] Documentation dans README
+* [x] **Installation Sentry dans frontend (3 pts grille)** ✅
+  * [x] Package `@sentry/react` installé
+  * [x] Sentry.init() dans index.tsx
+  * [x] SENTRY_DSN configuré (.env + .env.example)
+  * [x] Error boundary Sentry
+  * [x] Performance monitoring (browserTracing)
+  * [x] Session replay (10% normal, 100% errors)
 
 ---
 
@@ -440,7 +440,7 @@
 
 ## 📊 Résumé Grille de Correction - Livrable 2
 
-### ✅ Points Acquis (estimé: 86-89/100)
+### ✅ Points Acquis (estimé: 89-92/100)
 
 **Fonctionnalités (28-33/33):**
 - ✅ OAuth Google (5 pts)
@@ -452,12 +452,12 @@
 - ✅ Rechercher images par hashtag (5 pts)
 - ❓ Fonctionnalités L1 valides (4 pts) - À tester
 
-**Déploiement (14/22):**
+**Déploiement (17/22):**
 - ✅ README.md (1 pt)
 - ✅ Fichiers statiques S3 (5 pts)
 - ✅ Serveur Elastic Beanstalk (5 pts)
-- ✅ **Logging serveur CloudWatch (3 pts)** ← FAIT!
-- ❌ Logging client Sentry (0/3 pts) - Frontend
+- ✅ Logging serveur CloudWatch (3 pts)
+- ✅ **Logging client Sentry (3 pts)** ← FAIT!
 - ❌ Intégration continue (0/3 pts)
 - ❌ Déploiement continu (0/3 pts)
 
@@ -473,19 +473,14 @@
 
 ---
 
-### ⚠️ Points Manquants (11-14 pts)
+### ⚠️ Points Manquants (8-11 pts)
 
 **Backend/DevOps:**
 1. **CI/CD GitHub Actions (6 pts total)**
    - Intégration continue (build + tests) (3 pts)
    - Déploiement continu (EB + S3) (3 pts)
 
-**Frontend:**
-2. **Sentry logging client (3 pts)**
-   - Installation @sentry/react
-   - Configuration error tracking
-
-3. **Points à valider manuellement (2-5 pts):**
+2. **Points à valider manuellement (2-5 pts):**
    - Validation téléphone frontend
    - Responsive design complet
    - Fonctionnalités L1 encore valides
