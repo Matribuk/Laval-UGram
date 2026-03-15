@@ -10,7 +10,10 @@
 6. [Logging & Monitoring](#logging--monitoring-cloudwatch)
    - [CloudWatch Logs (serveur)](#configuration-cloudwatch-logs)
    - [Sentry (client)](#logging-client-sentry)
-7. [Résumé des coûts AWS](#résumé-des-coûts-aws-estimation)
+7. [CI/CD - Déploiement Continu](#cicd---déploiement-continu)
+   - [Intégration Continue (CI)](#intégration-continue-ci)
+   - [Déploiement Continu (CD)](#déploiement-continu-cd)
+8. [Résumé des coûts AWS](#résumé-des-coûts-aws-estimation)
 
 ---
 
@@ -522,10 +525,10 @@ Par défaut, AWS RDS PostgreSQL force les connexions SSL (`rds.force_ssl = 1`). 
 
 **Implications:**
 
-- ✅ **Avantage:** Configuration simplifiée, pas besoin de gérer les certificats SSL
-- ✅ **Avantage:** Pas de variable d'environnement supplémentaire à gérer dans EB
-- ⚠️ **Inconvénient:** Les données transitent en clair entre EB et RDS
-- 🔒 **Sécurité:** Les deux services sont dans le même VPC privé (`vpc-07fe678d46804cb30`), donc le trafic ne sort pas d'AWS et reste isolé dans le réseau privé Amazon
+- **Avantage:** Configuration simplifiée, pas besoin de gérer les certificats SSL
+- **Avantage:** Pas de variable d'environnement supplémentaire à gérer dans EB
+- **Inconvénient:** Les données transitent en clair entre EB et RDS
+- **Sécurité:** Les deux services sont dans le même VPC privé (`vpc-07fe678d46804cb30`), donc le trafic ne sort pas d'AWS et reste isolé dans le réseau privé Amazon
 
 ### HTTPS (Frontend/Backend)
 
@@ -586,11 +589,11 @@ Les logs suivants sont automatiquement streamés vers CloudWatch:
 - **Session Replay:** 10% normal, 100% sur erreur
 
 **Erreurs capturées automatiquement:**
-- ✅ Erreurs React (via `ErrorBoundary`)
-- ✅ Erreurs globales JavaScript (`window.onerror`)
-- ✅ Erreurs API avec contexte (URL, méthode HTTP, status)
-- ✅ `console.error`
-- ✅ Promises rejetées non gérées
+- Erreurs React (via `ErrorBoundary`)
+- Erreurs globales JavaScript (`window.onerror`)
+- Erreurs API avec contexte (URL, méthode HTTP, status)
+- `console.error`
+- Promises rejetées non gérées
 
 **Intégrations activées:**
 - `browserTracingIntegration()` - Performance monitoring
@@ -642,8 +645,8 @@ api.interceptors.response.use(
 ### Coûts CloudWatch Logs
 
 **Free Tier AWS CloudWatch (permanent):**
-- ✅ **5 GB ingestion/mois** (logs envoyés)
-- ✅ **5 GB storage/mois** (logs stockés)
+- **5 GB ingestion/mois** (logs envoyés)
+- **5 GB storage/mois** (logs stockés)
 
 **Estimation pour ce projet:**
 - Volume de logs: ~100-300 MB/mois (trafic faible, projet de cours)
@@ -657,19 +660,286 @@ api.interceptors.response.use(
 
 ---
 
+## CI/CD - Déploiement Continu
+
+L'application utilise **GitHub Actions** pour l'intégration continue (CI) et le déploiement continu (CD). Tous les workflows sont configurés dans `.github/workflows/`.
+
+### Intégration Continue (CI)
+
+**Workflow:** `.github/workflows/ci.yml`
+
+**Déclenché sur:**
+- Push sur `main`
+- Pull requests vers toutes les branches
+
+**Jobs exécutés:**
+
+1. **Build Job** (`.github/workflows/build.yml`)
+   - Checkout du code
+   - Setup Node.js 20
+   - Installation des dépendances (Frontend + Backend)
+   - Build de production (Frontend + Backend)
+   - Validation que les builds passent sans erreurs
+
+2. **Unit Tests Job** (`.github/workflows/unit-test.yml`)
+   - Dépend du Build Job
+   - Exécution des tests unitaires Frontend
+   - Vérification de la couverture de code
+
+3. **Summary Job** (`.github/workflows/summary.yml`)
+   - S'exécute toujours (même si les jobs précédents échouent)
+   - Génère un résumé du pipeline CI
+   - Affiche les statuts (Passed, Failed, Skipped)
+
+**Configuration:**
+```yaml
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+```
+Les builds en cours sur la même branche sont annulés si un nouveau push est effectué.
+
+---
+
+### Déploiement Continu (CD)
+
+**Workflow:** `.github/workflows/deploy.yml`
+
+**Déclenché sur:**
+- Push sur `main` uniquement
+- Déclenchement manuel via `workflow_dispatch`
+
+**Jobs de déploiement:**
+
+#### 1. Deploy Frontend to S3
+
+**Étapes:**
+1. Checkout du code
+2. Setup Node.js 20 avec cache npm
+3. Installation des dépendances (`npm ci`)
+4. Build de production avec variables d'environnement:
+   - `REACT_APP_API_URL` (URL du backend EB)
+   - `REACT_APP_SENTRY_DSN` (DSN Sentry)
+5. Configuration des credentials AWS
+6. Déploiement vers S3:
+   ```bash
+   aws s3 sync ./build s3://ugram-frontend-prod-team12 --delete
+   ```
+7. Invalidation du cache pour `index.html` (no-cache)
+
+**Bucket S3:**
+- Nom: `ugram-frontend-prod-team12`
+- Région: `us-east-1`
+- Configuration: Static Website Hosting activé
+
+#### 2. Deploy Backend to Elastic Beanstalk
+
+**Étapes:**
+1. Checkout du code
+2. Setup Node.js 20 avec cache npm
+3. Installation des dépendances (`npm ci`)
+4. Build TypeScript → JavaScript (`npm run build`)
+5. Création du package de déploiement:
+   ```bash
+   zip -r backend-deploy.zip . \
+     -x "node_modules/*" \
+     -x "src/*" \
+     -x "test/*" \
+     # ... exclusions
+   ```
+6. Configuration des credentials AWS
+7. Upload vers S3 (bucket Elastic Beanstalk)
+8. Création d'une nouvelle version applicative:
+   ```bash
+   aws elasticbeanstalk create-application-version \
+     --application-name ugram-backend \
+     --version-label v-${COMMIT_SHA}-${TIMESTAMP}
+   ```
+9. Mise à jour de l'environnement:
+   ```bash
+   aws elasticbeanstalk update-environment \
+     --environment-name ugram-backend-prod \
+     --version-label v-${COMMIT_SHA}-${TIMESTAMP}
+   ```
+
+**Application Elastic Beanstalk:**
+- Application: `ugram-backend`
+- Environnement: `ugram-backend-prod`
+- Plateforme: Node.js 20 on Amazon Linux 2023
+
+#### 3. Deployment Summary
+
+S'exécute après les deux déploiements (même en cas d'échec).
+
+**Résumé affiché:**
+```markdown
+## Deployment Summary
+
+| Service | Status |
+|---------|--------|
+| Frontend (S3) | Deployed |
+| Backend (EB) | Deployed |
+
+**Frontend URL:** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+**Backend URL:** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
+```
+
+---
+
+### Configuration des Secrets GitHub
+
+Les secrets suivants doivent être configurés dans `Settings → Secrets and variables → Actions`:
+
+| Secret | Description | Exemple |
+|--------|-------------|---------|
+| `AWS_ACCESS_KEY_ID` | Access Key ID de l'utilisateur IAM | `AKIAUJNYQPWR...` |
+| `AWS_SECRET_ACCESS_KEY` | Secret Access Key de l'utilisateur IAM | `wJalrXUtnFEMI/K7MDENG...` |
+| `AWS_ACCOUNT_ID` | ID du compte AWS | `295129087394` |
+| `REACT_APP_API_URL` | URL du backend en production | `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com` |
+| `REACT_APP_SENTRY_DSN` | DSN Sentry pour error tracking | `https://...@sentry.io/...` |
+
+**Utilisateur IAM pour GitHub Actions:**
+- Nom: `github-actions-deployer`
+- Permissions attachées:
+  - `AmazonS3FullAccess` (pour déployer le frontend sur S3)
+  - `AdministratorAccess-AWSElasticBeanstalk` (pour déployer le backend sur EB)
+- Type: Programmatic access uniquement (pas de console access)
+
+---
+
+### Processus de Déploiement
+
+**1. Développement local:**
+```bash
+git checkout -b feature/ma-fonctionnalite
+# ... développement ...
+git commit -m "feat: nouvelle fonctionnalité"
+git push origin feature/ma-fonctionnalite
+```
+
+**2. Pull Request:**
+- Créer une PR vers `main`
+- Le CI s'exécute automatiquement:
+  - Build (Frontend + Backend)
+  - Unit Tests
+  - Summary généré
+
+**3. Merge vers main:**
+```bash
+# Après review et approbation
+git checkout main
+git merge feature/ma-fonctionnalite
+git push origin main
+```
+
+**4. Déploiement automatique:**
+- Le workflow CD se déclenche automatiquement sur `main`
+- Frontend déployé sur S3 (~1-2 minutes)
+- Backend déployé sur Elastic Beanstalk (~5-10 minutes)
+- Application en production mise à jour automatiquement
+
+**5. Vérification:**
+- Vérifier les logs dans GitHub Actions
+- Tester l'application sur les URLs de production
+- Vérifier les logs dans CloudWatch (backend)
+- Vérifier les erreurs dans Sentry (frontend)
+
+---
+
+### Rollback (Retour en arrière)
+
+**Si un déploiement échoue ou cause des problèmes:**
+
+#### Frontend (S3):
+```bash
+# Option 1: Déployer une version précédente manuellement
+cd Frontend
+npm run build
+aws s3 sync build/ s3://ugram-frontend-prod-team12 --delete
+
+# Option 2: Revenir au commit précédent et push
+git revert HEAD
+git push origin main
+# → Le CD redéploie automatiquement
+```
+
+#### Backend (Elastic Beanstalk):
+```bash
+# Via AWS Console:
+# 1. Elastic Beanstalk → ugram-backend-prod
+# 2. Application versions
+# 3. Sélectionner une version précédente
+# 4. Deploy to environment
+
+# Ou via CLI:
+aws elasticbeanstalk update-environment \
+  --environment-name ugram-backend-prod \
+  --version-label v-PREVIOUS-VERSION
+```
+
+---
+
+### Monitoring du Déploiement
+
+**GitHub Actions:**
+- Console: `https://github.com/GLO3112-classrooms/ugram-h2026-team-12/actions`
+- Voir les logs en temps réel de chaque job
+- Recevoir des notifications par email en cas d'échec
+
+**Elastic Beanstalk:**
+- Console: `https://us-east-1.console.aws.amazon.com/elasticbeanstalk/`
+- Health Dashboard: Voir la santé de l'environnement pendant et après le déploiement
+- Events: Suivre les événements de déploiement en temps réel
+
+**CloudWatch Logs:**
+- Voir les logs applicatifs après déploiement
+- Détecter les erreurs de démarrage
+- Vérifier que l'application démarre correctement
+
+**Sentry:**
+- Voir les erreurs frontend après déploiement
+- Filtrer par release/version
+- Comparer les taux d'erreur avant/après déploiement
+
+---
+
+### Optimisations du CD
+
+**Cache npm:**
+```yaml
+- uses: actions/setup-node@v4
+  with:
+    cache: 'npm'
+    cache-dependency-path: Frontend/package-lock.json
+```
+Réduit le temps d'installation des dépendances de ~2 minutes à ~30 secondes.
+
+**Concurrency:**
+```yaml
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+```
+Empêche les déploiements simultanés sur la même branche (évite les conflits).
+
+**Déploiements en parallèle:**
+Frontend et Backend sont déployés en parallèle (pas de dépendance entre les deux jobs) pour un déploiement plus rapide.
+
+---
+
 ## Résumé des coûts AWS (estimation)
 
 ### Services dans le Free Tier (12 mois)
 
 | Service | Free Tier | Usage actuel | Dépassement? |
 |---------|-----------|--------------|--------------|
-| **RDS** | 750h/mois db.t2.micro/db.t3.micro/db.t4g.micro | ~730h/mois (1 instance db.t4g.micro) | ✅ Non |
-| **Elastic Beanstalk** | Gratuit (on paie EC2) | - | ✅ Gratuit |
-| **EC2** | 750h/mois t2.micro/t3.micro | ~730h/mois (1 instance t3.micro) | ✅ Non |
-| **S3 Storage** | 5 GB | ~1 GB estimé (3 buckets) | ✅ Non |
-| **S3 Requests** | 20,000 GET, 2,000 PUT | Faible usage | ✅ Non |
-| **Data Transfer** | 100 GB/mois sortant | Faible usage | ✅ Non |
-| **CloudWatch Logs** | 5 GB ingestion + 5 GB storage | ~0.3 GB/mois | ✅ Non |
+| **RDS** | 750h/mois db.t2.micro/db.t3.micro/db.t4g.micro | ~730h/mois (1 instance db.t4g.micro) | **Non** |
+| **Elastic Beanstalk** | Gratuit (on paie EC2) | - | **Gratuit** |
+| **EC2** | 750h/mois t2.micro/t3.micro | ~730h/mois (1 instance t3.micro) | **Non** |
+| **S3 Storage** | 5 GB | ~1 GB estimé (3 buckets) | **Non** |
+| **S3 Requests** | 20,000 GET, 2,000 PUT | Faible usage | **Non** |
+| **Data Transfer** | 100 GB/mois sortant | Faible usage | **Non** |
+| **CloudWatch Logs** | 5 GB ingestion + 5 GB storage | ~0.3 GB/mois | **Non** |
 
 ### Coût estimé mensuel
 

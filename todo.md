@@ -118,7 +118,7 @@
 * [x] Schéma usager
 * [x] Schéma image
 * [x] Relations usager ↔ images
-* [ ] Indexation (date, usager, hashtags si pertinent)
+* [x] Indexation (date, usager, hashtags si pertinent)
 
 ---
 
@@ -406,27 +406,27 @@
 
 ### 🔄 CI/CD (Intégration & Déploiement Continu)
 
-* [ ] **Intégration Continue - GitHub Actions (3 pts grille)** ⚠️
-  * [ ] Workflow build automatique sur push/PR
-  * [ ] Tests automatiques backend (`npm test`)
-  * [ ] Tests automatiques frontend (`npm test`)
-  * [ ] Linting automatique (ESLint)
-  * [ ] Build validation (frontend & backend)
-  * [ ] Fichier `.github/workflows/ci.yml`
+* [x] **Intégration Continue - GitHub Actions (3 pts grille)** ⚠️
+  * [x] Workflow build automatique sur push/PR
+  * [x] Tests automatiques backend (`npm test`)
+  * [x] Tests automatiques frontend (`npm test`)
+  * [x] Linting automatique (ESLint)
+  * [x] Build validation (frontend & backend)
+  * [x] Fichier `.github/workflows/ci.yml`
 
-* [ ] **Déploiement Continu - GitHub Actions (3 pts grille)** ⚠️
-  * [ ] Déploiement automatique backend vers EB sur push `main`
-  * [ ] Déploiement automatique frontend vers S3 sur push `main`
-  * [ ] Utilisation secrets GitHub pour credentials AWS
-  * [ ] Fichier `.github/workflows/deploy.yml`
-  * [ ] Documentation du processus CD
+* [x] **Déploiement Continu - GitHub Actions (3 pts grille)** ⚠️
+  * [x] Déploiement automatique backend vers EB sur push `main`
+  * [x] Déploiement automatique frontend vers S3 sur push `main`
+  * [x] Utilisation secrets GitHub pour credentials AWS
+  * [x] Fichier `.github/workflows/deploy.yml`
+  * [x] Documentation du processus CD
 
 ---
 
 ### 📋 Finalisation de la remise
 
 * [ ] Créer la branche `release` à partir de `main`
-* [ ] Ajouter le lien de l'application dans le README de la branche `release`
+* [x] Ajouter le lien de l'application dans le README de la branche `release`
 * [x] Vérifier que l'application fonctionne sur l'URL de production
   * [x] Upload images fonctionne (S3)
   * [x] Authentification Google OAuth fonctionne
