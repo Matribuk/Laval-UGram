@@ -285,6 +285,12 @@ ugram-h2026-team-12/
 * Grille d'images par utilisateur
 * Page de détail d'une image
 
+### Fonctions de recherches
+
+* L'usager peut rechercher un autre usager via la page users.
+* L'usager peut rechercher des images contenant un mot précis dans leur description.
+* L'usager peut rechercher des images contenant un mot clé (hashtag) précis (en utilisant '#' dans sa recherche).
+
 ### Validation & UX
 
 * Validation côté client (Yup) et serveur (class-validator)
