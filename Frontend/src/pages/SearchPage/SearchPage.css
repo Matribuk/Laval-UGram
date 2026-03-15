@@ -1,0 +1,22 @@
+.search-results-container {
+	max-width: 100%;
+}
+
+.search-empty {
+	text-align: center;
+	color: var(--color-text-secondary);
+	font-size: 1rem;
+	padding: 2rem 0;
+}
+
+.search-count {
+	color: var(--color-text-secondary);
+	font-size: 0.875rem;
+	margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+	.search-results-container {
+		max-width: 37.5rem;
+	}
+}

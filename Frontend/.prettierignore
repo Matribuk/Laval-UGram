@@ -1,0 +1,16 @@
+# Ignore build files
+node_modules
+dist
+build
+coverage
+.next
+public
+docs
+doxygen-custom
+
+# Ignore config files
+.gitignore
+.prettierrc
+.eslint*
+package-lock.json
+tsconfig.json

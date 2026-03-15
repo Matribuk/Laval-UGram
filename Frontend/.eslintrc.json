@@ -1,0 +1,54 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "react-hooks"],
+  "rules": {
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+
+    "react/button-has-type": "error",
+    "react/no-danger": "error",
+    "react/no-invalid-html-attribute": "error",
+    "react/no-unknown-property": "error",
+    "react/self-closing-comp": "error",
+    "react/void-dom-elements-no-children": "error",
+
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-non-null-assertion": "error",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/explicit-module-boundary-types": "warn",
+
+    "no-console": ["warn", { "allow": ["warn", "error"] }],
+    "no-alert": "error",
+    "no-debugger": "error",
+    "prefer-const": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "no-var": "error"
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "env": {
+    "browser": true,
+    "jest": true,
+    "node": true
+  },
+  "ignorePatterns": ["src/__tests__/**/*", "src/components/NavBar/NavBar.tsx"],
+  "overrides": [
+    {
+      "files": ["*.tsx", "*.jsx"],
+      "rules": {}
+    }
+  ]
+}
