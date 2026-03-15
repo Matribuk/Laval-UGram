@@ -1,0 +1,168 @@
+name: CD - Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-frontend:
+    name: Deploy Frontend to S3
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: Frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: Frontend
+        env:
+          REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+          REACT_APP_SENTRY_DSN: ${{ secrets.REACT_APP_SENTRY_DSN }}
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to S3
+        working-directory: Frontend/build
+        run: |
+          aws s3 sync . s3://ugram-frontend-prod-team12 --delete --cache-control max-age=31536000,public
+          aws s3 cp s3://ugram-frontend-prod-team12/index.html s3://ugram-frontend-prod-team12/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
+
+      - name: Invalidate CloudFront cache (if using CloudFront)
+        if: false
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+  deploy-backend:
+    name: Deploy Backend to Elastic Beanstalk
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Build backend
+        working-directory: backend
+        run: npm run build
+
+      - name: Create deployment package
+        working-directory: backend
+        run: |
+          zip -r ../backend-deploy.zip . \
+            -x "node_modules/*" \
+            -x "src/*" \
+            -x "test/*" \
+            -x "coverage/*" \
+            -x ".git/*" \
+            -x ".env*" \
+            -x "*.log" \
+            -x ".idea/*" \
+            -x ".vscode/*" \
+            -x "tsconfig*" \
+            -x "jest.config.js" \
+            -x "eslint.config.mjs" \
+            -x ".eslintrc.js" \
+            -x ".prettierrc" \
+            -x "nest-cli.json" \
+            -x "uploads/*" \
+            -x "docker-compose.yml" \
+            -x "Dockerfile" \
+            -x ".DS_Store"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Deploy to Elastic Beanstalk
+        run: |
+          # Generate version label
+          VERSION_LABEL="v-${{ github.sha }}-$(date +%s)"
+
+          # Upload to S3
+          aws s3 cp backend-deploy.zip s3://elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}/ugram-backend/${VERSION_LABEL}.zip
+
+          # Create application version
+          aws elasticbeanstalk create-application-version \
+            --application-name ugram-backend \
+            --version-label ${VERSION_LABEL} \
+            --source-bundle S3Bucket="elasticbeanstalk-us-east-1-${{ secrets.AWS_ACCOUNT_ID }}",S3Key="ugram-backend/${VERSION_LABEL}.zip" \
+            --description "Deployed from GitHub Actions - commit ${{ github.sha }}"
+
+          # Update environment
+          aws elasticbeanstalk update-environment \
+            --application-name ugram-backend \
+            --environment-name ugram-backend-prod \
+            --version-label ${VERSION_LABEL}
+
+          echo "✅ Deployment initiated for version ${VERSION_LABEL}"
+
+  deployment-summary:
+    name: Deployment Summary
+    runs-on: ubuntu-latest
+    needs: [deploy-frontend, deploy-backend]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "## 🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.deploy-frontend.result }}" == "success" ]; then
+            echo "| Frontend (S3) | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Frontend (S3) | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          if [ "${{ needs.deploy-backend.result }}" == "success" ]; then
+            echo "| Backend (EB) | ✅ Deployed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Backend (EB) | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend URL:** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com" >> $GITHUB_STEP_SUMMARY
+          echo "**Backend URL:** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com" >> $GITHUB_STEP_SUMMARY
