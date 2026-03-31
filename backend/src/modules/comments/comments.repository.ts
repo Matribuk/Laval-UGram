@@ -40,4 +40,18 @@ export class CommentsRepository {
       order: { createdAt: 'ASC' },
     });
   }
+
+  async findByUserId(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[Comment[], number]> {
+    return this.commentRepository.findAndCount({
+      where: { userId },
+      relations: ['user', 'image', 'image.user'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+  }
 }

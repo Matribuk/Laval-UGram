@@ -34,4 +34,13 @@ export class CommentsService {
     const [comments, total] = await this.commentsRepository.findByImageId(imageId, page, limit);
     return { comments, total };
   }
+
+  async getCommentsByUser(
+    userId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ comments: Comment[]; total: number }> {
+    const [comments, total] = await this.commentsRepository.findByUserId(userId, page, limit);
+    return { comments, total };
+  }
 }

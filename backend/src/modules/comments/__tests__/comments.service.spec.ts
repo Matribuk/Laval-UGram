@@ -101,4 +101,24 @@ describe('CommentsService', () => {
       expect(result).toEqual({ comments: [], total: 0 });
     });
   });
+
+  describe('getCommentsByUser', () => {
+    it('should return paginated comments made by a user', async () => {
+      const comments = [createCommentFactory(), createCommentFactory()];
+      commentsRepository.findByUserId.mockResolvedValue([comments, 2]);
+
+      const result = await service.getCommentsByUser('user-id', 1, 10);
+
+      expect(commentsRepository.findByUserId).toHaveBeenCalledWith('user-id', 1, 10);
+      expect(result).toEqual({ comments, total: 2 });
+    });
+
+    it('should return empty list when user has no comments', async () => {
+      commentsRepository.findByUserId.mockResolvedValue([[], 0]);
+
+      const result = await service.getCommentsByUser('user-id', 1, 10);
+
+      expect(result).toEqual({ comments: [], total: 0 });
+    });
+  });
 });

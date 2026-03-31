@@ -115,4 +115,29 @@ describe('CommentsRepository', () => {
       expect(total).toBe(0);
     });
   });
+
+  describe('findByUserId', () => {
+    it('should return paginated comments by a user', async () => {
+      const comments = [createCommentFactory(), createCommentFactory()];
+      commentRepo.findAndCount.mockResolvedValue([comments, 2]);
+
+      const [result, total] = await repository.findByUserId('user-id', 1, 10);
+
+      expect(commentRepo.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({ where: { userId: 'user-id' }, skip: 0, take: 10 }),
+      );
+      expect(result).toEqual(comments);
+      expect(total).toBe(2);
+    });
+
+    it('should apply correct pagination offset', async () => {
+      commentRepo.findAndCount.mockResolvedValue([[], 0]);
+
+      await repository.findByUserId('user-id', 2, 5);
+
+      expect(commentRepo.findAndCount).toHaveBeenCalledWith(
+        expect.objectContaining({ skip: 5, take: 5 }),
+      );
+    });
+  });
 });

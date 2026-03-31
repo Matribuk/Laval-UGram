@@ -37,6 +37,8 @@ import { ImagesService } from '../images/images.service';
 import { ImageResponseDto } from '../images/dto';
 import { StorageService } from '../storage/storage.service';
 import { LikesService } from '../likes/likes.service';
+import { CommentsService } from '../comments/comments.service';
+import { CommentResponseDto } from '../comments/dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -47,6 +49,7 @@ export class UsersController {
     private readonly imagesService: ImagesService,
     private readonly storageService: StorageService,
     private readonly likesService: LikesService,
+    private readonly commentsService: CommentsService,
   ) {}
 
   @Get()
@@ -142,6 +145,34 @@ export class UsersController {
     );
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
+      meta: {
+        total,
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        totalPages: Math.ceil(total / (Number(limit) || 10)),
+      },
+    };
+  }
+
+  @Get('me/comments')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get comments made by the current user' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiResponse({ status: 200, description: 'User comments retrieved successfully' })
+  async getUserComments(
+    @CurrentUser() user: User,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const { comments, total } = await this.commentsService.getCommentsByUser(
+      user.id,
+      Number(page) || 1,
+      Number(limit) || 10,
+    );
+    return {
+      data: comments.map((c) => plainToInstance(CommentResponseDto, c)),
       meta: {
         total,
         page: Number(page) || 1,

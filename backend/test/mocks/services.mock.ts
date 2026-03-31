@@ -77,14 +77,16 @@ export const createMockLikesRepository = () => ({
 export const createMockCommentsService = () => ({
   addComment: jest.fn(),
   removeComment: jest.fn(),
-  getCommentsByImage: jest.fn()
+  getCommentsByImage: jest.fn(),
+  getCommentsByUser: jest.fn(),
 });
 
 export const createMockCommentsRepository = () => ({
   create: jest.fn(),
   findById: jest.fn(),
   delete: jest.fn(),
-  findByImageId: jest.fn()
+  findByImageId: jest.fn(),
+  findByUserId: jest.fn(),
 });
 
 export const createMockStorageService = () => ({
