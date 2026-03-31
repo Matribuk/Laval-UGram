@@ -74,6 +74,19 @@ export const createMockLikesRepository = () => ({
   findLikedImagesByUserId: jest.fn(),
 });
 
+export const createMockCommentsService = () => ({
+  addComment: jest.fn(),
+  removeComment: jest.fn(),
+  getCommentsByImage: jest.fn()
+});
+
+export const createMockCommentsRepository = () => ({
+  create: jest.fn(),
+  findById: jest.fn(),
+  delete: jest.fn(),
+  findByImageId: jest.fn()
+});
+
 export const createMockStorageService = () => ({
   uploadImage: jest.fn(),
   deleteImage: jest.fn(),
@@ -101,6 +114,8 @@ export type MockImagesService = ReturnType<typeof createMockImagesService>;
 export type MockImagesRepository = ReturnType<typeof createMockImagesRepository>;
 export type MockLikesService = ReturnType<typeof createMockLikesService>;
 export type MockLikesRepository = ReturnType<typeof createMockLikesRepository>;
+export type MockCommentsService = ReturnType<typeof createMockCommentsService>;
+export type MockCommentsRepository = ReturnType<typeof createMockCommentsRepository>;
 export type MockStorageService = ReturnType<typeof createMockStorageService>;
 export type MockStorageProvider = ReturnType<typeof createMockStorageProvider>;
 export type MockJwtService = ReturnType<typeof createMockJwtService>;
