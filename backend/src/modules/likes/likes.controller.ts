@@ -32,8 +32,8 @@ export class LikesController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Like an image' })
   @ApiResponse({ status: 200, description: 'Image liked successfully', type: LikeStatusDto })
-  @ApiResponse({ status: 409, description: 'Image already liked' })
   @ApiResponse({ status: 404, description: 'Image not found' })
+  @ApiResponse({ status: 409, description: 'Image already liked' })
   async addLike(
     @Param('imageId', ParseUUIDPipe) imageId: string,
     @CurrentUser() user: User,

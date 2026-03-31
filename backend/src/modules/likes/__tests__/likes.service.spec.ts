@@ -2,20 +2,24 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { LikesService } from '../likes.service';
 import { LikesRepository } from '../likes.repository';
-import { createMockLikesRepository } from '../../../../test/mocks/services.mock';
+import { ImagesService } from '../../images/images.service';
+import { createMockLikesRepository, createMockImagesService } from '../../../../test/mocks/services.mock';
 import { createImageFactory } from '../../../../test/factories';
 
 describe('LikesService', () => {
   let service: LikesService;
   let likesRepository: ReturnType<typeof createMockLikesRepository>;
+  let imagesService: ReturnType<typeof createMockImagesService>;
 
   beforeEach(async () => {
     likesRepository = createMockLikesRepository();
+    imagesService = createMockImagesService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LikesService,
         { provide: LikesRepository, useValue: likesRepository },
+        { provide: ImagesService, useValue: imagesService },
       ],
     }).compile();
 
@@ -25,18 +29,29 @@ describe('LikesService', () => {
 
   describe('addLike', () => {
     it('should add a like and return updated status', async () => {
+      imagesService.findById.mockResolvedValue(createImageFactory());
       likesRepository.existsByUserAndImage.mockResolvedValue(false);
       likesRepository.create.mockResolvedValue(undefined);
       likesRepository.countByImageId.mockResolvedValue(1);
 
       const result = await service.addLike('user-id', 'image-id');
 
+      expect(imagesService.findById).toHaveBeenCalledWith('image-id');
       expect(likesRepository.existsByUserAndImage).toHaveBeenCalledWith('user-id', 'image-id');
       expect(likesRepository.create).toHaveBeenCalledWith('user-id', 'image-id');
       expect(result).toEqual({ likeCount: 1, likedByCurrentUser: true });
     });
 
+    it('should throw NotFoundException if image does not exist', async () => {
+      imagesService.findById.mockRejectedValue(new NotFoundException('Image not found'));
+
+      await expect(service.addLike('user-id', 'deleted-image-id')).rejects.toThrow(NotFoundException);
+      expect(likesRepository.existsByUserAndImage).not.toHaveBeenCalled();
+      expect(likesRepository.create).not.toHaveBeenCalled();
+    });
+
     it('should throw ConflictException if already liked', async () => {
+      imagesService.findById.mockResolvedValue(createImageFactory());
       likesRepository.existsByUserAndImage.mockResolvedValue(true);
 
       await expect(service.addLike('user-id', 'image-id')).rejects.toThrow(ConflictException);

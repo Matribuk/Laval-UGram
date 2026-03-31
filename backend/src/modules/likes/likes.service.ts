@@ -1,13 +1,19 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { LikesRepository } from './likes.repository';
+import { ImagesService } from '../images/images.service';
 import { LikeStatusDto } from './dto';
 import { Image } from '../images/entities/image.entity';
 
 @Injectable()
 export class LikesService {
-  constructor(private readonly likesRepository: LikesRepository) {}
+  constructor(
+    private readonly likesRepository: LikesRepository,
+    private readonly imagesService: ImagesService,
+  ) {}
 
   async addLike(userId: string, imageId: string): Promise<LikeStatusDto> {
+    await this.imagesService.findById(imageId);
+
     const alreadyLiked = await this.likesRepository.existsByUserAndImage(userId, imageId);
     if (alreadyLiked) {
       throw new ConflictException('You have already liked this image');
