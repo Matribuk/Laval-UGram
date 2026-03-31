@@ -6,6 +6,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { ImagesModule } from './modules/images/images.module';
 import { StorageModule } from './modules/storage/storage.module';
+import { LikesModule } from './modules/likes/likes.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StorageModule } from './modules/storage/storage.module';
     AuthModule,
     UsersModule,
     ImagesModule,
+    LikesModule,
   ],
 })
 export class AppModule {}

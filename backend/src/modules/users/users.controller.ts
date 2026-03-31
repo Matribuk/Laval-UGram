@@ -36,6 +36,7 @@ import { User } from './entities/user.entity';
 import { ImagesService } from '../images/images.service';
 import { ImageResponseDto } from '../images/dto';
 import { StorageService } from '../storage/storage.service';
+import { LikesService } from '../likes/likes.service';
 
 @ApiTags('Users')
 @Controller('users')
@@ -45,6 +46,7 @@ export class UsersController {
     @Inject(forwardRef(() => ImagesService))
     private readonly imagesService: ImagesService,
     private readonly storageService: StorageService,
+    private readonly likesService: LikesService,
   ) {}
 
   @Get()
@@ -119,6 +121,34 @@ export class UsersController {
   })
   async getCurrentUser(@CurrentUser() user: User) {
     return plainToInstance(UserResponseDto, user);
+  }
+
+  @Get('me/liked-images')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get images liked by the current user' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiResponse({ status: 200, description: 'Liked images retrieved successfully' })
+  async getLikedImages(
+    @CurrentUser() user: User,
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    const { images, total } = await this.likesService.getLikedImages(
+      user.id,
+      Number(page) || 1,
+      Number(limit) || 10,
+    );
+    return {
+      data: images.map((image) => plainToInstance(ImageResponseDto, image)),
+      meta: {
+        total,
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+        totalPages: Math.ceil(total / (Number(limit) || 10)),
+      },
+    };
   }
 
   @Get(':id')
