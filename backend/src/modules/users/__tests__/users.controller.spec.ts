@@ -4,6 +4,8 @@ import { UsersController } from '../users.controller';
 import { UsersService } from '../users.service';
 import { ImagesService } from '../../images/images.service';
 import { StorageService } from '../../storage/storage.service';
+import { LikesService } from '../../likes/likes.service';
+import { CommentsService } from '../../comments/comments.service';
 import {
   createUserFactory,
   createManyUsers,
@@ -12,10 +14,13 @@ import {
   createMockFile,
   createManyImages,
 } from '../../../../test/factories/image.factory';
+import { createManyComments } from '../../../../test/factories/comment.factory';
 import {
   createMockUsersService,
   createMockImagesService,
   createMockStorageService,
+  createMockLikesService,
+  createMockCommentsService,
 } from '../../../../test/mocks/services.mock';
 
 describe('UsersController', () => {
@@ -23,11 +28,15 @@ describe('UsersController', () => {
   let usersService: ReturnType<typeof createMockUsersService>;
   let imagesService: ReturnType<typeof createMockImagesService>;
   let storageService: ReturnType<typeof createMockStorageService>;
+  let likesService: ReturnType<typeof createMockLikesService>;
+  let commentsService: ReturnType<typeof createMockCommentsService>;
 
   beforeEach(async () => {
     usersService = createMockUsersService();
     imagesService = createMockImagesService();
     storageService = createMockStorageService();
+    likesService = createMockLikesService();
+    commentsService = createMockCommentsService();
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
@@ -35,6 +44,8 @@ describe('UsersController', () => {
         { provide: UsersService, useValue: usersService },
         { provide: ImagesService, useValue: imagesService },
         { provide: StorageService, useValue: storageService },
+        { provide: LikesService, useValue: likesService },
+        { provide: CommentsService, useValue: commentsService },
       ],
     }).compile();
 
@@ -377,6 +388,73 @@ describe('UsersController', () => {
       const result = await controller.delete(currentUser.id, currentUser);
 
       expect(result).toBeUndefined();
+    });
+  });
+
+  describe('GET /users/me/comments', () => {
+    it('should return paginated comments for the current user', async () => {
+      const user = createUserFactory();
+      const comments = createManyComments(3, 'image-id');
+      commentsService.getCommentsByUser.mockResolvedValue({ comments, total: 3 });
+
+      const result = await controller.getUserComments(user, 1, 10);
+
+      expect(commentsService.getCommentsByUser).toHaveBeenCalledWith(user.id, 1, 10);
+      expect(result.data).toHaveLength(3);
+      expect(result.meta.total).toBe(3);
+    });
+
+    it('should return empty list when user has no comments', async () => {
+      const user = createUserFactory();
+      commentsService.getCommentsByUser.mockResolvedValue({ comments: [], total: 0 });
+
+      const result = await controller.getUserComments(user, 1, 10);
+
+      expect(result.data).toHaveLength(0);
+      expect(result.meta.total).toBe(0);
+    });
+
+    it('should calculate totalPages correctly', async () => {
+      const user = createUserFactory();
+      commentsService.getCommentsByUser.mockResolvedValue({ comments: [], total: 25 });
+
+      const result = await controller.getUserComments(user, 1, 10);
+
+      expect(result.meta.totalPages).toBe(3);
+    });
+  });
+
+  describe('GET /users/me/liked-images', () => {
+    it('should return paginated liked images for the current user', async () => {
+      const user = createUserFactory();
+      const images = createManyImages(2, user);
+      likesService.getLikedImages.mockResolvedValue({ images, total: 2 });
+
+      const result = await controller.getLikedImages(user, 1, 10);
+
+      expect(likesService.getLikedImages).toHaveBeenCalledWith(user.id, 1, 10);
+      expect(result.data).toHaveLength(2);
+      expect(result.meta.total).toBe(2);
+    });
+
+    it('should return empty list when user has no liked images', async () => {
+      const user = createUserFactory();
+      likesService.getLikedImages.mockResolvedValue({ images: [], total: 0 });
+
+      const result = await controller.getLikedImages(user, 1, 10);
+
+      expect(result.data).toHaveLength(0);
+      expect(result.meta.total).toBe(0);
+    });
+
+    it('should calculate totalPages correctly', async () => {
+      const user = createUserFactory();
+      const images = createManyImages(5, user);
+      likesService.getLikedImages.mockResolvedValue({ images, total: 15 });
+
+      const result = await controller.getLikedImages(user, 1, 5);
+
+      expect(result.meta.totalPages).toBe(3);
     });
   });
 });
