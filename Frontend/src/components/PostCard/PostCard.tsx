@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PostAuthor } from '../../types/api.types';
 import Avatar from '../Avatar/Avatar';
 import MentionText from '../MentionText/MentionText';
+import LikeButton from '../LikeButton/LikeButton';
+import CommentButton from '../CommentButton/CommentButton';
+import CommentsSection from '../CommentsSection/CommentsSection';
+import { postsService } from '../../services/postsService';
 import './PostCard.css';
 
 interface PostCardProps {
@@ -16,10 +20,32 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, caption, tags }) => {
 	const navigate = useNavigate();
+	const [showComments, setShowComments] = useState(false);
+	const [commentCount, setCommentCount] = useState(0);
+
+	useEffect(() => {
+		const fetchCommentCount = async () => {
+			try {
+				const comments = await postsService.getComments(id);
+				setCommentCount(comments.length);
+			} catch (error) {
+				console.error('Failed to fetch comment count:', error);
+			}
+		};
+		fetchCommentCount();
+	}, [id]);
 
 	const handleImageClick = () => {
 		navigate(`/post/${id}`);
 	};
+
+	const toggleComments = () => {
+		setShowComments((prev) => !prev);
+	};
+
+	const handleCommentCountChange = useCallback((count: number) => {
+		setCommentCount(count);
+	}, []);
 
 	return (
 		<article className="post-card">
@@ -35,6 +61,11 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 
 			<div className="post-image" onClick={handleImageClick}>
 				<img src={imageUrl} alt={caption} />
+			</div>
+
+			<div className="post-actions-bar">
+				<LikeButton postId={id} />
+				<CommentButton count={commentCount} isActive={showComments} onClick={toggleComments} />
 			</div>
 
 			<div className="post-content">
@@ -54,6 +85,8 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 					</div>
 				)}
 			</div>
+
+			{showComments && <CommentsSection postId={id} onCommentCountChange={handleCommentCountChange} />}
 		</article>
 	);
 };

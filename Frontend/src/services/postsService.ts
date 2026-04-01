@@ -1,5 +1,5 @@
 import api from './api';
-import { Post, BackendPost, PaginatedResponse } from '../types/api.types';
+import { Post, BackendPost, PaginatedResponse, LikeStatus, Comment } from '../types/api.types';
 import { transformBackendPost } from '../utils/transformers';
 import { ENDPOINTS } from './endpoints';
 
@@ -70,5 +70,34 @@ export const postsService = {
 
 	async deletePost(id: string): Promise<void> {
 		await api.delete(ENDPOINTS.IMAGES.BY_ID(id));
+	},
+
+	async getLikeStatus(imageId: string): Promise<LikeStatus> {
+		const response = await api.get<LikeStatus>(ENDPOINTS.IMAGES.LIKES(imageId));
+		return response.data;
+	},
+
+	async likePost(imageId: string): Promise<LikeStatus> {
+		const response = await api.post<LikeStatus>(ENDPOINTS.IMAGES.LIKES(imageId));
+		return response.data;
+	},
+
+	async unlikePost(imageId: string): Promise<LikeStatus> {
+		const response = await api.delete<LikeStatus>(ENDPOINTS.IMAGES.LIKES(imageId));
+		return response.data;
+	},
+
+	async getComments(imageId: string): Promise<Comment[]> {
+		const response = await api.get<PaginatedResponse<Comment>>(ENDPOINTS.IMAGES.COMMENTS(imageId));
+		return response.data.data;
+	},
+
+	async addComment(imageId: string, content: string): Promise<Comment> {
+		const response = await api.post<Comment>(ENDPOINTS.IMAGES.COMMENTS(imageId), { content });
+		return response.data;
+	},
+
+	async deleteComment(imageId: string, commentId: string): Promise<void> {
+		await api.delete(ENDPOINTS.IMAGES.COMMENT_BY_ID(imageId, commentId));
 	},
 };

@@ -10,6 +10,8 @@ import Avatar from '../../components/Avatar/Avatar';
 import MentionText from '../../components/MentionText/MentionText';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import LikeButton from '../../components/LikeButton/LikeButton';
+import CommentsSection from '../../components/CommentsSection/CommentsSection';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { GridIcon } from '../../utils/SvgFile';
 import { postsService } from '../../services/postsService';
@@ -116,6 +118,10 @@ const PostDetailPage: React.FC = () => {
 					<img src={post.imageUrl} alt={post.caption} />
 				</div>
 
+				<div className="post-detail-actions">
+					<LikeButton postId={post.id} />
+				</div>
+
 				<div className="post-detail-content">
 					<p className="post-caption">
 						<Link to={`/profile/${post.author.username}`} className="caption-username">
@@ -145,6 +151,8 @@ const PostDetailPage: React.FC = () => {
 						</div>
 					)}
 				</div>
+
+				<CommentsSection postId={post.id} />
 			</article>
 
 			<ConfirmModal

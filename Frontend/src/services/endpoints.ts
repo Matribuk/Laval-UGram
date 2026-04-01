@@ -22,6 +22,9 @@ export const ENDPOINTS = {
 		SEARCH: '/images/search',
 		BY_HASHTAG: (hashtag: string) => `/images/hashtag/${hashtag}`,
 		USER_IMAGES: (userId: string) => `/users/${userId}/images`,
+		LIKES: (imageId: string) => `/images/${imageId}/likes`,
+		COMMENTS: (imageId: string) => `/images/${imageId}/comments`,
+		COMMENT_BY_ID: (imageId: string, commentId: string) => `/images/${imageId}/comments/${commentId}`,
 	},
 } as const;
 

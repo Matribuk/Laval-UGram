@@ -138,3 +138,16 @@ export interface PaginatedResponse<T> {
 		totalPages: number;
 	};
 }
+
+export interface LikeStatus {
+	likeCount: number;
+	likedByCurrentUser: boolean;
+}
+
+export interface Comment {
+	id: string;
+	content: string;
+	imageId: string;
+	user: BackendUser;
+	createdAt: string;
+}
