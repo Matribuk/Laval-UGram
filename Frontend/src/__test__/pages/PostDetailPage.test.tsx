@@ -23,6 +23,10 @@ jest.mock('../../utils/SvgFile', () => ({
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
 	GridIcon: () => <svg data-testid="grid-icon" />,
 	BackArrowIcon: () => <svg data-testid="back-arrow-icon" />,
+	HeartIcon: () => <svg data-testid="heart-icon" />,
+	CommentIcon: () => <svg data-testid="comment-icon" />,
+	TrashIcon: () => <svg data-testid="trash-icon" />,
+	SendIcon: () => <svg data-testid="send-icon" />,
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -64,6 +68,8 @@ describe('PostDetailPage', () => {
 			error: null,
 			isAuthenticated: true,
 		});
+		mockPostsService.getComments.mockResolvedValue([]);
+		mockPostsService.getLikeStatus.mockResolvedValue({ likeCount: 0, likedByCurrentUser: false });
 	});
 
 	it('shows loading spinner while fetching post', async () => {
