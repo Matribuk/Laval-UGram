@@ -147,4 +147,88 @@ describe('postsService', () => {
 			expect(mockApi.delete).toHaveBeenCalledWith('/images/post-123');
 		});
 	});
+
+	describe('getLikeStatus', () => {
+		it('returns like status for a post', async () => {
+			const mockLikeStatus = { likeCount: 5, likedByCurrentUser: true };
+			mockApi.get.mockResolvedValue({ data: mockLikeStatus });
+
+			const status = await postsService.getLikeStatus('post-123');
+
+			expect(mockApi.get).toHaveBeenCalledWith('/images/post-123/likes');
+			expect(status).toEqual(mockLikeStatus);
+		});
+	});
+
+	describe('likePost', () => {
+		it('likes a post and returns updated status', async () => {
+			const mockLikeStatus = { likeCount: 6, likedByCurrentUser: true };
+			mockApi.post.mockResolvedValue({ data: mockLikeStatus });
+
+			const status = await postsService.likePost('post-123');
+
+			expect(mockApi.post).toHaveBeenCalledWith('/images/post-123/likes');
+			expect(status).toEqual(mockLikeStatus);
+		});
+	});
+
+	describe('unlikePost', () => {
+		it('unlikes a post and returns updated status', async () => {
+			const mockLikeStatus = { likeCount: 4, likedByCurrentUser: false };
+			mockApi.delete.mockResolvedValue({ data: mockLikeStatus });
+
+			const status = await postsService.unlikePost('post-123');
+
+			expect(mockApi.delete).toHaveBeenCalledWith('/images/post-123/likes');
+			expect(status).toEqual(mockLikeStatus);
+		});
+	});
+
+	describe('getComments', () => {
+		it('returns comments for a post', async () => {
+			const mockComments = [
+				{
+					id: 'comment-1',
+					content: 'Great post!',
+					imageId: 'post-123',
+					user: { id: 'user-1', username: 'johndoe', email: 'john@example.com', firstName: 'John', lastName: 'Doe' },
+					createdAt: '2024-01-01T00:00:00Z',
+				},
+			];
+			mockApi.get.mockResolvedValue({ data: { data: mockComments } });
+
+			const comments = await postsService.getComments('post-123');
+
+			expect(mockApi.get).toHaveBeenCalledWith('/images/post-123/comments');
+			expect(comments).toEqual(mockComments);
+		});
+	});
+
+	describe('addComment', () => {
+		it('adds a comment to a post', async () => {
+			const mockComment = {
+				id: 'comment-new',
+				content: 'Nice photo!',
+				imageId: 'post-123',
+				user: { id: 'user-1', username: 'johndoe', email: 'john@example.com', firstName: 'John', lastName: 'Doe' },
+				createdAt: '2024-01-01T00:00:00Z',
+			};
+			mockApi.post.mockResolvedValue({ data: mockComment });
+
+			const comment = await postsService.addComment('post-123', 'Nice photo!');
+
+			expect(mockApi.post).toHaveBeenCalledWith('/images/post-123/comments', { content: 'Nice photo!' });
+			expect(comment).toEqual(mockComment);
+		});
+	});
+
+	describe('deleteComment', () => {
+		it('deletes a comment from a post', async () => {
+			mockApi.delete.mockResolvedValue({});
+
+			await postsService.deleteComment('post-123', 'comment-1');
+
+			expect(mockApi.delete).toHaveBeenCalledWith('/images/post-123/comments/comment-1');
+		});
+	});
 });

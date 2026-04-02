@@ -1,0 +1,26 @@
+.comment-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	padding: 0.5rem;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: var(--color-text-secondary);
+	transition: all 0.2s ease;
+	border-radius: 0.5rem;
+}
+
+.comment-button:hover {
+	color: var(--color-text-primary);
+	background: var(--color-bg-secondary);
+}
+
+.comment-button.active {
+	color: var(--color-primary);
+}
+
+.comment-count {
+	font-size: 0.875rem;
+	font-weight: 500;
+}

@@ -577,19 +577,19 @@
 ## 🖥️ Frontend
 
 ### ❤️ Réactions aux images
-* [ ] Bouton réaction sur chaque image (page feed + page détail)
-* [ ] Affichage du compteur de réactions
-* [ ] Toggle visuel (réagir / retirer sa réaction)
-* [ ] Appel API `POST/DELETE /images/:id/reactions`
+* [x] Bouton réaction sur chaque image (page feed + page détail)
+* [x] Affichage du compteur de réactions
+* [x] Toggle visuel (réagir / retirer sa réaction)
+* [x] Appel API `POST/DELETE /images/:id/reactions`
 
 ---
 
 ### 💬 Commentaires sur les images
-* [ ] Section commentaires sur la page de détail d'une image
-* [ ] Formulaire d'ajout de commentaire
-* [ ] Liste des commentaires avec auteur et date
-* [ ] Bouton suppression pour son propre commentaire
-* [ ] Appel API `GET/POST/DELETE /images/:id/comments`
+* [x] Section commentaires sur la page de détail d'une image
+* [x] Formulaire d'ajout de commentaire
+* [x] Liste des commentaires avec auteur et date
+* [x] Bouton suppression pour son propre commentaire
+* [x] Appel API `GET/POST/DELETE /images/:id/comments`
 
 ---
 
@@ -623,14 +623,6 @@
 * [ ] Aperçu en temps réel avec le filtre appliqué (CSS filters ou canvas)
 * [ ] Filtres proposés : Normal, Noir & Blanc, Sépia, Contraste, Luminosité, etc.
 * [ ] Appliquer le filtre à l'image avant envoi au backend
-
----
-
-### 📸 Prise de photo avec webcam *(5 pts)*
-* [ ] Bouton "Prendre une photo" sur la page d'upload
-* [ ] Modal avec flux webcam (API `getUserMedia`)
-* [ ] Bouton capture → génère un fichier image
-* [ ] Intégration avec le formulaire d'upload existant (remplace le fichier sélectionné)
 
 ---
 
