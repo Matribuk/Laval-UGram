@@ -1,6 +1,8 @@
 import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { ImagesService } from '../images/images.service';
+import { NotificationsService } from '../notifications/notifications.service';
+import { NotificationType } from '../notifications/entities/notification.entity';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()
@@ -8,11 +10,16 @@ export class CommentsService {
   constructor(
     private readonly commentsRepository: CommentsRepository,
     private readonly imagesService: ImagesService,
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async addComment(userId: string, imageId: string, content: string): Promise<Comment> {
-    await this.imagesService.findById(imageId);
-    return this.commentsRepository.create(userId, imageId, content);
+    const image = await this.imagesService.findById(imageId);
+    const comment = await this.commentsRepository.create(userId, imageId, content);
+
+    void this.notificationsService.createNotification(image.userId, userId, NotificationType.COMMENT, comment.id);
+
+    return comment;
   }
 
   async removeComment(userId: string, commentId: string): Promise<void> {

@@ -518,14 +518,14 @@
 ---
 
 ### 🔔 Notifications
-* [ ] Entité `Notification` (id, userId, type, referenceId, read, createdAt)
-* [ ] Service : créer une notification lors d'une réaction/commentaire, marquer comme lue
-* [ ] Controller :
-  * [ ] `GET /notifications` — récupérer ses notifications
-  * [ ] `PATCH /notifications/:id/read` — marquer comme lue
-  * [ ] `PATCH /notifications/read-all` — tout marquer comme lu
-* [ ] Intégration dans le service de réactions et de commentaires (créer notif automatiquement)
-* [ ] Tests unitaires
+* [x] Entité `Notification` (id, userId, actorId, type, referenceId, read, createdAt)
+* [x] Service : créer une notification lors d'une réaction/commentaire, marquer comme lue
+* [x] Controller :
+  * [x] `GET /notifications` — récupérer ses notifications
+  * [x] `PATCH /notifications/:id/read` — marquer comme lue
+  * [x] `PATCH /notifications/read-all` — tout marquer comme lu
+* [x] Intégration dans le service de réactions et de commentaires (créer notif automatiquement)
+* [x] Tests unitaires
 
 ---
 

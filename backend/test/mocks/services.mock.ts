@@ -89,6 +89,21 @@ export const createMockCommentsRepository = () => ({
   findByUserId: jest.fn(),
 });
 
+export const createMockNotificationsService = () => ({
+  createNotification: jest.fn(),
+  getNotifications: jest.fn(),
+  markAsRead: jest.fn(),
+  markAllAsRead: jest.fn(),
+});
+
+export const createMockNotificationsRepository = () => ({
+  create: jest.fn(),
+  findById: jest.fn(),
+  findByUserId: jest.fn(),
+  markAsRead: jest.fn(),
+  markAllAsRead: jest.fn(),
+});
+
 export const createMockMessagesService = () => ({
   sendMessage: jest.fn(),
   getMessages: jest.fn(),
@@ -135,6 +150,8 @@ export type MockCommentsService = ReturnType<typeof createMockCommentsService>;
 export type MockCommentsRepository = ReturnType<typeof createMockCommentsRepository>;
 export type MockMessagesService = ReturnType<typeof createMockMessagesService>;
 export type MockMessagesRepository = ReturnType<typeof createMockMessagesRepository>;
+export type MockNotificationsService = ReturnType<typeof createMockNotificationsService>;
+export type MockNotificationsRepository = ReturnType<typeof createMockNotificationsRepository>;
 export type MockStorageService = ReturnType<typeof createMockStorageService>;
 export type MockStorageProvider = ReturnType<typeof createMockStorageProvider>;
 export type MockJwtService = ReturnType<typeof createMockJwtService>;

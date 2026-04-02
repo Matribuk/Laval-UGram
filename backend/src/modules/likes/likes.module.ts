@@ -5,9 +5,10 @@ import { LikesService } from './likes.service';
 import { LikesRepository } from './likes.repository';
 import { Like } from './entities/like.entity';
 import { ImagesModule } from '../images/images.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Like]), ImagesModule],
+  imports: [TypeOrmModule.forFeature([Like]), ImagesModule, NotificationsModule],
   controllers: [LikesController],
   providers: [LikesService, LikesRepository],
   exports: [LikesService],

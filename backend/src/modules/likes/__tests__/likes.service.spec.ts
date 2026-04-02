@@ -3,23 +3,29 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { LikesService } from '../likes.service';
 import { LikesRepository } from '../likes.repository';
 import { ImagesService } from '../../images/images.service';
-import { createMockLikesRepository, createMockImagesService } from '../../../../test/mocks/services.mock';
-import { createImageFactory } from '../../../../test/factories';
+import { createMockLikesRepository, createMockImagesService, createMockNotificationsService } from '../../../../test/mocks/services.mock';
+import { createImageFactory, createLikeFactory } from '../../../../test/factories';
+import { NotificationsService } from '../../notifications/notifications.service';
+import { NotificationType } from '../../notifications/entities/notification.entity';
 
 describe('LikesService', () => {
   let service: LikesService;
   let likesRepository: ReturnType<typeof createMockLikesRepository>;
   let imagesService: ReturnType<typeof createMockImagesService>;
+  let notificationsService: ReturnType<typeof createMockNotificationsService>;
 
   beforeEach(async () => {
     likesRepository = createMockLikesRepository();
     imagesService = createMockImagesService();
+    notificationsService = createMockNotificationsService();
+    notificationsService.createNotification.mockResolvedValue(null);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         LikesService,
         { provide: LikesRepository, useValue: likesRepository },
         { provide: ImagesService, useValue: imagesService },
+        { provide: NotificationsService, useValue: notificationsService },
       ],
     }).compile();
 
@@ -29,9 +35,11 @@ describe('LikesService', () => {
 
   describe('addLike', () => {
     it('should add a like and return updated status', async () => {
-      imagesService.findById.mockResolvedValue(createImageFactory());
+      const image = createImageFactory({ userId: 'owner-id' });
+      const like = createLikeFactory({ id: 'like-id' });
+      imagesService.findById.mockResolvedValue(image);
       likesRepository.existsByUserAndImage.mockResolvedValue(false);
-      likesRepository.create.mockResolvedValue(undefined);
+      likesRepository.create.mockResolvedValue(like);
       likesRepository.countByImageId.mockResolvedValue(1);
 
       const result = await service.addLike('user-id', 'image-id');
@@ -40,6 +48,24 @@ describe('LikesService', () => {
       expect(likesRepository.existsByUserAndImage).toHaveBeenCalledWith('user-id', 'image-id');
       expect(likesRepository.create).toHaveBeenCalledWith('user-id', 'image-id');
       expect(result).toEqual({ likeCount: 1, likedByCurrentUser: true });
+    });
+
+    it('should trigger a notification for the image owner', async () => {
+      const image = createImageFactory({ userId: 'owner-id' });
+      const like = createLikeFactory({ id: 'like-id' });
+      imagesService.findById.mockResolvedValue(image);
+      likesRepository.existsByUserAndImage.mockResolvedValue(false);
+      likesRepository.create.mockResolvedValue(like);
+      likesRepository.countByImageId.mockResolvedValue(1);
+
+      await service.addLike('user-id', 'image-id');
+
+      expect(notificationsService.createNotification).toHaveBeenCalledWith(
+        'owner-id',
+        'user-id',
+        NotificationType.LIKE,
+        'like-id',
+      );
     });
 
     it('should throw NotFoundException if image does not exist', async () => {

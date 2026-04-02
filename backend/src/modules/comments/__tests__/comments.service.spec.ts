@@ -3,23 +3,29 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CommentsService } from '../comments.service';
 import { CommentsRepository } from '../comments.repository';
 import { ImagesService } from '../../images/images.service';
-import { createMockCommentsRepository, createMockImagesService } from '../../../../test/mocks/services.mock';
+import { createMockCommentsRepository, createMockImagesService, createMockNotificationsService } from '../../../../test/mocks/services.mock';
 import { createCommentFactory, createImageFactory } from '../../../../test/factories';
+import { NotificationsService } from '../../notifications/notifications.service';
+import { NotificationType } from '../../notifications/entities/notification.entity';
 
 describe('CommentsService', () => {
   let service: CommentsService;
   let commentsRepository: ReturnType<typeof createMockCommentsRepository>;
   let imagesService: ReturnType<typeof createMockImagesService>;
+  let notificationsService: ReturnType<typeof createMockNotificationsService>;
 
   beforeEach(async () => {
     commentsRepository = createMockCommentsRepository();
     imagesService = createMockImagesService();
+    notificationsService = createMockNotificationsService();
+    notificationsService.createNotification.mockResolvedValue(null);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommentsService,
         { provide: CommentsRepository, useValue: commentsRepository },
         { provide: ImagesService, useValue: imagesService },
+        { provide: NotificationsService, useValue: notificationsService },
       ],
     }).compile();
 
@@ -38,6 +44,22 @@ describe('CommentsService', () => {
       expect(imagesService.findById).toHaveBeenCalledWith('image-id');
       expect(commentsRepository.create).toHaveBeenCalledWith('user-id', 'image-id', 'Nice photo!');
       expect(result).toEqual(comment);
+    });
+
+    it('should trigger a notification for the image owner', async () => {
+      const image = createImageFactory({ userId: 'owner-id' });
+      const comment = createCommentFactory({ id: 'comment-id', content: 'Nice!' });
+      imagesService.findById.mockResolvedValue(image);
+      commentsRepository.create.mockResolvedValue(comment);
+
+      await service.addComment('user-id', 'image-id', 'Nice!');
+
+      expect(notificationsService.createNotification).toHaveBeenCalledWith(
+        'owner-id',
+        'user-id',
+        NotificationType.COMMENT,
+        'comment-id',
+      );
     });
 
     it('should throw NotFoundException if image does not exist', async () => {
