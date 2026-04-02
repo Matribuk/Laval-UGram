@@ -73,7 +73,7 @@ describe('CommentsSection', () => {
 	});
 
 	it('shows loading state initially', () => {
-		mockPostsService.getComments.mockImplementation(() => new Promise(() => {}));
+		mockPostsService.getComments.mockImplementation(() => new Promise(jest.fn()));
 
 		render(<CommentsSection postId="post-123" />);
 

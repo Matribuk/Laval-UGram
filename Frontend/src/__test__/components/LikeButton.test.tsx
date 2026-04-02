@@ -181,11 +181,12 @@ describe('LikeButton', () => {
 			likedByCurrentUser: false,
 		});
 
-		let resolvePromise: (value: { likeCount: number; likedByCurrentUser: boolean }) => void;
+		type LikeStatusResolver = (value: { likeCount: number; likedByCurrentUser: boolean }) => void;
+		const promiseRef: { resolve: LikeStatusResolver | null } = { resolve: null };
 		mockPostsService.likePost.mockImplementation(
 			() =>
 				new Promise((resolve) => {
-					resolvePromise = resolve;
+					promiseRef.resolve = resolve;
 				}),
 		);
 
@@ -200,7 +201,9 @@ describe('LikeButton', () => {
 
 		expect(button).toBeDisabled();
 
-		resolvePromise!({ likeCount: 6, likedByCurrentUser: true });
+		if (promiseRef.resolve) {
+			promiseRef.resolve({ likeCount: 6, likedByCurrentUser: true });
+		}
 
 		await waitFor(() => {
 			expect(button).not.toBeDisabled();

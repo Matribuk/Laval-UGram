@@ -81,7 +81,9 @@
 	padding: 0.25rem;
 	border-radius: var(--radius-sm);
 	opacity: 0;
-	transition: opacity 0.2s ease, color 0.2s ease;
+	transition:
+		opacity 0.2s ease,
+		color 0.2s ease;
 }
 
 .comment:hover .comment-delete-btn {
@@ -135,7 +137,9 @@
 	border: none;
 	border-radius: 0.5rem;
 	cursor: pointer;
-	transition: background-color 0.2s ease, opacity 0.2s ease;
+	transition:
+		background-color 0.2s ease,
+		opacity 0.2s ease;
 }
 
 .comment-submit-btn:hover:not(:disabled) {

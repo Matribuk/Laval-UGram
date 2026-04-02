@@ -43,15 +43,10 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 
 		setLoading(true);
 		try {
-			if (liked) {
-				const status = await postsService.unlikePost(postId);
-				setLikeCount(status.likeCount);
-				setLiked(status.likedByCurrentUser);
-			} else {
-				const status = await postsService.likePost(postId);
-				setLikeCount(status.likeCount);
-				setLiked(status.likedByCurrentUser);
-			}
+			const toggleAction = liked ? postsService.unlikePost : postsService.likePost;
+			const status = await toggleAction(postId);
+			setLikeCount(status.likeCount);
+			setLiked(status.likedByCurrentUser);
 		} catch (error) {
 			console.error('Failed to toggle like:', error);
 			toast.error('Failed to update like');

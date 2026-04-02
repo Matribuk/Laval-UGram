@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
 import { toast } from 'react-toastify';
 import { Comment } from '../../types/api.types';
 import { useUser } from '../UserContext';
-import { getTimeAgo } from '../../utils/helpers';
-import Avatar from '../Avatar/Avatar';
-import { TrashIcon, SendIcon } from '../../utils/SvgFile';
+import { SendIcon } from '../../utils/SvgFile';
 import { postsService } from '../../services/postsService';
+import CommentItem from './CommentItem';
 import './CommentsSection.css';
 
 interface CommentsSectionProps {
@@ -62,20 +60,23 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId, onCommentCoun
 		}
 	};
 
-	const handleDelete = async (commentId: string) => {
-		try {
-			await postsService.deleteComment(postId, commentId);
-			setComments((prev) => {
-				const newComments = prev.filter((c) => c.id !== commentId);
-				onCommentCountChange?.(newComments.length);
-				return newComments;
-			});
-			toast.success('Comment deleted');
-		} catch (error) {
-			console.error('Failed to delete comment:', error);
-			toast.error('Failed to delete comment');
-		}
-	};
+	const handleDelete = useCallback(
+		async (commentId: string) => {
+			try {
+				await postsService.deleteComment(postId, commentId);
+				setComments((prev) => {
+					const newComments = prev.filter((c) => c.id !== commentId);
+					onCommentCountChange?.(newComments.length);
+					return newComments;
+				});
+				toast.success('Comment deleted');
+			} catch (error) {
+				console.error('Failed to delete comment:', error);
+				toast.error('Failed to delete comment');
+			}
+		},
+		[postId, onCommentCountChange],
+	);
 
 	return (
 		<div className="comments-section">
@@ -90,34 +91,12 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId, onCommentCoun
 					) : (
 						<div className="comments-list">
 							{comments.map((comment) => (
-								<div key={comment.id} className="comment">
-									<Link to={`/profile/${comment.user.username}`} className="comment-avatar-link">
-										<Avatar
-											src={comment.user.profilePictureUrl}
-											name={comment.user.username}
-											size="small"
-										/>
-									</Link>
-									<div className="comment-content">
-										<div className="comment-header">
-											<Link to={`/profile/${comment.user.username}`} className="comment-username">
-												{comment.user.username}
-											</Link>
-											<span className="comment-time">{getTimeAgo(comment.createdAt)}</span>
-										</div>
-										<p className="comment-text">{comment.content}</p>
-									</div>
-									{currentUser?.username === comment.user.username && (
-										<button
-											type="button"
-											className="comment-delete-btn"
-											onClick={() => handleDelete(comment.id)}
-											aria-label="Delete comment"
-										>
-											<TrashIcon />
-										</button>
-									)}
-								</div>
+								<CommentItem
+									key={comment.id}
+									comment={comment}
+									isOwner={currentUser?.username === comment.user.username}
+									onDelete={handleDelete}
+								/>
 							))}
 						</div>
 					)}
@@ -131,11 +110,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ postId, onCommentCoun
 							onChange={(e) => setNewComment(e.target.value)}
 							disabled={submitting}
 						/>
-						<button
-							type="submit"
-							className="comment-submit-btn"
-							disabled={!newComment.trim() || submitting}
-						>
+						<button type="submit" className="comment-submit-btn" disabled={!newComment.trim() || submitting}>
 							<SendIcon />
 						</button>
 					</form>

@@ -300,7 +300,12 @@ export const SendIcon: React.FC<SvgProps> = ({ width = 20, height = 20, classNam
 	</svg>
 );
 
-export const HeartIcon: React.FC<SvgProps & { filled?: boolean }> = ({ width = 20, height = 20, className, filled }) => (
+export const HeartIcon: React.FC<SvgProps & { filled?: boolean }> = ({
+	width = 20,
+	height = 20,
+	className,
+	filled,
+}) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		width={width}
