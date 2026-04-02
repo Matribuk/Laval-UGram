@@ -494,26 +494,26 @@
 ## 🧠 Backend
 
 ### ❤️ Réactions aux images
-* [ ] Entité `Reaction` (id, userId, imageId, type, createdAt)
-* [ ] Repository : créer, supprimer, compter par image
-* [ ] Service : ajouter/retirer une réaction (toggle), récupérer les réactions d'une image
-* [ ] Controller :
-  * [ ] `POST /images/:id/reactions` — ajouter une réaction
-  * [ ] `DELETE /images/:id/reactions` — retirer sa réaction
-  * [ ] `GET /images/:id/reactions` — consulter les réactions
-* [ ] Tests unitaires (repository, service, controller)
+* [x] Entité `Reaction` (id, userId, imageId, type, createdAt)
+* [x] Repository : créer, supprimer, compter par image
+* [x] Service : ajouter/retirer une réaction (toggle), récupérer les réactions d'une image
+* [x] Controller :
+  * [x] `POST /images/:id/reactions` — ajouter une réaction
+  * [x] `DELETE /images/:id/reactions` — retirer sa réaction
+  * [x] `GET /images/:id/reactions` — consulter les réactions
+* [x] Tests unitaires (repository, service, controller)
 
 ---
 
 ### 💬 Commentaires sur les images
-* [ ] Entité `Comment` (id, userId, imageId, content, createdAt)
-* [ ] Repository : créer, supprimer, lister par image
-* [ ] Service : ajouter, supprimer (propriétaire uniquement), récupérer par image
-* [ ] Controller :
-  * [ ] `POST /images/:id/comments` — ajouter un commentaire
-  * [ ] `DELETE /images/:id/comments/:commentId` — supprimer un commentaire
-  * [ ] `GET /images/:id/comments` — consulter les commentaires
-* [ ] Tests unitaires (repository, service, controller)
+* [x] Entité `Comment` (id, userId, imageId, content, createdAt)
+* [x] Repository : créer, supprimer, lister par image
+* [x] Service : ajouter, supprimer (propriétaire uniquement), récupérer par image
+* [x] Controller :
+  * [x] `POST /images/:id/comments` — ajouter un commentaire
+  * [x] `DELETE /images/:id/comments/:commentId` — supprimer un commentaire
+  * [x] `GET /images/:id/comments` — consulter les commentaires
+* [x] Tests unitaires (repository, service, controller)
 
 ---
 
@@ -539,15 +539,15 @@
 ---
 
 ### 📩 Messages privés *(3 pts)*
-* [ ] Entité `Message` (id, senderId, receiverId, content, createdAt, read)
-* [ ] Repository : créer, lister conversations, lister messages d'une conversation
-* [ ] Service : envoyer un message, récupérer conversations, récupérer messages
-* [ ] Controller :
-  * [ ] `POST /messages` — envoyer un message
-  * [ ] `GET /messages/conversations` — liste des conversations
-  * [ ] `GET /messages/:userId` — messages avec un usager
-  * [ ] `PATCH /messages/:id/read` — marquer comme lu
-* [ ] Tests unitaires
+* [x] Entité `Message` (id, senderId, receiverId, content, createdAt, read)
+* [x] Repository : créer, lister conversations, lister messages d'une conversation
+* [x] Service : envoyer un message, récupérer conversations, récupérer messages
+* [x] Controller :
+  * [x] `POST /messages` — envoyer un message
+  * [x] `GET /messages/conversations` — liste des conversations
+  * [x] `GET /messages/:userId` — messages avec un usager
+  * [x] `PATCH /messages/:id/read` — marquer comme lu
+* [x] Tests unitaires
 
 ---
 
