@@ -24,15 +24,26 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 	const [commentCount, setCommentCount] = useState(0);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		const fetchCommentCount = async () => {
 			try {
 				const comments = await postsService.getComments(id);
-				setCommentCount(comments.length);
+				if (isMounted) {
+					setCommentCount(comments.length);
+				}
 			} catch (error) {
-				console.error('Failed to fetch comment count:', error);
+				if (isMounted) {
+					console.error('Failed to fetch comment count:', error);
+				}
 			}
 		};
+
 		fetchCommentCount();
+
+		return () => {
+			isMounted = false;
+		};
 	}, [id]);
 
 	const handleImageClick = () => {
