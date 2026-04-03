@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Conversation } from '../../types/api.types';
 import { useUser } from '../../components/UserContext';
+import { useIsMounted } from '../../hooks/useIsMounted';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import SearchInput from '../../components/SearchInput/SearchInput';
 import ConversationItem from '../../components/ConversationItem/ConversationItem';
@@ -15,49 +16,51 @@ import './MessagesPage.css';
 const MessagesPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { user } = useUser();
+	const isMounted = useIsMounted();
 	const [conversations, setConversations] = useState<Conversation[]>([]);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
-		let isMounted = true;
-
 		const fetchConversations = async () => {
 			try {
 				setLoading(true);
 				const data = await messagesService.getConversations();
-				if (isMounted) {
+				if (isMounted()) {
 					setConversations(Array.isArray(data) ? data : []);
 				}
 			} catch (error) {
-				if (isMounted) {
+				if (isMounted()) {
 					console.error('Failed to fetch conversations:', error);
 					toast.error('Failed to load conversations');
 					setConversations([]);
 				}
 			} finally {
-				if (isMounted) {
+				if (isMounted()) {
 					setLoading(false);
 				}
 			}
 		};
 
 		fetchConversations();
+	}, [isMounted]);
 
-		return () => {
-			isMounted = false;
-		};
-	}, []);
-
-	const filteredConversations = conversations.filter(
-		(conv) =>
-			conv.otherUser.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			conv.otherUser.fullName.toLowerCase().includes(searchQuery.toLowerCase()),
+	const filteredConversations = useMemo(
+		() =>
+			conversations.filter(
+				(conv) =>
+					conv.otherUser.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+					conv.otherUser.fullName.toLowerCase().includes(searchQuery.toLowerCase()),
+			),
+		[conversations, searchQuery],
 	);
 
-	const handleConversationClick = (conversation: Conversation) => {
-		navigate(`/messages/${conversation.otherUser.id}`);
-	};
+	const handleConversationClick = useCallback(
+		(conversation: Conversation) => {
+			navigate(`/messages/${conversation.otherUser.id}`);
+		},
+		[navigate],
+	);
 
 	if (loading) {
 		return (

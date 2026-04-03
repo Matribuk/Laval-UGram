@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { SendIcon } from '../../utils/SvgFile';
 import './MessageInput.css';
 
@@ -7,17 +7,20 @@ interface MessageInputProps {
 	disabled?: boolean;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled = false }) => {
+const MessageInput: React.FC<MessageInputProps> = React.memo(({ onSend, disabled = false }) => {
 	const [content, setContent] = useState('');
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		const trimmedContent = content.trim();
-		if (trimmedContent && !disabled) {
-			onSend(trimmedContent);
-			setContent('');
-		}
-	};
+	const handleSubmit = useCallback(
+		(e: React.FormEvent) => {
+			e.preventDefault();
+			const trimmedContent = content.trim();
+			if (trimmedContent && !disabled) {
+				onSend(trimmedContent);
+				setContent('');
+			}
+		},
+		[content, disabled, onSend],
+	);
 
 	return (
 		<form className="message-input-form" onSubmit={handleSubmit}>
@@ -34,6 +37,8 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSend, disabled = false })
 			</button>
 		</form>
 	);
-};
+});
+
+MessageInput.displayName = 'MessageInput';
 
 export default MessageInput;

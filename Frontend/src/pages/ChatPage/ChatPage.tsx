@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Message, User } from '../../types/api.types';
 import { useUser } from '../../components/UserContext';
+import { useIsMounted } from '../../hooks/useIsMounted';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import Avatar from '../../components/Avatar/Avatar';
 import MessageBubble from '../../components/MessageBubble/MessageBubble';
@@ -17,6 +18,7 @@ const ChatPage: React.FC = () => {
 	const { userId } = useParams<{ userId: string }>();
 	const navigate = useNavigate();
 	const { user: currentUser } = useUser();
+	const isMounted = useIsMounted();
 	const [messages, setMessages] = useState<Message[]>([]);
 	const [otherUser, setOtherUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -28,8 +30,6 @@ const ChatPage: React.FC = () => {
 	}, []);
 
 	useEffect(() => {
-		let isMounted = true;
-
 		const fetchData = async () => {
 			if (!userId) {
 				return;
@@ -42,7 +42,7 @@ const ChatPage: React.FC = () => {
 					usersService.getUserById(userId),
 				]);
 
-				if (isMounted) {
+				if (isMounted()) {
 					setMessages(messagesData.messages);
 					setOtherUser(userData);
 
@@ -50,23 +50,19 @@ const ChatPage: React.FC = () => {
 					await Promise.all(unreadMessages.map((m) => messagesService.markAsRead(m.id)));
 				}
 			} catch (error) {
-				if (isMounted) {
+				if (isMounted()) {
 					console.error('Failed to fetch messages:', error);
 					toast.error('Failed to load conversation');
 				}
 			} finally {
-				if (isMounted) {
+				if (isMounted()) {
 					setLoading(false);
 				}
 			}
 		};
 
 		fetchData();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [userId]);
+	}, [userId, isMounted]);
 
 	useEffect(() => {
 		scrollToBottom();

@@ -9,7 +9,7 @@ interface ConversationItemProps {
 	onClick: () => void;
 }
 
-const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, onClick }) => {
+const ConversationItem: React.FC<ConversationItemProps> = React.memo(({ conversation, onClick }) => {
 	const { otherUser, lastMessage, unreadCount } = conversation;
 
 	return (
@@ -31,6 +31,8 @@ const ConversationItem: React.FC<ConversationItemProps> = ({ conversation, onCli
 			{unreadCount > 0 && <span className="conversation-item-badge">{unreadCount}</span>}
 		</div>
 	);
-};
+});
+
+ConversationItem.displayName = 'ConversationItem';
 
 export default ConversationItem;

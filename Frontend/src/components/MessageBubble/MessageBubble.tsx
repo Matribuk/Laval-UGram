@@ -8,13 +8,15 @@ interface MessageBubbleProps {
 	isOwn: boolean;
 }
 
-const MessageBubble: React.FC<MessageBubbleProps> = ({ message, isOwn }) => {
+const MessageBubble: React.FC<MessageBubbleProps> = React.memo(({ message, isOwn }) => {
 	return (
 		<div className={`message-bubble ${isOwn ? 'message-bubble-own' : 'message-bubble-other'}`}>
 			<p className="message-bubble-content">{message.content}</p>
 			<span className="message-bubble-time">{getTimeAgo(message.createdAt)}</span>
 		</div>
 	);
-};
+});
+
+MessageBubble.displayName = 'MessageBubble';
 
 export default MessageBubble;
