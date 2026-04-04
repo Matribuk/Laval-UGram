@@ -53,6 +53,25 @@
 	background-color: var(--color-bg-primary);
 }
 
+.message-profile-button {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 0.75rem;
+	font-size: 0.875rem;
+	font-weight: var(--font-medium);
+	color: white;
+	background: var(--color-primary);
+	border: none;
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: background-color var(--transition-fast);
+}
+
+.message-profile-button:hover {
+	background-color: var(--color-primary-dark);
+}
+
 .profile-stats {
 	margin-bottom: 1rem;
 }
@@ -187,7 +206,8 @@
 		gap: 1rem;
 	}
 
-	.edit-profile-button {
+	.edit-profile-button,
+	.message-profile-button {
 		padding: 8px 1rem;
 		gap: 8px;
 	}

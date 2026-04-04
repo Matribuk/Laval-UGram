@@ -7,7 +7,7 @@ import PageLayout from '../../components/PageLayout/PageLayout';
 import Avatar from '../../components/Avatar/Avatar';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
-import { GridIcon, SettingsIcon, EmailIcon, CalendarIcon, PhoneIcon } from '../../utils/SvgFile';
+import { GridIcon, SettingsIcon, EmailIcon, CalendarIcon, PhoneIcon, MessageIcon } from '../../utils/SvgFile';
 import { usersService } from '../../services/usersService';
 import { postsService } from '../../services/postsService';
 import './ProfilePage.css';
@@ -67,6 +67,12 @@ const ProfilePage: React.FC = () => {
 		navigate('/profile/edit');
 	};
 
+	const handleSendMessage = () => {
+		if (profileUser) {
+			navigate(`/messages/${profileUser.id}`);
+		}
+	};
+
 	const handlePostClick = (postId: string) => {
 		navigate(`/post/${postId}`);
 	};
@@ -102,10 +108,15 @@ const ProfilePage: React.FC = () => {
 				<div className="profile-info">
 					<div className="profile-title-row">
 						<h1 className="profile-username">{profileUser.username}</h1>
-						{isOwnProfile && (
+						{isOwnProfile ? (
 							<button type="button" className="edit-profile-button" onClick={handleEditProfile}>
 								<SettingsIcon />
 								Edit Profile
+							</button>
+						) : (
+							<button type="button" className="message-profile-button" onClick={handleSendMessage}>
+								<MessageIcon />
+								Message
 							</button>
 						)}
 					</div>

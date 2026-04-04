@@ -22,6 +22,16 @@ export const ENDPOINTS = {
 		SEARCH: '/images/search',
 		BY_HASHTAG: (hashtag: string) => `/images/hashtag/${hashtag}`,
 		USER_IMAGES: (userId: string) => `/users/${userId}/images`,
+		LIKES: (imageId: string) => `/images/${imageId}/likes`,
+		COMMENTS: (imageId: string) => `/images/${imageId}/comments`,
+		COMMENT_BY_ID: (imageId: string, commentId: string) => `/images/${imageId}/comments/${commentId}`,
+	},
+
+	MESSAGES: {
+		BASE: '/messages',
+		CONVERSATIONS: '/messages/conversations',
+		WITH_USER: (userId: string) => `/messages/${userId}`,
+		MARK_READ: (messageId: string) => `/messages/${messageId}/read`,
 	},
 } as const;
 

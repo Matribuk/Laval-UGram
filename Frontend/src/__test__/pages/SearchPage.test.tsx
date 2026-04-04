@@ -20,6 +20,11 @@ jest.mock('../../utils/SvgFile', () => ({
 	ProfileIcon: () => <svg data-testid="profile-icon" />,
 	PlusIcon: () => <svg data-testid="plus-icon" />,
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
+	HeartIcon: () => <svg data-testid="heart-icon" />,
+	CommentIcon: () => <svg data-testid="comment-icon" />,
+	TrashIcon: () => <svg data-testid="trash-icon" />,
+	SendIcon: () => <svg data-testid="send-icon" />,
+	MessageIcon: () => <svg data-testid="message-icon" />,
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -63,6 +68,8 @@ describe('SearchPage', () => {
 			error: null,
 			isAuthenticated: true,
 		});
+		mockPostsService.getComments.mockResolvedValue([]);
+		mockPostsService.getLikeStatus.mockResolvedValue({ likeCount: 0, likedByCurrentUser: false });
 	});
 
 	describe('hashtag search', () => {

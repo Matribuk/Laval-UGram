@@ -487,6 +487,187 @@
 
 ---
 
+## 🚀 Livrable 3 — Fonctionnalités avancées
+
+---
+
+## 🧠 Backend
+
+### ❤️ Réactions aux images
+* [x] Entité `Reaction` (id, userId, imageId, type, createdAt)
+* [x] Repository : créer, supprimer, compter par image
+* [x] Service : ajouter/retirer une réaction (toggle), récupérer les réactions d'une image
+* [x] Controller :
+  * [x] `POST /images/:id/reactions` — ajouter une réaction
+  * [x] `DELETE /images/:id/reactions` — retirer sa réaction
+  * [x] `GET /images/:id/reactions` — consulter les réactions
+* [x] Tests unitaires (repository, service, controller)
+
+---
+
+### 💬 Commentaires sur les images
+* [x] Entité `Comment` (id, userId, imageId, content, createdAt)
+* [x] Repository : créer, supprimer, lister par image
+* [x] Service : ajouter, supprimer (propriétaire uniquement), récupérer par image
+* [x] Controller :
+  * [x] `POST /images/:id/comments` — ajouter un commentaire
+  * [x] `DELETE /images/:id/comments/:commentId` — supprimer un commentaire
+  * [x] `GET /images/:id/comments` — consulter les commentaires
+* [x] Tests unitaires (repository, service, controller)
+
+---
+
+### 🔔 Notifications
+* [x] Entité `Notification` (id, userId, actorId, type, referenceId, read, createdAt)
+* [x] Service : créer une notification lors d'une réaction/commentaire, marquer comme lue
+* [x] Controller :
+  * [x] `GET /notifications` — récupérer ses notifications
+  * [x] `PATCH /notifications/:id/read` — marquer comme lue
+  * [x] `PATCH /notifications/read-all` — tout marquer comme lu
+* [x] Intégration dans le service de réactions et de commentaires (créer notif automatiquement)
+* [x] Tests unitaires
+
+---
+
+### 🖼️ Resizing des images
+* [ ] Installer `sharp` pour le traitement d'images
+* [ ] Générer 3 formats à l'upload : `thumbnail` (150px), `medium` (600px), `original`
+* [ ] Stocker les 3 variantes (local ou S3)
+* [ ] Exposer les URLs des 3 formats dans `ImageResponseDto`
+* [ ] Tests unitaires du service de stockage
+
+---
+
+### 📩 Messages privés *(3 pts)*
+* [x] Entité `Message` (id, senderId, receiverId, content, createdAt, read)
+* [x] Repository : créer, lister conversations, lister messages d'une conversation
+* [x] Service : envoyer un message, récupérer conversations, récupérer messages
+* [x] Controller :
+  * [x] `POST /messages` — envoyer un message
+  * [x] `GET /messages/conversations` — liste des conversations
+  * [x] `GET /messages/:userId` — messages avec un usager
+  * [x] `PATCH /messages/:id/read` — marquer comme lu
+* [x] Tests unitaires
+
+---
+
+### 👥 Recommandation de comptes populaires *(8 pts)*
+* [ ] Algorithme de popularité (basé sur nombre de réactions reçues + commentaires reçus + images postées)
+* [ ] Service : calculer le score de popularité, retourner top N usagers
+* [ ] Controller :
+  * [ ] `GET /users/recommended` — retourner les comptes recommandés (excluant l'usager courant)
+* [ ] Tests unitaires
+
+---
+
+### 📚 Documentation dynamique (Swagger)
+* [ ] Vérifier que tous les nouveaux endpoints sont documentés avec `@ApiOperation`, `@ApiResponse`
+* [ ] Ajouter les nouveaux tags Swagger (Reactions, Comments, Notifications, Messages)
+* [ ] S'assurer que Swagger UI est accessible en production (`/api/docs`)
+
+---
+
+### 🔐 Sécurité backend
+* [ ] Rate limiting sur les endpoints sensibles (messages, réactions, commentaires)
+* [ ] Validation stricte des inputs pour tous les nouveaux DTOs
+* [ ] Vérification propriétaire pour suppression de commentaires et messages
+
+---
+
+## 🖥️ Frontend
+
+### ❤️ Réactions aux images
+* [x] Bouton réaction sur chaque image (page feed + page détail)
+* [x] Affichage du compteur de réactions
+* [x] Toggle visuel (réagir / retirer sa réaction)
+* [x] Appel API `POST/DELETE /images/:id/reactions`
+
+---
+
+### 💬 Commentaires sur les images
+* [x] Section commentaires sur la page de détail d'une image
+* [x] Formulaire d'ajout de commentaire
+* [x] Liste des commentaires avec auteur et date
+* [x] Bouton suppression pour son propre commentaire
+* [x] Appel API `GET/POST/DELETE /images/:id/comments`
+
+---
+
+### 🔔 Notifications
+* [ ] Icône de cloche dans le header avec badge compteur (non lues)
+* [ ] Dropdown ou page de notifications listant les événements (réaction / commentaire)
+* [ ] Marquer comme lu au clic
+* [ ] Appel API `GET /notifications` + `PATCH /notifications/:id/read`
+
+---
+
+### 📩 Messages privés *(3 pts)*
+* [ ] Onglet ou icône "Messages" dans la navigation
+* [ ] Page liste des conversations (avatar + dernier message + badge non lu)
+* [ ] Page conversation : fil de messages + champ de saisie
+* [ ] Envoi d'un message et mise à jour en temps quasi-réel (polling ou refresh)
+* [ ] Appel API `GET/POST /messages`
+
+---
+
+### 👥 Recommandation de comptes populaires *(8 pts)*
+* [ ] Section "Comptes suggérés" dans la sidebar ou page dédiée
+* [ ] Affichage des top N comptes populaires (avatar, username, score)
+* [ ] Bouton pour accéder au profil public de chaque compte recommandé
+* [ ] Appel API `GET /users/recommended`
+
+---
+
+### 🎨 Filtres sur photos *(5 pts)*
+* [ ] Interface de sélection de filtres avant confirmation de l'upload
+* [ ] Aperçu en temps réel avec le filtre appliqué (CSS filters ou canvas)
+* [ ] Filtres proposés : Normal, Noir & Blanc, Sépia, Contraste, Luminosité, etc.
+* [ ] Appliquer le filtre à l'image avant envoi au backend
+
+---
+
+## ⚙️ DevSecOps
+
+### 🚀 Déploiement de la nouvelle version
+* [ ] Mettre à jour la pipeline CI (nouveaux tests backend/frontend)
+* [ ] Redeployer le backend sur Elastic Beanstalk avec les nouvelles dépendances (`sharp`)
+* [ ] Redeployer le frontend sur S3 après build
+* [ ] Vérifier les migrations de base de données (nouvelles entités auto-sync ou migration manuelle)
+* [ ] Tester les nouvelles fonctionnalités en production après déploiement
+
+---
+
+### 📊 Monitoring & Métriques
+* [ ] Ajouter des métriques custom CloudWatch pour les nouveaux endpoints
+  * [ ] Nombre de réactions par heure
+  * [ ] Nombre de commentaires par heure
+  * [ ] Nombre de messages privés par heure
+  * [ ] Latence des endpoints critiques (resizing, recommandation)
+* [ ] Configurer des alarmes CloudWatch (ex: erreurs 5xx > seuil, latence élevée)
+* [ ] Ajouter le monitoring Sentry sur les nouvelles pages frontend (messages, notifications)
+* [ ] Dashboard CloudWatch regroupant les métriques clés de l'application
+
+---
+
+### 🔐 Sécurité
+* [ ] Configurer WAF (AWS Web Application Firewall) devant l'application
+  * [ ] Règles anti-injection SQL et XSS
+  * [ ] Blocage des IPs abusives
+* [ ] Activer HTTPS sur Elastic Beanstalk (certificat SSL via ACM)
+* [ ] Restreindre les accès S3 images (pre-signed URLs ou CloudFront)
+* [ ] Audit des secrets (rotation des clés JWT, Google OAuth, RDS)
+* [ ] Vérifier que les variables sensibles ne sont pas dans le code (audit `.env` / defaults)
+
+---
+
+### 📋 Finalisation de la remise L3
+* [ ] Créer / mettre à jour la branche `release` pour L3
+* [ ] Vérifier le lien de l'application dans le README
+* [ ] Tester toutes les fonctionnalités L3 en production avant la date limite
+* [ ] Ne plus modifier le site après la date de remise
+
+---
+
 ## 🔧 Points techniques résolus
 
 * [x] Connexion Frontend ↔ Backend

@@ -33,16 +33,26 @@ const MentionTextarea: React.FC<MentionTextareaProps> = ({
 	const suggestionsRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
+		let isMounted = true;
+
 		const fetchUsers = async () => {
 			try {
 				const data = await usersService.getAllUsers();
-				setUsers(data);
+				if (isMounted) {
+					setUsers(data);
+				}
 			} catch (error) {
-				console.error('Failed to fetch users for mentions:', error);
+				if (isMounted) {
+					console.error('Failed to fetch users for mentions:', error);
+				}
 			}
 		};
 
 		fetchUsers();
+
+		return () => {
+			isMounted = false;
+		};
 	}, []);
 
 	const findMentionQuery = useCallback(

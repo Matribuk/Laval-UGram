@@ -300,6 +300,63 @@ export const SendIcon: React.FC<SvgProps> = ({ width = 20, height = 20, classNam
 	</svg>
 );
 
+export const HeartIcon: React.FC<SvgProps & { filled?: boolean }> = ({
+	width = 20,
+	height = 20,
+	className,
+	filled,
+}) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={width}
+		height={height}
+		viewBox="0 0 24 24"
+		fill={filled ? 'currentColor' : 'none'}
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		className={className}
+	>
+		<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+	</svg>
+);
+
+export const CommentIcon: React.FC<SvgProps> = ({ width = 20, height = 20, className }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={width}
+		height={height}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		className={className}
+	>
+		<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+	</svg>
+);
+
+export const TrashIcon: React.FC<SvgProps> = ({ width = 16, height = 16, className }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={width}
+		height={height}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		className={className}
+	>
+		<polyline points="3 6 5 6 21 6" />
+		<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+	</svg>
+);
+
 export const GoogleIcon: React.FC<SvgProps> = ({ width = 20, height = 20, className }) => (
 	<svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 24 24" className={className}>
 		<path
@@ -318,5 +375,23 @@ export const GoogleIcon: React.FC<SvgProps> = ({ width = 20, height = 20, classN
 			d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
 			fill="#EA4335"
 		/>
+	</svg>
+);
+
+export const MessageIcon: React.FC<SvgProps> = ({ width = 20, height = 20, className }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width={width}
+		height={height}
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		strokeWidth="2"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+		className={className}
+	>
+		<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+		<polyline points="22,6 12,13 2,6" />
 	</svg>
 );

@@ -16,6 +16,8 @@ const CreatePostPage = lazy(() => import('./pages/CreatePostPage/CreatePostPage'
 const PostDetailPage = lazy(() => import('./pages/PostDetailPage/PostDetailPage'));
 const EditPostPage = lazy(() => import('./pages/EditPostPage/EditPostPage'));
 const SearchPage = lazy(() => import('./pages/SearchPage/SearchPage'));
+const MessagesPage = lazy(() => import('./pages/MessagesPage/MessagesPage'));
+const ChatPage = lazy(() => import('./pages/ChatPage/ChatPage'));
 
 function App(): React.JSX.Element {
 	return (
@@ -129,6 +131,22 @@ function App(): React.JSX.Element {
 						element={
 							<PrivateRoute>
 								<SearchPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/messages"
+						element={
+							<PrivateRoute>
+								<MessagesPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/messages/:userId"
+						element={
+							<PrivateRoute>
+								<ChatPage />
 							</PrivateRoute>
 						}
 					/>
