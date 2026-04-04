@@ -515,4 +515,32 @@ describe('UsersService', () => {
       );
     });
   });
+
+  describe('getRecommendedUsers', () => {
+    it('should return recommended users from repository', async () => {
+      const users = createManyUsers(3).map((u) => ({ ...u, popularityScore: 10 }));
+      repository.findRecommended.mockResolvedValue(users);
+
+      const result = await service.getRecommendedUsers('current-user-id', 5);
+
+      expect(repository.findRecommended).toHaveBeenCalledWith('current-user-id', 5);
+      expect(result).toEqual(users);
+    });
+
+    it('should return empty array when no other users exist', async () => {
+      repository.findRecommended.mockResolvedValue([]);
+
+      const result = await service.getRecommendedUsers('current-user-id', 5);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should pass the limit to the repository', async () => {
+      repository.findRecommended.mockResolvedValue([]);
+
+      await service.getRecommendedUsers('user-id', 10);
+
+      expect(repository.findRecommended).toHaveBeenCalledWith('user-id', 10);
+    });
+  });
 });

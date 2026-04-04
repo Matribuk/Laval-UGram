@@ -552,11 +552,11 @@
 ---
 
 ### 👥 Recommandation de comptes populaires *(8 pts)*
-* [ ] Algorithme de popularité (basé sur nombre de réactions reçues + commentaires reçus + images postées)
-* [ ] Service : calculer le score de popularité, retourner top N usagers
-* [ ] Controller :
-  * [ ] `GET /users/recommended` — retourner les comptes recommandés (excluant l'usager courant)
-* [ ] Tests unitaires
+* [x] Algorithme de popularité (basé sur nombre de réactions reçues + commentaires reçus + images postées)
+* [x] Service : calculer le score de popularité, retourner top N usagers
+* [x] Controller :
+  * [x] `GET /users/recommended` — retourner les comptes recommandés (excluant l'usager courant)
+* [x] Tests unitaires
 
 ---
 
