@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
-import { UsersRepository } from './users.repository';
+import { UsersRepository, UserWithScore } from './users.repository';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { User } from './entities/user.entity';
 
@@ -90,6 +90,10 @@ export class UsersService {
       throw new NotFoundException(`User with ID "${id}" not found`);
     }
     return updatedUser;
+  }
+
+  async getRecommendedUsers(currentUserId: string, limit: number = 5): Promise<UserWithScore[]> {
+    return this.usersRepository.findRecommended(currentUserId, limit);
   }
 
   async delete(id: string): Promise<void> {

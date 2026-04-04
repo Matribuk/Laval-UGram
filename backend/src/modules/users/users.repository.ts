@@ -3,6 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
 import { User } from './entities/user.entity';
 
+export type UserWithScore = User & { popularityScore: number };
+
 @Injectable()
 export class UsersRepository {
   constructor(
@@ -71,5 +73,27 @@ export class UsersRepository {
       take: limit,
       order: { username: 'ASC' },
     });
+  }
+
+  async findRecommended(currentUserId: string, limit: number = 5): Promise<UserWithScore[]> {
+    const { entities, raw } = await this.repository
+      .createQueryBuilder('u')
+      .leftJoin('images', 'i', 'i.user_id = u.id')
+      .leftJoin('likes', 'l', 'l.image_id = i.id')
+      .leftJoin('comments', 'c', 'c.image_id = i.id')
+      .addSelect(
+        '(COUNT(DISTINCT i.id) + COUNT(DISTINCT l.id) + COUNT(DISTINCT c.id))',
+        'popularity_score',
+      )
+      .where('u.id != :currentUserId', { currentUserId })
+      .groupBy('u.id')
+      .orderBy('popularity_score', 'DESC')
+      .limit(limit)
+      .getRawAndEntities();
+
+    return entities.map((user, index) => ({
+      ...user,
+      popularityScore: Number(raw[index]?.popularity_score ?? 0),
+    }));
   }
 }
