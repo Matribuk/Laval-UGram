@@ -151,3 +151,42 @@ export interface Comment {
 	user: BackendUser;
 	createdAt: string;
 }
+
+export interface BackendMessage {
+	id: string;
+	senderId: string;
+	receiverId: string;
+	content: string;
+	read: boolean;
+	createdAt: string;
+	sender: BackendUser;
+	receiver: BackendUser;
+}
+
+export interface Message {
+	id: string;
+	senderId: string;
+	receiverId: string;
+	content: string;
+	read: boolean;
+	createdAt: string;
+	sender: User;
+	receiver: User;
+}
+
+export interface BackendConversation {
+	otherUser: BackendUser;
+	lastMessage: BackendMessage | null;
+	unreadCount: number;
+}
+
+export interface Conversation {
+	otherUser: User;
+	lastMessage: Message | null;
+	unreadCount: number;
+}
+
+export interface SendMessageRequest {
+	receiverId: string;
+	content: string;
+}

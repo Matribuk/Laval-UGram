@@ -1,0 +1,64 @@
+.conversation-item {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-md);
+	padding: var(--spacing-md) var(--spacing-lg);
+	background-color: var(--color-bg-white);
+	border-radius: var(--radius-md);
+	cursor: pointer;
+	transition: background-color var(--transition-fast);
+}
+
+.conversation-item:hover {
+	background-color: var(--color-bg-secondary);
+}
+
+.conversation-item-unread {
+	background-color: var(--color-bg-primary);
+}
+
+.conversation-item-content {
+	flex: 1;
+	min-width: 0;
+}
+
+.conversation-item-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: var(--spacing-xs);
+}
+
+.conversation-item-username {
+	font-size: var(--font-sm);
+	font-weight: var(--font-semibold);
+	color: var(--color-text-primary);
+}
+
+.conversation-item-time {
+	font-size: var(--font-xs);
+	color: var(--color-text-secondary);
+}
+
+.conversation-item-preview {
+	font-size: var(--font-sm);
+	color: var(--color-text-secondary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: 0;
+}
+
+.conversation-item-badge {
+	min-width: 20px;
+	height: 20px;
+	padding: 0 var(--spacing-xs);
+	background-color: var(--color-primary);
+	color: white;
+	font-size: var(--font-xs);
+	font-weight: var(--font-semibold);
+	border-radius: var(--radius-full);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

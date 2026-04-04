@@ -26,6 +26,13 @@ export const ENDPOINTS = {
 		COMMENTS: (imageId: string) => `/images/${imageId}/comments`,
 		COMMENT_BY_ID: (imageId: string, commentId: string) => `/images/${imageId}/comments/${commentId}`,
 	},
+
+	MESSAGES: {
+		BASE: '/messages',
+		CONVERSATIONS: '/messages/conversations',
+		WITH_USER: (userId: string) => `/messages/${userId}`,
+		MARK_READ: (messageId: string) => `/messages/${messageId}/read`,
+	},
 } as const;
 
 export const OAUTH_URLS = {

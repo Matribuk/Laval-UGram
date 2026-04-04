@@ -11,6 +11,7 @@ jest.mock('../../utils/SvgFile', () => ({
 	ProfileIcon: () => <svg data-testid="profile-icon" />,
 	PlusIcon: () => <svg data-testid="plus-icon" />,
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
+	MessageIcon: () => <svg data-testid="message-icon" />,
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

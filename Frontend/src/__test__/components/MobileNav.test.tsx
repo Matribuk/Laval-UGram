@@ -9,6 +9,7 @@ jest.mock('../../utils/SvgFile', () => ({
 	UsersIcon: () => <svg data-testid="users-icon" />,
 	ProfileIcon: () => <svg data-testid="profile-icon" />,
 	PlusIcon: () => <svg data-testid="plus-icon" />,
+	MessageIcon: () => <svg data-testid="message-icon" />,
 }));
 
 describe('MobileNav', () => {

@@ -1,4 +1,14 @@
-import { User, Post, PostAuthor, BackendUser, BackendPost } from '../types/api.types';
+import {
+	User,
+	Post,
+	PostAuthor,
+	BackendUser,
+	BackendPost,
+	BackendMessage,
+	Message,
+	BackendConversation,
+	Conversation,
+} from '../types/api.types';
 import { buildImageUrl } from './constants';
 
 export const transformBackendUser = (backendUser: BackendUser): User => {
@@ -38,3 +48,20 @@ export const transformBackendPost = (backendPost: BackendPost): Post => {
 		mentions: backendPost.mentions.map((m) => m.mentionedUser.username),
 	};
 };
+
+export const transformBackendMessage = (backendMessage: BackendMessage): Message => ({
+	id: backendMessage.id,
+	senderId: backendMessage.senderId,
+	receiverId: backendMessage.receiverId,
+	content: backendMessage.content,
+	read: backendMessage.read,
+	createdAt: backendMessage.createdAt,
+	sender: transformBackendUser(backendMessage.sender),
+	receiver: transformBackendUser(backendMessage.receiver),
+});
+
+export const transformBackendConversation = (backendConversation: BackendConversation): Conversation => ({
+	otherUser: transformBackendUser(backendConversation.otherUser),
+	lastMessage: backendConversation.lastMessage ? transformBackendMessage(backendConversation.lastMessage) : null,
+	unreadCount: backendConversation.unreadCount,
+});

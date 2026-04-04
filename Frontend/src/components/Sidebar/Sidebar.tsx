@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../types/api.types';
-import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon } from '../../utils/SvgFile';
+import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon, MessageIcon } from '../../utils/SvgFile';
 import { useUser } from '../UserContext';
 import Avatar from '../Avatar/Avatar';
 import './Sidebar.css';
 
 interface SidebarProps {
-	activePage: 'feed' | 'users' | 'profile';
+	activePage: 'feed' | 'users' | 'profile' | 'messages';
 	user: User | null;
 }
 
@@ -15,7 +15,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 	const navigate = useNavigate();
 	const { logout } = useUser();
 
-	const handleNavigate = (page: 'feed' | 'users' | 'profile') => {
+	const handleNavigate = (page: 'feed' | 'users' | 'profile' | 'messages') => {
 		navigate(`/${page}`);
 	};
 
@@ -50,6 +50,15 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 					>
 						<UsersIcon />
 						Users
+					</button>
+
+					<button
+						type="button"
+						className={`nav-item ${activePage === 'messages' ? 'active' : ''}`}
+						onClick={() => handleNavigate('messages')}
+					>
+						<MessageIcon />
+						Messages
 					</button>
 
 					<button
