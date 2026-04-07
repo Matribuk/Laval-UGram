@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { StorageService } from './storage.service';
+import { ImageResizeService } from './image-resize.service';
 import { STORAGE_PROVIDER } from './interfaces/storage-provider.interface';
 import { LocalStorageProvider } from './providers/local-storage.provider';
 import { S3StorageProvider } from './providers/s3-storage.provider';
@@ -9,6 +10,7 @@ import { S3StorageProvider } from './providers/s3-storage.provider';
 @Module({
   imports: [ConfigModule],
   providers: [
+    ImageResizeService,
     StorageService,
     {
       provide: STORAGE_PROVIDER,
@@ -24,6 +26,6 @@ import { S3StorageProvider } from './providers/s3-storage.provider';
       inject: [ConfigService],
     },
   ],
-  exports: [StorageService],
+  exports: [StorageService, ImageResizeService],
 })
 export class StorageModule {}
