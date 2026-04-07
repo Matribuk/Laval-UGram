@@ -13,6 +13,7 @@ export const ENDPOINTS = {
 		BY_ID: (id: string) => `/users/${id}`,
 		ME: '/users/me',
 		SEARCH: '/users/search',
+		RECOMMENDED: '/users/recommended',
 		PROFILE_PICTURE: (id: string) => `/users/${id}/profile-picture`,
 	},
 

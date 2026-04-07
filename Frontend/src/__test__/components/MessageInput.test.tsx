@@ -36,7 +36,10 @@ describe('MessageInput', () => {
 		render(<MessageInput onSend={mockOnSend} />);
 		const input = screen.getByPlaceholderText('Type a message...');
 		await userEvent.type(input, '  Hello World  ');
-		fireEvent.submit(screen.getByRole('button').closest('form')!);
+		const form = screen.getByRole('button').closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 		expect(mockOnSend).toHaveBeenCalledWith('Hello World');
 	});
 
@@ -44,7 +47,10 @@ describe('MessageInput', () => {
 		render(<MessageInput onSend={mockOnSend} />);
 		const input = screen.getByPlaceholderText('Type a message...') as HTMLInputElement;
 		await userEvent.type(input, 'Hello');
-		fireEvent.submit(screen.getByRole('button').closest('form')!);
+		const form = screen.getByRole('button').closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 		expect(input.value).toBe('');
 	});
 
@@ -52,7 +58,10 @@ describe('MessageInput', () => {
 		render(<MessageInput onSend={mockOnSend} />);
 		const input = screen.getByPlaceholderText('Type a message...');
 		await userEvent.type(input, '   ');
-		fireEvent.submit(screen.getByRole('button').closest('form')!);
+		const form = screen.getByRole('button').closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 		expect(mockOnSend).not.toHaveBeenCalled();
 	});
 
@@ -64,8 +73,10 @@ describe('MessageInput', () => {
 
 	it('does not send message when disabled', async () => {
 		render(<MessageInput onSend={mockOnSend} disabled={true} />);
-		const form = screen.getByRole('button').closest('form')!;
-		fireEvent.submit(form);
+		const form = screen.getByRole('button').closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 		expect(mockOnSend).not.toHaveBeenCalled();
 	});
 });

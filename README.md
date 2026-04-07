@@ -217,6 +217,10 @@ ugram-h2026-team-12/
 │   │   ├── images/            # Module images/posts
 │   │   ├── hashtags/          # Module hashtags
 │   │   ├── mentions/          # Module mentions
+│   │   ├── reactions/         # Module réactions (likes)
+│   │   ├── comments/          # Module commentaires
+│   │   ├── messages/          # Module messages privés
+│   │   ├── notifications/     # Module notifications
 │   │   ├── storage/           # Module stockage (local/S3)
 │   │   └── config/            # Configuration
 │   ├── uploads/               # Dossier d'uploads locaux
@@ -227,20 +231,27 @@ ugram-h2026-team-12/
     ├── src/
     │   ├── components/        # Composants réutilisables
     │   │   ├── Avatar/
+    │   │   ├── CommentsSection/
+    │   │   ├── ConversationItem/
     │   │   ├── FormField/
     │   │   ├── ImageUpload/
     │   │   ├── LoadingSpinner/
+    │   │   ├── MessageBubble/
+    │   │   ├── MessageInput/
     │   │   ├── MobileNav/
     │   │   ├── PageLayout/
     │   │   ├── PostCard/
+    │   │   ├── RecommendedUsers/
     │   │   ├── Sidebar/
     │   │   ├── UserCard/
     │   │   └── UserContext.tsx
     │   ├── pages/             # Pages de l'application
+    │   │   ├── ChatPage/
     │   │   ├── CreatePostPage/
     │   │   ├── EditPostPage/
     │   │   ├── HomePage/
     │   │   ├── LoginPage/
+    │   │   ├── MessagesPage/
     │   │   ├── PostDetailPage/
     │   │   ├── ProfilePage/
     │   │   ├── SettingsPage/
@@ -248,6 +259,7 @@ ugram-h2026-team-12/
     │   │   └── UsersPage/
     │   ├── services/          # Services API
     │   │   ├── authService.ts
+    │   │   ├── messagesService.ts
     │   │   ├── postsService.ts
     │   │   └── usersService.ts
     │   ├── types/             # Types TypeScript
@@ -284,6 +296,23 @@ ugram-h2026-team-12/
 * Feed global des images triées par date
 * Grille d'images par utilisateur
 * Page de détail d'une image
+* Réactions (likes) sur les images
+* Commentaires sur les images
+
+### Messages privés
+
+* Liste des conversations avec aperçu du dernier message
+* Fil de discussion en temps réel
+* Envoi de messages entre utilisateurs
+* Indicateur de messages non lus
+* Bouton "Message" sur les profils
+
+### Recommandations de comptes
+
+* Section "Suggested for you" dans la sidebar (desktop)
+* Affichage horizontal scrollable sur mobile
+* Top 5 comptes les plus populaires (basé sur likes + commentaires + posts)
+* Navigation directe vers le profil
 
 ### Fonctions de recherches
 
@@ -345,6 +374,29 @@ ugram-h2026-team-12/
 * `POST /api/images` - Upload d'une image
 * `PATCH /api/images/:id` - Mise à jour d'une image
 * `DELETE /api/images/:id` - Suppression d'une image
+
+### Réactions
+
+* `POST /api/images/:id/reactions` - Ajouter une réaction
+* `DELETE /api/images/:id/reactions` - Retirer une réaction
+* `GET /api/images/:id/reactions` - Liste des réactions
+
+### Commentaires
+
+* `POST /api/images/:id/comments` - Ajouter un commentaire
+* `DELETE /api/images/:id/comments/:commentId` - Supprimer un commentaire
+* `GET /api/images/:id/comments` - Liste des commentaires
+
+### Messages
+
+* `POST /api/messages` - Envoyer un message
+* `GET /api/messages/conversations` - Liste des conversations
+* `GET /api/messages/:userId` - Messages avec un utilisateur
+* `PATCH /api/messages/:id/read` - Marquer comme lu
+
+### Recommandations
+
+* `GET /api/users/recommended` - Comptes populaires recommandés
 
 ## Développement
 

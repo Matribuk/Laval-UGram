@@ -190,3 +190,24 @@ export interface SendMessageRequest {
 	receiverId: string;
 	content: string;
 }
+
+export interface BackendPopularUser {
+	id: string;
+	username: string;
+	firstName: string;
+	lastName: string;
+	email: string;
+	profilePictureUrl?: string;
+	popularityScore: number;
+}
+
+export interface PopularUser {
+	id: string;
+	username: string;
+	firstName: string;
+	lastName: string;
+	fullName: string;
+	email: string;
+	avatar?: string;
+	popularityScore: number;
+}

@@ -602,19 +602,23 @@
 ---
 
 ### 📩 Messages privés *(3 pts)*
-* [ ] Onglet ou icône "Messages" dans la navigation
-* [ ] Page liste des conversations (avatar + dernier message + badge non lu)
-* [ ] Page conversation : fil de messages + champ de saisie
-* [ ] Envoi d'un message et mise à jour en temps quasi-réel (polling ou refresh)
-* [ ] Appel API `GET/POST /messages`
+* [x] Onglet ou icône "Messages" dans la navigation
+* [x] Page liste des conversations (avatar + dernier message + badge non lu)
+* [x] Page conversation : fil de messages + champ de saisie
+* [x] Envoi d'un message et mise à jour en temps quasi-réel (polling ou refresh)
+* [x] Appel API `GET/POST /messages`
+* [x] Bouton "Message" sur le profil des autres utilisateurs
+* [x] Tests unitaires (489 tests, 87.6% coverage)
 
 ---
 
 ### 👥 Recommandation de comptes populaires *(8 pts)*
-* [ ] Section "Comptes suggérés" dans la sidebar ou page dédiée
-* [ ] Affichage des top N comptes populaires (avatar, username, score)
-* [ ] Bouton pour accéder au profil public de chaque compte recommandé
-* [ ] Appel API `GET /users/recommended`
+* [x] Section "Comptes suggérés" dans la sidebar (desktop) et en haut du feed (mobile)
+* [x] Affichage des top 5 comptes populaires (avatar, username, score)
+* [x] Design responsive : vertical (sidebar) et horizontal avec cartes (mobile)
+* [x] Bouton pour accéder au profil public de chaque compte recommandé
+* [x] Appel API `GET /users/recommended?limit=5`
+* [x] Tests unitaires (499 tests, 88.17% coverage)
 
 ---
 
@@ -684,3 +688,9 @@
 * [x] Phone number validation compatible backend
 * [x] Mentions avec résolution username → UUID
 * [x] Hashtags parsing et validation
+* [x] Images de profil dans les commentaires (buildImageUrl fix)
+* [x] Hook useIsMounted pour cleanup async
+* [x] React.memo sur composants de messagerie (optimisation)
+* [x] RecommendedUsers component avec variants (vertical/horizontal)
+* [x] Design responsive mobile avec cartes scrollables horizontalement
+* [x] Lint et tests à 88.17% coverage (499 tests)

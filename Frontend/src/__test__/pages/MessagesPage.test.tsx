@@ -196,7 +196,9 @@ describe('MessagesPage', () => {
 		});
 
 		const conversationItem = screen.getByText('alice').closest('[role="button"]');
-		fireEvent.click(conversationItem!);
+		if (conversationItem) {
+			fireEvent.click(conversationItem);
+		}
 
 		expect(mockNavigate).toHaveBeenCalledWith('/messages/user-2');
 	});

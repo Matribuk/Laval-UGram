@@ -8,6 +8,8 @@ import {
 	Message,
 	BackendConversation,
 	Conversation,
+	BackendPopularUser,
+	PopularUser,
 } from '../types/api.types';
 import { buildImageUrl } from './constants';
 
@@ -65,3 +67,18 @@ export const transformBackendConversation = (backendConversation: BackendConvers
 	lastMessage: backendConversation.lastMessage ? transformBackendMessage(backendConversation.lastMessage) : null,
 	unreadCount: backendConversation.unreadCount,
 });
+
+export const transformBackendPopularUser = (backendPopularUser: BackendPopularUser): PopularUser => {
+	const avatar = backendPopularUser.profilePictureUrl ? buildImageUrl(backendPopularUser.profilePictureUrl) : undefined;
+
+	return {
+		id: backendPopularUser.id,
+		username: backendPopularUser.username,
+		firstName: backendPopularUser.firstName,
+		lastName: backendPopularUser.lastName,
+		fullName: `${backendPopularUser.firstName} ${backendPopularUser.lastName}`,
+		email: backendPopularUser.email,
+		avatar,
+		popularityScore: backendPopularUser.popularityScore,
+	};
+};
