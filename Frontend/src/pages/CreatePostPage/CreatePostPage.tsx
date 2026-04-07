@@ -70,7 +70,6 @@ const CreatePostPage: React.FC = () => {
 				}
 			}
 
-			// Apply filter to image before upload
 			const filteredFile = await applyFilterToImage(values.imageFile, selectedFilter);
 
 			await postsService.createPost({

@@ -1,14 +1,7 @@
 import { IMAGE_FILTERS } from '../components/ImageFilters';
 
-/**
- * Apply a CSS filter to an image and return a new File with the filter applied
- * @param file - Original image file
- * @param filterName - Name of the filter to apply
- * @returns Promise<File> - New file with the filter applied
- */
 export const applyFilterToImage = (file: File, filterName: string): Promise<File> => {
 	return new Promise((resolve, reject) => {
-		// If no filter or normal filter, return original file
 		if (!filterName || filterName === 'normal') {
 			resolve(file);
 			return;
@@ -36,11 +29,9 @@ export const applyFilterToImage = (file: File, filterName: string): Promise<File
 				canvas.width = img.width;
 				canvas.height = img.height;
 
-				// Apply the CSS filter
 				ctx.filter = filter.style.filter as string;
 				ctx.drawImage(img, 0, 0);
 
-				// Convert canvas to blob
 				canvas.toBlob(
 					(blob) => {
 						if (!blob) {
@@ -48,7 +39,6 @@ export const applyFilterToImage = (file: File, filterName: string): Promise<File
 							return;
 						}
 
-						// Create a new file with the same name but filtered content
 						const filteredFile = new File([blob], file.name, {
 							type: file.type || 'image/jpeg',
 							lastModified: Date.now(),
