@@ -26,7 +26,9 @@ const RecommendedUsers: React.FC<RecommendedUsersProps> = ({ limit = 5, variant 
 					setUsers(data);
 				}
 			} catch (error) {
-				console.error('Failed to fetch recommended users:', error);
+				if (isMounted()) {
+					console.error('Failed to fetch recommended users:', error);
+				}
 			} finally {
 				if (isMounted()) {
 					setLoading(false);
