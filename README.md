@@ -314,6 +314,13 @@ ugram-h2026-team-12/
 * Top 5 comptes les plus populaires (basé sur likes + commentaires + posts)
 * Navigation directe vers le profil
 
+### Filtres photo
+
+* Interface de sélection de filtres lors de la création d'un post
+* Aperçu en temps réel avec le filtre appliqué
+* 9 filtres disponibles : Normal, B&W, Sepia, Contrast, Bright, Vivid, Warm, Cool, Vintage
+* Application du filtre à l'image via Canvas API avant envoi au backend
+
 ### Fonctions de recherches
 
 * L'usager peut rechercher un autre usager via la page users.

@@ -6,9 +6,10 @@ interface ImageUploadProps {
 	preview: string | null;
 	onFileSelect: (file: File | null) => void;
 	error?: string;
+	hidePreview?: boolean;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ preview, onFileSelect, error }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ preview, onFileSelect, error, hidePreview = false }) => {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const handleClick = () => {
@@ -35,17 +36,17 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ preview, onFileSelect, error 
 	return (
 		<div className="image-upload-container">
 			<div
-				className={`image-upload-zone ${preview ? 'has-preview' : ''} ${error ? 'has-error' : ''}`}
+				className={`image-upload-zone ${preview && !hidePreview ? 'has-preview' : ''} ${error ? 'has-error' : ''}`}
 				onClick={handleClick}
 				onDrop={handleDrop}
 				onDragOver={handleDragOver}
 			>
-				{preview ? (
+				{preview && !hidePreview ? (
 					<img src={preview} alt="Preview" className="image-preview" />
 				) : (
 					<div className="upload-placeholder">
 						<CameraIcon width={48} height={48} />
-						<p>Click or drag an image here</p>
+						<p>{preview ? 'Click to change image' : 'Click or drag an image here'}</p>
 					</div>
 				)}
 				<input ref={fileInputRef} type="file" accept="image/*" onChange={handleChange} className="file-input-hidden" />

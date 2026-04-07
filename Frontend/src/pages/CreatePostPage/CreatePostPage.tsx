@@ -9,10 +9,12 @@ import { parseMentions, parseTags } from '../../utils/helpers';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import PageHeader from '../../components/PageHeader/PageHeader';
 import ImageUpload from '../../components/ImageUpload/ImageUpload';
+import ImageFilters from '../../components/ImageFilters';
 import MentionTextarea from '../../components/MentionTextarea/MentionTextarea';
 import FormActions from '../../components/FormActions/FormActions';
 import { postsService } from '../../services/postsService';
 import { usersService } from '../../services/usersService';
+import { applyFilterToImage } from '../../utils/imageFilters';
 import './CreatePostPage.css';
 
 const CreatePostPage: React.FC = () => {
@@ -20,6 +22,7 @@ const CreatePostPage: React.FC = () => {
 	const { user: currentUser } = useUser();
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
 	const [imageError, setImageError] = useState<string>('');
+	const [selectedFilter, setSelectedFilter] = useState<string>('normal');
 
 	const initialValues: CreatePostFormValues = {
 		caption: '',
@@ -36,9 +39,11 @@ const CreatePostPage: React.FC = () => {
 			};
 			reader.readAsDataURL(file);
 			setImageError('');
+			setSelectedFilter('normal');
 		} else {
 			setFieldValue('imageFile', null);
 			setImagePreview(null);
+			setSelectedFilter('normal');
 		}
 	};
 
@@ -65,8 +70,11 @@ const CreatePostPage: React.FC = () => {
 				}
 			}
 
+			// Apply filter to image before upload
+			const filteredFile = await applyFilterToImage(values.imageFile, selectedFilter);
+
 			await postsService.createPost({
-				file: values.imageFile,
+				file: filteredFile,
 				description: values.caption,
 				hashtags: tags,
 				mentions: mentionedUserIds,
@@ -91,7 +99,12 @@ const CreatePostPage: React.FC = () => {
 							preview={imagePreview}
 							onFileSelect={(file) => handleFileSelect(file, setFieldValue)}
 							error={imageError}
+							hidePreview={!!imagePreview}
 						/>
+
+						{imagePreview && (
+							<ImageFilters preview={imagePreview} selectedFilter={selectedFilter} onFilterSelect={setSelectedFilter} />
+						)}
 
 						<div className="form-group">
 							<label htmlFor="caption">Description</label>
