@@ -213,7 +213,6 @@
 	}
 }
 
-/* Danger Zone */
 .danger-zone {
 	border-color: var(--color-error);
 }

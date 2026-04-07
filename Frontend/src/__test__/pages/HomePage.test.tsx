@@ -8,6 +8,11 @@ import { toast } from 'react-toastify';
 jest.mock('react-router-dom');
 jest.mock('../../components/UserContext');
 jest.mock('../../services/postsService');
+jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
+	const MockRecommendedUsers = () => <div data-testid="recommended-users" />;
+	MockRecommendedUsers.displayName = 'RecommendedUsers';
+	return MockRecommendedUsers;
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		error: jest.fn(),

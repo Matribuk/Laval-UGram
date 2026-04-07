@@ -89,6 +89,11 @@
 	max-width: 100%;
 }
 
+.mobile-recommendations {
+	display: block;
+	margin-bottom: var(--space-md);
+}
+
 .feed-end {
 	text-align: center;
 	color: var(--color-text-secondary);
@@ -116,6 +121,10 @@
 
 	.feed-container {
 		max-width: 37.5rem;
+	}
+
+	.mobile-recommendations {
+		display: none;
 	}
 }
 

@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import ConversationItem from '../../components/ConversationItem/ConversationItem';
 import { Conversation } from '../../types/api.types';
 
-
 describe('ConversationItem', () => {
 	const mockOnClick = jest.fn();
 

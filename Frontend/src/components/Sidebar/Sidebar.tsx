@@ -4,6 +4,7 @@ import { User } from '../../types/api.types';
 import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon, MessageIcon } from '../../utils/SvgFile';
 import { useUser } from '../UserContext';
 import Avatar from '../Avatar/Avatar';
+import RecommendedUsers from '../RecommendedUsers/RecommendedUsers';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -75,6 +76,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 						<span>New Post</span>
 					</button>
 				</nav>
+
+				<RecommendedUsers limit={5} />
 			</div>
 
 			<div className="sidebar-footer">

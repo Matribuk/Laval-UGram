@@ -16,6 +16,11 @@ jest.mock('react-router-dom', () => ({
 jest.mock('../../components/UserContext');
 jest.mock('../../services/messagesService');
 jest.mock('../../services/usersService');
+jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
+	const MockRecommendedUsers = () => <div data-testid="recommended-users" />;
+	MockRecommendedUsers.displayName = 'RecommendedUsers';
+	return MockRecommendedUsers;
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		error: jest.fn(),
@@ -165,7 +170,9 @@ describe('ChatPage', () => {
 		});
 
 		const backButton = screen.getByTestId('back-arrow-icon').closest('button');
-		fireEvent.click(backButton!);
+		if (backButton) {
+			fireEvent.click(backButton);
+		}
 
 		expect(mockNavigate).toHaveBeenCalledWith('/messages');
 	});
@@ -198,7 +205,10 @@ describe('ChatPage', () => {
 
 		const input = screen.getByPlaceholderText('Type a message...');
 		await userEvent.type(input, 'New message');
-		fireEvent.submit(input.closest('form')!);
+		const form = input.closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 
 		await waitFor(() => {
 			expect(mockMessagesService.sendMessage).toHaveBeenCalledWith({
@@ -240,7 +250,10 @@ describe('ChatPage', () => {
 
 		const input = screen.getByPlaceholderText('Type a message...');
 		await userEvent.type(input, 'Test');
-		fireEvent.submit(input.closest('form')!);
+		const form = input.closest('form');
+		if (form) {
+			fireEvent.submit(form);
+		}
 
 		await waitFor(() => {
 			expect(toast.error).toHaveBeenCalledWith('Failed to send message');
