@@ -14,6 +14,15 @@ jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
 	MockRecommendedUsers.displayName = 'RecommendedUsers';
 	return MockRecommendedUsers;
 });
+jest.mock('../../components/ImageFilters', () => {
+	const MockImageFilters = ({ preview }: { preview: string }) => (
+		<div data-testid="image-filters">
+			<img src={preview} alt="Preview" className="filtered-image" />
+		</div>
+	);
+	MockImageFilters.displayName = 'ImageFilters';
+	return { __esModule: true, default: MockImageFilters };
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		success: jest.fn(),
@@ -86,7 +95,7 @@ describe('CreatePostPage', () => {
 		});
 	});
 
-	it('shows image preview when file is selected', async () => {
+	it('shows image filters when file is selected', async () => {
 		const { container } = render(<CreatePostPage />);
 
 		const file = new File(['test'], 'test.png', { type: 'image/png' });
@@ -95,8 +104,7 @@ describe('CreatePostPage', () => {
 		fireEvent.change(fileInput);
 
 		await waitFor(() => {
-			const preview = container.querySelector('.image-preview');
-			expect(preview).toBeInTheDocument();
+			expect(screen.getByTestId('image-filters')).toBeInTheDocument();
 		});
 	});
 

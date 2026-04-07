@@ -623,10 +623,11 @@
 ---
 
 ### 🎨 Filtres sur photos *(5 pts)*
-* [ ] Interface de sélection de filtres avant confirmation de l'upload
-* [ ] Aperçu en temps réel avec le filtre appliqué (CSS filters ou canvas)
-* [ ] Filtres proposés : Normal, Noir & Blanc, Sépia, Contraste, Luminosité, etc.
-* [ ] Appliquer le filtre à l'image avant envoi au backend
+* [x] Interface de sélection de filtres avant confirmation de l'upload
+* [x] Aperçu en temps réel avec le filtre appliqué (CSS filters + canvas)
+* [x] Filtres proposés : Normal, B&W, Sepia, Contrast, Bright, Vivid, Warm, Cool, Vintage
+* [x] Appliquer le filtre à l'image avant envoi au backend (canvas API)
+* [x] Tests unitaires (12 tests ImageFilters)
 
 ---
 
@@ -693,4 +694,6 @@
 * [x] React.memo sur composants de messagerie (optimisation)
 * [x] RecommendedUsers component avec variants (vertical/horizontal)
 * [x] Design responsive mobile avec cartes scrollables horizontalement
-* [x] Lint et tests à 88.17% coverage (499 tests)
+* [x] Lint et tests à 88% coverage (511 tests)
+* [x] ImageFilters component avec React.memo, useMemo, useCallback
+* [x] Canvas API pour appliquer les filtres CSS aux images avant upload
