@@ -17,7 +17,7 @@ export class CommentsService {
     const image = await this.imagesService.findById(imageId);
     const comment = await this.commentsRepository.create(userId, imageId, content);
 
-    void this.notificationsService.createNotification(image.userId, userId, NotificationType.COMMENT, imageId);
+    void this.notificationsService.createNotification(image.userId, userId, NotificationType.COMMENT, comment.id);
 
     return comment;
   }

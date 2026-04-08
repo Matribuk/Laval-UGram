@@ -25,7 +25,7 @@ export class LikesService {
     const like = await this.likesRepository.create(userId, imageId);
     const likeCount = await this.likesRepository.countByImageId(imageId);
 
-    void this.notificationsService.createNotification(image.userId, userId, NotificationType.LIKE, imageId);
+    void this.notificationsService.createNotification(image.userId, userId, NotificationType.LIKE, like.id);
 
     return { likeCount, likedByCurrentUser: true };
   }
