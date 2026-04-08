@@ -46,6 +46,8 @@ const ProfilePage: React.FC = () => {
 						postsArray.map((p) => ({
 							id: p.id,
 							imageUrl: p.imageUrl,
+							thumbnailUrl: p.thumbnailUrl,
+							mediumUrl: p.mediumUrl,
 						})),
 					);
 				} else {

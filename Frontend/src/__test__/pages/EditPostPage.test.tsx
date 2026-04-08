@@ -64,6 +64,8 @@ describe('EditPostPage', () => {
 	const mockPost = {
 		id: 'post-123',
 		imageUrl: '/image.jpg',
+		thumbnailUrl: '/image.jpg',
+		mediumUrl: '/image.jpg',
 		caption: 'Original caption',
 		tags: ['nature', 'photography'],
 		mentions: [],

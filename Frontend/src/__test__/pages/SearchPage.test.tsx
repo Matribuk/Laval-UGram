@@ -62,6 +62,8 @@ describe('SearchPage', () => {
 			timeAgo: '',
 			createdAt: new Date().toISOString(),
 			imageUrl: '/image1.jpg',
+			thumbnailUrl: '/image1.jpg',
+			mediumUrl: '/image1.jpg',
 			caption: 'Beach vacation',
 			tags: ['travel'],
 			mentions: [],

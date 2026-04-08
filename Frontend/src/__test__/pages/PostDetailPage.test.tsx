@@ -60,6 +60,8 @@ describe('PostDetailPage', () => {
 	const mockPost = {
 		id: 'post-123',
 		imageUrl: '/image.jpg',
+		thumbnailUrl: '/image.jpg',
+		mediumUrl: '/image.jpg',
 		caption: 'Test caption @mentioned',
 		tags: ['nature', 'photography'],
 		mentions: ['mentioned'],

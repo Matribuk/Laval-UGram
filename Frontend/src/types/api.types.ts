@@ -47,6 +47,8 @@ export interface Post {
 export interface ProfilePost {
 	id: string;
 	imageUrl: string;
+	thumbnailUrl: string;
+	mediumUrl: string;
 }
 
 export interface LoginFormValues {

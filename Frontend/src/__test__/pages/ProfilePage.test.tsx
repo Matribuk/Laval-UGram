@@ -80,6 +80,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-1',
 			imageUrl: '/image1.jpg',
+			thumbnailUrl: '/image1.jpg',
+			mediumUrl: '/image1.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],
@@ -90,6 +92,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-2',
 			imageUrl: '/image2.jpg',
+			thumbnailUrl: '/image2.jpg',
+			mediumUrl: '/image2.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],
