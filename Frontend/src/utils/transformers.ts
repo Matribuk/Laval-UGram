@@ -34,6 +34,8 @@ export const transformBackendUser = (backendUser: BackendUser): User => {
 
 export const transformBackendPost = (backendPost: BackendPost): Post => {
 	const imageUrl = buildImageUrl(backendPost.url);
+	const thumbnailUrl = backendPost.thumbnailUrl ? buildImageUrl(backendPost.thumbnailUrl) : imageUrl;
+	const mediumUrl = backendPost.mediumUrl ? buildImageUrl(backendPost.mediumUrl) : imageUrl;
 	const avatar = backendPost.user.profilePictureUrl ? buildImageUrl(backendPost.user.profilePictureUrl) : undefined;
 
 	const author: PostAuthor = {
@@ -47,6 +49,8 @@ export const transformBackendPost = (backendPost: BackendPost): Post => {
 		timeAgo: '',
 		createdAt: backendPost.createdAt,
 		imageUrl,
+		thumbnailUrl,
+		mediumUrl,
 		caption: backendPost.description || '',
 		tags: backendPost.hashtags.map((h) => h.name),
 		mentions: backendPost.mentions.map((m) => m.mentionedUser.username),

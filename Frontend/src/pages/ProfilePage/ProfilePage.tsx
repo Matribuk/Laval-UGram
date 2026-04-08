@@ -162,7 +162,7 @@ const ProfilePage: React.FC = () => {
 					<div className="posts-grid">
 						{posts.map((post) => (
 							<div key={post.id} className="post-thumbnail" onClick={() => handlePostClick(post.id)}>
-								<img src={post.imageUrl} alt="Post" />
+								<img src={post.thumbnailUrl} alt="Post" />
 							</div>
 						))}
 					</div>

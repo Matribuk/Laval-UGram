@@ -37,6 +37,8 @@ export interface Post {
 	timeAgo: string;
 	createdAt: string;
 	imageUrl: string;
+	thumbnailUrl: string;
+	mediumUrl: string;
 	caption: string;
 	tags: string[];
 	mentions: string[];
@@ -121,6 +123,8 @@ export interface BackendMention {
 export interface BackendPost {
 	id: string;
 	url: string;
+	mediumUrl?: string;
+	thumbnailUrl?: string;
 	description?: string;
 	user: BackendUser;
 	hashtags: BackendHashtag[];

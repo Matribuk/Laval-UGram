@@ -84,7 +84,7 @@ const NotificationsPage: React.FC = () => {
 		if (notification.type === 'message') {
 			navigate(`/messages/${notification.actor.id}`);
 		} else {
-			navigate(`/post/${notification.referenceId}`);
+			navigate(`/profile/${notification.actor.username}`);
 		}
 	};
 

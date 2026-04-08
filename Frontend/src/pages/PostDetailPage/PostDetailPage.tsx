@@ -115,7 +115,7 @@ const PostDetailPage: React.FC = () => {
 				</div>
 
 				<div className="post-detail-image">
-					<img src={post.imageUrl} alt={post.caption} />
+					<img src={post.mediumUrl} alt={post.caption} />
 				</div>
 
 				<div className="post-detail-actions">
