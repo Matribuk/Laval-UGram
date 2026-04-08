@@ -12,6 +12,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	PlusIcon: () => <svg data-testid="plus-icon" />,
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

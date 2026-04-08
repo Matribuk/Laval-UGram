@@ -19,6 +19,12 @@ jest.mock('react-toastify', () => ({
 		error: jest.fn(),
 	},
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../utils/SvgFile', () => ({
 	HomeIcon: () => <svg data-testid="home-icon" />,
 	UsersIcon: () => <svg data-testid="users-icon" />,
@@ -27,6 +33,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
 	SearchIcon: () => <svg data-testid="search-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

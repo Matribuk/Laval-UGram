@@ -22,6 +22,12 @@ jest.mock('react-toastify', () => ({
 		error: jest.fn(),
 	},
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../utils/SvgFile', () => ({
 	HomeIcon: () => <svg data-testid="home-icon" />,
 	UsersIcon: () => <svg data-testid="users-icon" />,
@@ -34,6 +40,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	CalendarIcon: () => <svg data-testid="calendar-icon" />,
 	PhoneIcon: () => <svg data-testid="phone-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -67,6 +80,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-1',
 			imageUrl: '/image1.jpg',
+			thumbnailUrl: '/image1.jpg',
+			mediumUrl: '/image1.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],
@@ -77,6 +92,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-2',
 			imageUrl: '/image2.jpg',
+			thumbnailUrl: '/image2.jpg',
+			mediumUrl: '/image2.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],

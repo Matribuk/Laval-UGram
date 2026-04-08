@@ -37,6 +37,8 @@ export interface Post {
 	timeAgo: string;
 	createdAt: string;
 	imageUrl: string;
+	thumbnailUrl: string;
+	mediumUrl: string;
 	caption: string;
 	tags: string[];
 	mentions: string[];
@@ -45,6 +47,8 @@ export interface Post {
 export interface ProfilePost {
 	id: string;
 	imageUrl: string;
+	thumbnailUrl: string;
+	mediumUrl: string;
 }
 
 export interface LoginFormValues {
@@ -121,6 +125,8 @@ export interface BackendMention {
 export interface BackendPost {
 	id: string;
 	url: string;
+	mediumUrl?: string;
+	thumbnailUrl?: string;
 	description?: string;
 	user: BackendUser;
 	hashtags: BackendHashtag[];
@@ -210,4 +216,25 @@ export interface PopularUser {
 	email: string;
 	avatar?: string;
 	popularityScore: number;
+}
+
+export type NotificationType = 'like' | 'comment' | 'message';
+
+export interface BackendNotification {
+	id: string;
+	type: NotificationType;
+	referenceId: string;
+	read: boolean;
+	actor: BackendUser;
+	createdAt: string;
+}
+
+export interface Notification {
+	id: string;
+	type: NotificationType;
+	referenceId: string;
+	read: boolean;
+	actor: User;
+	createdAt: string;
+	timeAgo: string;
 }

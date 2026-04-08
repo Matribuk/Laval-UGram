@@ -103,7 +103,7 @@ const HomePage: React.FC = () => {
 								id={post.id}
 								author={post.author}
 								timeAgo={post.timeAgo}
-								imageUrl={post.imageUrl}
+								imageUrl={post.thumbnailUrl}
 								caption={post.caption}
 								tags={post.tags}
 							/>

@@ -13,6 +13,12 @@ jest.mock('react-router-dom', () => ({
 	useParams: () => ({ userId: 'user-2' }),
 	useNavigate: () => mockNavigate,
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../components/UserContext');
 jest.mock('../../services/messagesService');
 jest.mock('../../services/usersService');
@@ -26,6 +32,12 @@ jest.mock('react-toastify', () => ({
 		error: jest.fn(),
 	},
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../utils/SvgFile', () => ({
 	HomeIcon: () => <svg data-testid="home-icon" />,
 	UsersIcon: () => <svg data-testid="users-icon" />,
@@ -33,11 +45,24 @@ jest.mock('../../utils/SvgFile', () => ({
 	PlusIcon: () => <svg data-testid="plus-icon" />,
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
 	BackArrowIcon: () => <svg data-testid="back-arrow-icon" />,
 	SendIcon: () => <svg data-testid="send-icon" />,
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../utils/helpers', () => ({
 	getTimeAgo: jest.fn(() => '5 min ago'),
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

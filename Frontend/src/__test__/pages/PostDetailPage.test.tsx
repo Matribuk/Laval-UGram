@@ -15,6 +15,12 @@ jest.mock('react-toastify', () => ({
 		error: jest.fn(),
 	},
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../utils/SvgFile', () => ({
 	HomeIcon: () => <svg data-testid="home-icon" />,
 	UsersIcon: () => <svg data-testid="users-icon" />,
@@ -28,6 +34,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	TrashIcon: () => <svg data-testid="trash-icon" />,
 	SendIcon: () => <svg data-testid="send-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -47,6 +60,8 @@ describe('PostDetailPage', () => {
 	const mockPost = {
 		id: 'post-123',
 		imageUrl: '/image.jpg',
+		thumbnailUrl: '/image.jpg',
+		mediumUrl: '/image.jpg',
 		caption: 'Test caption @mentioned',
 		tags: ['nature', 'photography'],
 		mentions: ['mentioned'],

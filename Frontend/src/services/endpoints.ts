@@ -34,6 +34,13 @@ export const ENDPOINTS = {
 		WITH_USER: (userId: string) => `/messages/${userId}`,
 		MARK_READ: (messageId: string) => `/messages/${messageId}/read`,
 	},
+
+	NOTIFICATIONS: {
+		BASE: '/notifications',
+		BY_ID: (id: string) => `/notifications/${id}`,
+		MARK_READ: (id: string) => `/notifications/${id}/read`,
+		MARK_ALL_READ: '/notifications/read-all',
+	},
 } as const;
 
 export const OAUTH_URLS = {

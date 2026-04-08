@@ -21,7 +21,6 @@ describe('applyFilterToImage', () => {
 
 	it('returns original file for filter without style', async () => {
 		const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-		// 'normal' filter has no filter style
 		const result = await applyFilterToImage(file, 'normal');
 		expect(result).toBe(file);
 	});
