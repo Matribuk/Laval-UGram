@@ -13,8 +13,11 @@ export const createImageFactory = (overrides: Partial<Image> = {}): Image => {
   const user = overrides.user ?? createUserFactory();
 
   const image = new Image();
+  const uuid = uuidv4();
   image.id = overrides.id ?? uuidv4();
-  image.url = overrides.url ?? `/uploads/${uuidv4()}.jpg`;
+  image.url = overrides.url ?? `/uploads/${uuid}.jpg`;
+  image.thumbnailUrl = overrides.thumbnailUrl ?? `/uploads/${uuid}_thumbnail.jpg`;
+  image.mediumUrl = overrides.mediumUrl ?? `/uploads/${uuid}_medium.jpg`;
   image.description = overrides.description ?? `Test image description ${counter}`;
   image.userId = overrides.userId ?? user.id;
   image.user = user;

@@ -34,10 +34,24 @@ export class ImageResponseDto {
 
   @Expose()
   @ApiProperty({
-    description: 'Image URL',
+    description: 'Original image URL',
     example: '/uploads/550e8400-e29b-41d4-a716-446655440000.jpg',
   })
   url: string;
+
+  @Expose()
+  @ApiPropertyOptional({
+    description: 'Thumbnail image URL (150px wide)',
+    example: '/uploads/550e8400-e29b-41d4-a716-446655440000_thumbnail.jpg',
+  })
+  thumbnailUrl?: string | null;
+
+  @Expose()
+  @ApiPropertyOptional({
+    description: 'Medium image URL (600px wide)',
+    example: '/uploads/550e8400-e29b-41d4-a716-446655440000_medium.jpg',
+  })
+  mediumUrl?: string | null;
 
   @Expose()
   @ApiPropertyOptional({

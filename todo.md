@@ -530,11 +530,11 @@
 ---
 
 ### 🖼️ Resizing des images
-* [ ] Installer `sharp` pour le traitement d'images
-* [ ] Générer 3 formats à l'upload : `thumbnail` (150px), `medium` (600px), `original`
-* [ ] Stocker les 3 variantes (local ou S3)
-* [ ] Exposer les URLs des 3 formats dans `ImageResponseDto`
-* [ ] Tests unitaires du service de stockage
+* [x] Installer `sharp` pour le traitement d'images
+* [x] Générer 3 formats à l'upload : `thumbnail` (150px), `medium` (600px), `original`
+* [x] Stocker les 3 variantes (local ou S3)
+* [x] Exposer les URLs des 3 formats dans `ImageResponseDto`
+* [x] Tests unitaires du service de stockage
 
 ---
 
@@ -561,9 +561,9 @@
 ---
 
 ### 📚 Documentation dynamique (Swagger)
-* [ ] Vérifier que tous les nouveaux endpoints sont documentés avec `@ApiOperation`, `@ApiResponse`
-* [ ] Ajouter les nouveaux tags Swagger (Reactions, Comments, Notifications, Messages)
-* [ ] S'assurer que Swagger UI est accessible en production (`/api/docs`)
+* [x] Vérifier que tous les nouveaux endpoints sont documentés avec `@ApiOperation`, `@ApiResponse`
+* [x] Ajouter les nouveaux tags Swagger (Reactions, Comments, Notifications, Messages)
+* [x] S'assurer que Swagger UI est accessible en production (`/api/docs`)
 
 ---
 

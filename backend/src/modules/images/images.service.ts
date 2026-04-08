@@ -21,10 +21,12 @@ export class ImagesService {
     createImageDto: CreateImageDto,
     user: User,
   ): Promise<Image> {
-    const { url } = await this.storageService.uploadImage(file);
+    const { url, thumbnailUrl, mediumUrl } = await this.storageService.uploadImage(file);
 
     const image = await this.imagesRepository.create({
       url,
+      thumbnailUrl,
+      mediumUrl,
       description: createImageDto.description,
       userId: user.id,
     });

@@ -122,7 +122,12 @@ export const createMockMessagesRepository = () => ({
 });
 
 export const createMockStorageService = () => ({
-  uploadImage: jest.fn(),
+  uploadImage: jest.fn().mockResolvedValue({
+    filename: 'mock-uuid.jpg',
+    url: '/uploads/mock-uuid.jpg',
+    thumbnailUrl: '/uploads/mock-uuid_thumbnail.jpg',
+    mediumUrl: '/uploads/mock-uuid_medium.jpg',
+  }),
   deleteImage: jest.fn(),
   getImageUrl: jest.fn(),
 });
