@@ -594,10 +594,13 @@
 ---
 
 ### 🔔 Notifications
-* [ ] Icône de cloche dans le header avec badge compteur (non lues)
-* [ ] Dropdown ou page de notifications listant les événements (réaction / commentaire)
-* [ ] Marquer comme lu au clic
-* [ ] Appel API `GET /notifications` + `PATCH /notifications/:id/read`
+* [x] Page de notifications accessible via la sidebar et la nav mobile
+* [x] Badge compteur de non-lues sur l'icône cloche (polling 30s)
+* [x] Liste des notifications (réaction / commentaire / message) avec avatar, texte et date
+* [x] Marquer comme lu au clic sur une notification
+* [x] Bouton "Mark all as read"
+* [x] Appel API `GET /notifications` + `PATCH /notifications/:id/read` + `PATCH /notifications/read-all`
+* [x] Tests unitaires (522 tests, 54 suites)
 
 ---
 
@@ -694,6 +697,4 @@
 * [x] React.memo sur composants de messagerie (optimisation)
 * [x] RecommendedUsers component avec variants (vertical/horizontal)
 * [x] Design responsive mobile avec cartes scrollables horizontalement
-* [x] Lint et tests à 88% coverage (511 tests)
-* [x] ImageFilters component avec React.memo, useMemo, useCallback
-* [x] Canvas API pour appliquer les filtres CSS aux images avant upload
+* [x] Lint et tests à 88.17% coverage (522 tests, 54 suites)

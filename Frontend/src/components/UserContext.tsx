@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authService } from '../services/authService';
+import { usersService } from '../services/usersService';
 import { User, LoginRequest, SignupRequest } from '../types/api.types';
 
 interface UserContextType {
@@ -37,8 +38,9 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 						setUser(storedUser);
 					} else {
 						try {
-							const authData = await authService.getTokenInfo();
-							setUser(authData.user);
+							const freshUser = await usersService.getCurrentUser();
+							setUser(freshUser);
+							localStorage.setItem('auth_user', JSON.stringify(freshUser));
 						} catch (err: unknown) {
 							if ((err as { response?: { status?: number } })?.response?.status === 401) {
 								console.warn('Token expired or invalid, logging out');

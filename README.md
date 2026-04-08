@@ -314,6 +314,14 @@ ugram-h2026-team-12/
 * Top 5 comptes les plus populaires (basé sur likes + commentaires + posts)
 * Navigation directe vers le profil
 
+### Notifications
+
+* Page de notifications accessible via la sidebar (desktop) et la nav mobile
+* Badge rouge sur l'icône cloche indiquant le nombre de notifications non lues (rafraîchissement toutes les 30s)
+* Liste des notifications avec avatar, type d'action (like / commentaire / message), nom d'utilisateur et date relative
+* Marquer une notification comme lue au clic (redirige vers le post ou la conversation)
+* Bouton "Mark all as read" pour tout marquer d'un coup
+
 ### Filtres photo
 
 * Interface de sélection de filtres lors de la création d'un post
@@ -400,6 +408,12 @@ ugram-h2026-team-12/
 * `GET /api/messages/conversations` - Liste des conversations
 * `GET /api/messages/:userId` - Messages avec un utilisateur
 * `PATCH /api/messages/:id/read` - Marquer comme lu
+
+### Notifications
+
+* `GET /api/notifications` - Liste des notifications (paginée)
+* `PATCH /api/notifications/:id/read` - Marquer une notification comme lue
+* `PATCH /api/notifications/read-all` - Marquer toutes les notifications comme lues
 
 ### Recommandations
 

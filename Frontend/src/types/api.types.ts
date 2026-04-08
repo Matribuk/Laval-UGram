@@ -211,3 +211,24 @@ export interface PopularUser {
 	avatar?: string;
 	popularityScore: number;
 }
+
+export type NotificationType = 'like' | 'comment' | 'message';
+
+export interface BackendNotification {
+	id: string;
+	type: NotificationType;
+	referenceId: string;
+	read: boolean;
+	actor: BackendUser;
+	createdAt: string;
+}
+
+export interface Notification {
+	id: string;
+	type: NotificationType;
+	referenceId: string;
+	read: boolean;
+	actor: User;
+	createdAt: string;
+	timeAgo: string;
+}
