@@ -9,6 +9,7 @@ import {
   UseGuards,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -32,10 +33,12 @@ export class MessagesController {
   constructor(private readonly messagesService: MessagesService) {}
 
   @Post()
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @ApiOperation({ summary: 'Send a private message' })
   @ApiResponse({ status: 201, description: 'Message sent', type: MessageResponseDto })
   @ApiResponse({ status: 400, description: 'Cannot send message to yourself / invalid input' })
   @ApiResponse({ status: 404, description: 'Recipient not found' })
+  @ApiResponse({ status: 429, description: 'Too many requests' })
   async sendMessage(
     @Body() dto: CreateMessageDto,
     @CurrentUser() user: User,
@@ -67,20 +70,12 @@ export class MessagesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 20,
   ) {
-    const { messages, total } = await this.messagesService.getMessages(
-      user.id,
-      otherUserId,
-      Number(page) || 1,
-      Number(limit) || 20,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 20, 1), 100);
+    const { messages, total } = await this.messagesService.getMessages(user.id, otherUserId, safePage, safeLimit);
     return {
       data: messages.map((m) => plainToInstance(MessageResponseDto, m)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 20,
-        totalPages: Math.ceil(total / (Number(limit) || 20)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 

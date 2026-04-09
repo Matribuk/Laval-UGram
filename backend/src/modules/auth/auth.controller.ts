@@ -10,6 +10,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -32,6 +33,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @ApiOperation({ summary: 'Register a new user' })
   @ApiResponse({
     status: 201,
@@ -39,11 +41,13 @@ export class AuthController {
     type: AuthResponseDto,
   })
   @ApiResponse({ status: 409, description: 'Email or username already exists' })
+  @ApiResponse({ status: 429, description: 'Too many requests' })
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
     return this.authService.register(registerDto);
   }
 
   @Post('login')
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Login with email and password' })
@@ -54,11 +58,13 @@ export class AuthController {
     type: AuthResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Invalid credentials' })
+  @ApiResponse({ status: 429, description: 'Too many requests' })
   async login(@CurrentUser() user: User): Promise<AuthResponseDto> {
     return this.authService.login(user);
   }
 
   @Get('google')
+  @SkipThrottle()
   @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: 'Initiate Google OAuth login' })
   @ApiResponse({ status: 302, description: 'Redirects to Google OAuth' })
@@ -67,6 +73,7 @@ export class AuthController {
   }
 
   @Get('google/callback')
+  @SkipThrottle()
   @UseGuards(GoogleAuthGuard)
   @ApiOperation({ summary: 'Google OAuth callback' })
   @ApiResponse({

@@ -98,18 +98,12 @@ export class ImagesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const { images, total } = await this.imagesService.findAll(
-      Number(page) || 1,
-      Number(limit) || 10,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const { images, total } = await this.imagesService.findAll(safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
-        totalPages: Math.ceil(total / (Number(limit) || 10)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 
@@ -129,19 +123,12 @@ export class ImagesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const { images, total } = await this.imagesService.searchByDescription(
-      query || '',
-      Number(page) || 1,
-      Number(limit) || 10,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const { images, total } = await this.imagesService.searchByDescription(query || '', safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
-        totalPages: Math.ceil(total / (Number(limit) || 10)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 
@@ -160,19 +147,12 @@ export class ImagesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const { images, total } = await this.imagesService.findByHashtag(
-      hashtag,
-      Number(page) || 1,
-      Number(limit) || 10,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const { images, total } = await this.imagesService.findByHashtag(hashtag, safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
-        totalPages: Math.ceil(total / (Number(limit) || 10)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 
