@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 import { captureApiError } from '../utils/errorTracking';
 import { API_BASE_URL } from './endpoints';
 
@@ -32,6 +33,11 @@ api.interceptors.response.use(
 			localStorage.removeItem('auth_user');
 			window.location.href = '/login';
 		}
+
+		if (error.response?.status === 429) {
+			toast.error('Too many requests. Please slow down and try again.');
+		}
+
 		return Promise.reject(error);
 	},
 );
