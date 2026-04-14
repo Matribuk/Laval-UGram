@@ -568,9 +568,9 @@
 ---
 
 ### 🔐 Sécurité backend
-* [ ] Rate limiting sur les endpoints sensibles (messages, réactions, commentaires)
-* [ ] Validation stricte des inputs pour tous les nouveaux DTOs
-* [ ] Vérification propriétaire pour suppression de commentaires et messages
+* [x] Rate limiting sur les endpoints sensibles (messages, réactions, commentaires)
+* [x] Validation stricte des inputs pour tous les nouveaux DTOs
+* [x] Vérification propriétaire pour suppression de commentaires et messages
 
 ---
 

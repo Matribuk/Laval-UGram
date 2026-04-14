@@ -11,6 +11,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -33,10 +34,12 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post(':imageId/comments')
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @ApiOperation({ summary: 'Add a comment to an image' })
   @ApiResponse({ status: 201, description: 'Comment added successfully', type: CommentResponseDto })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   @ApiResponse({ status: 404, description: 'Image not found' })
+  @ApiResponse({ status: 429, description: 'Too many requests' })
   async addComment(
     @Param('imageId', ParseUUIDPipe) imageId: string,
     @Body() createCommentDto: CreateCommentDto,
@@ -70,19 +73,12 @@ export class CommentsController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    const { comments, total } = await this.commentsService.getCommentsByImage(
-      imageId,
-      Number(page) || 1,
-      Number(limit) || 10,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const { comments, total } = await this.commentsService.getCommentsByImage(imageId, safePage, safeLimit);
     return {
       data: comments.map((c) => plainToInstance(CommentResponseDto, c)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
-        totalPages: Math.ceil(total / (Number(limit) || 10)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 }

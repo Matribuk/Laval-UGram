@@ -9,6 +9,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import {
   ApiTags,
   ApiOperation,
@@ -29,11 +30,13 @@ export class LikesController {
   constructor(private readonly likesService: LikesService) {}
 
   @Post(':imageId/likes')
+  @Throttle({ default: { limit: 30, ttl: 60_000 } })
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Like an image' })
   @ApiResponse({ status: 200, description: 'Image liked successfully', type: LikeStatusDto })
   @ApiResponse({ status: 404, description: 'Image not found' })
   @ApiResponse({ status: 409, description: 'Image already liked' })
+  @ApiResponse({ status: 429, description: 'Too many requests' })
   async addLike(
     @Param('imageId', ParseUUIDPipe) imageId: string,
     @CurrentUser() user: User,
