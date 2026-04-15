@@ -424,6 +424,38 @@ describe('UsersController', () => {
     });
   });
 
+  describe('GET /users/recommended', () => {
+    it('should return recommended users with popularityScore', async () => {
+      const user = createUserFactory();
+      const recommended = createManyUsers(3).map((u) => ({ ...u, popularityScore: 10 }));
+      usersService.getRecommendedUsers.mockResolvedValue(recommended);
+
+      const result = await controller.getRecommendedUsers(user, 5);
+
+      expect(usersService.getRecommendedUsers).toHaveBeenCalledWith(user.id, 5);
+      expect(result).toHaveLength(3);
+    });
+
+    it('should return empty array when no other users exist', async () => {
+      const user = createUserFactory();
+      usersService.getRecommendedUsers.mockResolvedValue([]);
+
+      const result = await controller.getRecommendedUsers(user, 5);
+
+      expect(result).toHaveLength(0);
+    });
+
+    it('should exclude the current user from results', async () => {
+      const user = createUserFactory({ id: 'current-user-id' });
+      const otherUsers = createManyUsers(2).map((u) => ({ ...u, popularityScore: 5 }));
+      usersService.getRecommendedUsers.mockResolvedValue(otherUsers);
+
+      await controller.getRecommendedUsers(user, 5);
+
+      expect(usersService.getRecommendedUsers).toHaveBeenCalledWith('current-user-id', 5);
+    });
+  });
+
   describe('GET /users/me/liked-images', () => {
     it('should return paginated liked images for the current user', async () => {
       const user = createUserFactory();

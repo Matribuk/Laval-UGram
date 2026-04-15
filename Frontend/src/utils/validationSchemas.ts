@@ -1,7 +1,23 @@
 import * as Yup from 'yup';
 
+const emailValidation = Yup.string()
+	.required('Email is required')
+	.matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Invalid email');
+
+const phoneValidation = Yup.string()
+	.matches(/^[+]?[0-9\s-]+$/, {
+		message: 'Phone number can only contain digits, spaces, dashes, and an optional leading +',
+		excludeEmptyString: true,
+	})
+	.test('no-trailing-dash', 'Phone number cannot end with a dash', (value) => {
+		if (!value) {
+			return true;
+		}
+		return !value.trimEnd().endsWith('-');
+	});
+
 export const loginSchema = Yup.object({
-	email: Yup.string().email('Invalid email').required('Email is required'),
+	email: emailValidation,
 	password: Yup.string().min(6, 'Minimum 6 characters').required('Password is required'),
 });
 
@@ -13,7 +29,7 @@ export const signupSchema = Yup.object({
 		.max(30, 'Maximum 30 characters')
 		.matches(/^[a-zA-Z0-9_]+$/, 'Only letters, numbers and underscores')
 		.required('Username is required'),
-	email: Yup.string().email('Invalid email').required('Email is required'),
+	email: emailValidation,
 	password: Yup.string().min(6, 'Minimum 6 characters').required('Password is required'),
 	confirmPassword: Yup.string()
 		.oneOf([Yup.ref('password')], 'Passwords do not match')
@@ -23,11 +39,8 @@ export const signupSchema = Yup.object({
 export const editProfileSchema = Yup.object({
 	firstName: Yup.string().max(50, 'Maximum 50 characters'),
 	lastName: Yup.string().max(50, 'Maximum 50 characters'),
-	email: Yup.string().email('Invalid email').required('Email is required'),
-	phoneNumber: Yup.string().matches(/^[+]?[0-9\s-]+$/, {
-		message: 'Phone number can only contain digits, spaces, dashes, and an optional leading +',
-		excludeEmptyString: true,
-	}),
+	email: emailValidation,
+	phoneNumber: phoneValidation,
 });
 
 const tagsValidation = Yup.string()

@@ -1,6 +1,6 @@
 import api from './api';
-import { User, BackendUser, PaginatedResponse } from '../types/api.types';
-import { transformBackendUser } from '../utils/transformers';
+import { User, BackendUser, PaginatedResponse, BackendPopularUser, PopularUser } from '../types/api.types';
+import { transformBackendUser, transformBackendPopularUser } from '../utils/transformers';
 import { ENDPOINTS } from './endpoints';
 
 export const usersService = {
@@ -44,5 +44,12 @@ export const usersService = {
 
 	async deleteUser(id: string): Promise<void> {
 		await api.delete(ENDPOINTS.USERS.BY_ID(id));
+	},
+
+	async getRecommendedUsers(limit = 5): Promise<PopularUser[]> {
+		const response = await api.get<BackendPopularUser[]>(ENDPOINTS.USERS.RECOMMENDED, {
+			params: { limit },
+		});
+		return response.data.map(transformBackendPopularUser);
 	},
 };

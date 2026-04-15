@@ -22,6 +22,12 @@ export class Image {
   @Column({ type: 'varchar', length: 500 })
   url: string;
 
+  @Column({ type: 'varchar', length: 500, nullable: true, name: 'thumbnail_url' })
+  thumbnailUrl: string | null;
+
+  @Column({ type: 'varchar', length: 500, nullable: true, name: 'medium_url' })
+  mediumUrl: string | null;
+
   @Column({ type: 'text', nullable: true })
   description: string;
 

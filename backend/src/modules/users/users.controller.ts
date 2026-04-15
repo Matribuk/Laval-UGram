@@ -34,7 +34,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import { User } from './entities/user.entity';
 import { ImagesService } from '../images/images.service';
-import { ImageResponseDto } from '../images/dto';
+import { ImageResponseDto, } from '../images/dto';
+import { RecommendedUserResponseDto } from './dto';
 import { StorageService } from '../storage/storage.service';
 import { LikesService } from '../likes/likes.service';
 import { CommentsService } from '../comments/comments.service';
@@ -180,6 +181,20 @@ export class UsersController {
         totalPages: Math.ceil(total / (Number(limit) || 10)),
       },
     };
+  }
+
+  @Get('recommended')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get recommended popular accounts' })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 5, description: 'Max number of recommended users to return' })
+  @ApiResponse({ status: 200, description: 'Recommended users retrieved successfully', type: [RecommendedUserResponseDto] })
+  async getRecommendedUsers(
+    @CurrentUser() user: User,
+    @Query('limit') limit: number = 5,
+  ): Promise<RecommendedUserResponseDto[]> {
+    const users = await this.usersService.getRecommendedUsers(user.id, Number(limit) || 5);
+    return users.map((u) => plainToInstance(RecommendedUserResponseDto, u));
   }
 
   @Get(':id')

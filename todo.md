@@ -530,11 +530,11 @@
 ---
 
 ### 🖼️ Resizing des images
-* [ ] Installer `sharp` pour le traitement d'images
-* [ ] Générer 3 formats à l'upload : `thumbnail` (150px), `medium` (600px), `original`
-* [ ] Stocker les 3 variantes (local ou S3)
-* [ ] Exposer les URLs des 3 formats dans `ImageResponseDto`
-* [ ] Tests unitaires du service de stockage
+* [x] Installer `sharp` pour le traitement d'images
+* [x] Générer 3 formats à l'upload : `thumbnail` (150px), `medium` (600px), `original`
+* [x] Stocker les 3 variantes (local ou S3)
+* [x] Exposer les URLs des 3 formats dans `ImageResponseDto`
+* [x] Tests unitaires du service de stockage
 
 ---
 
@@ -552,25 +552,25 @@
 ---
 
 ### 👥 Recommandation de comptes populaires *(8 pts)*
-* [ ] Algorithme de popularité (basé sur nombre de réactions reçues + commentaires reçus + images postées)
-* [ ] Service : calculer le score de popularité, retourner top N usagers
-* [ ] Controller :
-  * [ ] `GET /users/recommended` — retourner les comptes recommandés (excluant l'usager courant)
-* [ ] Tests unitaires
+* [x] Algorithme de popularité (basé sur nombre de réactions reçues + commentaires reçus + images postées)
+* [x] Service : calculer le score de popularité, retourner top N usagers
+* [x] Controller :
+  * [x] `GET /users/recommended` — retourner les comptes recommandés (excluant l'usager courant)
+* [x] Tests unitaires
 
 ---
 
 ### 📚 Documentation dynamique (Swagger)
-* [ ] Vérifier que tous les nouveaux endpoints sont documentés avec `@ApiOperation`, `@ApiResponse`
-* [ ] Ajouter les nouveaux tags Swagger (Reactions, Comments, Notifications, Messages)
-* [ ] S'assurer que Swagger UI est accessible en production (`/api/docs`)
+* [x] Vérifier que tous les nouveaux endpoints sont documentés avec `@ApiOperation`, `@ApiResponse`
+* [x] Ajouter les nouveaux tags Swagger (Reactions, Comments, Notifications, Messages)
+* [x] S'assurer que Swagger UI est accessible en production (`/api/docs`)
 
 ---
 
 ### 🔐 Sécurité backend
-* [ ] Rate limiting sur les endpoints sensibles (messages, réactions, commentaires)
-* [ ] Validation stricte des inputs pour tous les nouveaux DTOs
-* [ ] Vérification propriétaire pour suppression de commentaires et messages
+* [x] Rate limiting sur les endpoints sensibles (messages, réactions, commentaires)
+* [x] Validation stricte des inputs pour tous les nouveaux DTOs
+* [x] Vérification propriétaire pour suppression de commentaires et messages
 
 ---
 
@@ -594,35 +594,43 @@
 ---
 
 ### 🔔 Notifications
-* [ ] Icône de cloche dans le header avec badge compteur (non lues)
-* [ ] Dropdown ou page de notifications listant les événements (réaction / commentaire)
-* [ ] Marquer comme lu au clic
-* [ ] Appel API `GET /notifications` + `PATCH /notifications/:id/read`
+* [x] Page de notifications accessible via la sidebar et la nav mobile
+* [x] Badge compteur de non-lues sur l'icône cloche (polling 30s)
+* [x] Liste des notifications (réaction / commentaire / message) avec avatar, texte et date
+* [x] Marquer comme lu au clic sur une notification
+* [x] Bouton "Mark all as read"
+* [x] Appel API `GET /notifications` + `PATCH /notifications/:id/read` + `PATCH /notifications/read-all`
+* [x] Tests unitaires (522 tests, 54 suites)
 
 ---
 
 ### 📩 Messages privés *(3 pts)*
-* [ ] Onglet ou icône "Messages" dans la navigation
-* [ ] Page liste des conversations (avatar + dernier message + badge non lu)
-* [ ] Page conversation : fil de messages + champ de saisie
-* [ ] Envoi d'un message et mise à jour en temps quasi-réel (polling ou refresh)
-* [ ] Appel API `GET/POST /messages`
+* [x] Onglet ou icône "Messages" dans la navigation
+* [x] Page liste des conversations (avatar + dernier message + badge non lu)
+* [x] Page conversation : fil de messages + champ de saisie
+* [x] Envoi d'un message et mise à jour en temps quasi-réel (polling ou refresh)
+* [x] Appel API `GET/POST /messages`
+* [x] Bouton "Message" sur le profil des autres utilisateurs
+* [x] Tests unitaires (489 tests, 87.6% coverage)
 
 ---
 
 ### 👥 Recommandation de comptes populaires *(8 pts)*
-* [ ] Section "Comptes suggérés" dans la sidebar ou page dédiée
-* [ ] Affichage des top N comptes populaires (avatar, username, score)
-* [ ] Bouton pour accéder au profil public de chaque compte recommandé
-* [ ] Appel API `GET /users/recommended`
+* [x] Section "Comptes suggérés" dans la sidebar (desktop) et en haut du feed (mobile)
+* [x] Affichage des top 5 comptes populaires (avatar, username, score)
+* [x] Design responsive : vertical (sidebar) et horizontal avec cartes (mobile)
+* [x] Bouton pour accéder au profil public de chaque compte recommandé
+* [x] Appel API `GET /users/recommended?limit=5`
+* [x] Tests unitaires (499 tests, 88.17% coverage)
 
 ---
 
 ### 🎨 Filtres sur photos *(5 pts)*
-* [ ] Interface de sélection de filtres avant confirmation de l'upload
-* [ ] Aperçu en temps réel avec le filtre appliqué (CSS filters ou canvas)
-* [ ] Filtres proposés : Normal, Noir & Blanc, Sépia, Contraste, Luminosité, etc.
-* [ ] Appliquer le filtre à l'image avant envoi au backend
+* [x] Interface de sélection de filtres avant confirmation de l'upload
+* [x] Aperçu en temps réel avec le filtre appliqué (CSS filters + canvas)
+* [x] Filtres proposés : Normal, B&W, Sepia, Contrast, Bright, Vivid, Warm, Cool, Vintage
+* [x] Appliquer le filtre à l'image avant envoi au backend (canvas API)
+* [x] Tests unitaires (12 tests ImageFilters)
 
 ---
 
@@ -684,3 +692,9 @@
 * [x] Phone number validation compatible backend
 * [x] Mentions avec résolution username → UUID
 * [x] Hashtags parsing et validation
+* [x] Images de profil dans les commentaires (buildImageUrl fix)
+* [x] Hook useIsMounted pour cleanup async
+* [x] React.memo sur composants de messagerie (optimisation)
+* [x] RecommendedUsers component avec variants (vertical/horizontal)
+* [x] Design responsive mobile avec cartes scrollables horizontalement
+* [x] Lint et tests à 88.17% coverage (522 tests, 54 suites)

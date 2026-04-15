@@ -18,6 +18,7 @@ const EditPostPage = lazy(() => import('./pages/EditPostPage/EditPostPage'));
 const SearchPage = lazy(() => import('./pages/SearchPage/SearchPage'));
 const MessagesPage = lazy(() => import('./pages/MessagesPage/MessagesPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage/ChatPage'));
+const NotificationsPage = lazy(() => import('./pages/NotificationsPage/NotificationsPage'));
 
 function App(): React.JSX.Element {
 	return (
@@ -147,6 +148,14 @@ function App(): React.JSX.Element {
 						element={
 							<PrivateRoute>
 								<ChatPage />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/notifications"
+						element={
+							<PrivateRoute>
+								<NotificationsPage />
 							</PrivateRoute>
 						}
 					/>

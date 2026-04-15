@@ -1,0 +1,94 @@
+.image-filters {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.image-filters-preview {
+	width: 100%;
+	max-width: 400px;
+	margin: 0 auto;
+	border-radius: 8px;
+	overflow: hidden;
+	background: #000;
+}
+
+.image-filters-preview .filtered-image {
+	width: 100%;
+	height: auto;
+	display: block;
+	object-fit: contain;
+	max-height: 400px;
+}
+
+.image-filters-list {
+	display: flex;
+	gap: 0.5rem;
+	overflow-x: auto;
+	padding: 0.5rem 0;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.image-filters-list::-webkit-scrollbar {
+	display: none;
+}
+
+.filter-option {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.375rem;
+	padding: 0.5rem;
+	border: 2px solid transparent;
+	border-radius: 8px;
+	background: transparent;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	flex-shrink: 0;
+}
+
+.filter-option:hover {
+	background: #f5f5f5;
+}
+
+.filter-option.active {
+	border-color: #0095f6;
+	background: #f0f8ff;
+}
+
+.filter-thumbnail {
+	width: 60px;
+	height: 60px;
+	border-radius: 4px;
+	overflow: hidden;
+	background: #eee;
+}
+
+.filter-thumbnail img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.filter-label {
+	font-size: 0.7rem;
+	color: #262626;
+	font-weight: 500;
+	text-align: center;
+}
+
+.filter-option.active .filter-label {
+	color: #0095f6;
+}
+
+@media (max-width: 480px) {
+	.filter-thumbnail {
+		width: 50px;
+		height: 50px;
+	}
+
+	.filter-label {
+		font-size: 0.65rem;
+	}
+}

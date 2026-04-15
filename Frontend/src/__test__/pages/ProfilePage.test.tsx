@@ -11,10 +11,21 @@ jest.mock('react-router-dom');
 jest.mock('../../components/UserContext');
 jest.mock('../../services/usersService');
 jest.mock('../../services/postsService');
+jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
+	const MockRecommendedUsers = () => <div data-testid="recommended-users" />;
+	MockRecommendedUsers.displayName = 'RecommendedUsers';
+	return MockRecommendedUsers;
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		success: jest.fn(),
 		error: jest.fn(),
+	},
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
 	},
 }));
 jest.mock('../../utils/SvgFile', () => ({
@@ -29,6 +40,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	CalendarIcon: () => <svg data-testid="calendar-icon" />,
 	PhoneIcon: () => <svg data-testid="phone-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -62,6 +80,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-1',
 			imageUrl: '/image1.jpg',
+			thumbnailUrl: '/image1.jpg',
+			mediumUrl: '/image1.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],
@@ -72,6 +92,8 @@ describe('ProfilePage', () => {
 		{
 			id: 'post-2',
 			imageUrl: '/image2.jpg',
+			thumbnailUrl: '/image2.jpg',
+			mediumUrl: '/image2.jpg',
 			caption: '',
 			tags: [],
 			mentions: [],

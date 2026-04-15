@@ -11,11 +11,23 @@ const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
 	useNavigate: () => mockNavigate,
 }));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
+}));
 jest.mock('../../components/UserContext');
 jest.mock('../../services/messagesService');
 jest.mock('react-toastify', () => ({
 	toast: {
 		error: jest.fn(),
+	},
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
 	},
 }));
 jest.mock('../../utils/SvgFile', () => ({
@@ -25,10 +37,23 @@ jest.mock('../../utils/SvgFile', () => ({
 	PlusIcon: () => <svg data-testid="plus-icon" />,
 	LogoutIcon: () => <svg data-testid="logout-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
 	SearchIcon: () => <svg data-testid="search-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 jest.mock('../../utils/helpers', () => ({
 	getTimeAgo: jest.fn(() => '1 hour ago'),
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -196,7 +221,9 @@ describe('MessagesPage', () => {
 		});
 
 		const conversationItem = screen.getByText('alice').closest('[role="button"]');
-		fireEvent.click(conversationItem!);
+		if (conversationItem) {
+			fireEvent.click(conversationItem);
+		}
 
 		expect(mockNavigate).toHaveBeenCalledWith('/messages/user-2');
 	});

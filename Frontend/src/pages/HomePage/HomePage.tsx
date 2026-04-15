@@ -6,6 +6,7 @@ import { useUser } from '../../components/UserContext';
 import { getTimeAgo } from '../../utils/helpers';
 import PageLayout from '../../components/PageLayout/PageLayout';
 import PostCard from '../../components/PostCard/PostCard';
+import RecommendedUsers from '../../components/RecommendedUsers/RecommendedUsers';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
 import { postsService } from '../../services/postsService';
 import './HomePage.css';
@@ -87,6 +88,10 @@ const HomePage: React.FC = () => {
 				</form>
 			</div>
 
+			<div className="mobile-recommendations">
+				<RecommendedUsers limit={5} variant="horizontal" />
+			</div>
+
 			<div className="feed-container">
 				{postsWithTimeAgo.length === 0 ? (
 					<p className="feed-empty">No posts yet. Be the first to share something!</p>
@@ -98,7 +103,7 @@ const HomePage: React.FC = () => {
 								id={post.id}
 								author={post.author}
 								timeAgo={post.timeAgo}
-								imageUrl={post.imageUrl}
+								imageUrl={post.thumbnailUrl}
 								caption={post.caption}
 								tags={post.tags}
 							/>

@@ -1,21 +1,43 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '../../types/api.types';
-import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon, MessageIcon } from '../../utils/SvgFile';
+import { HomeIcon, UsersIcon, ProfileIcon, PlusIcon, LogoutIcon, MessageIcon, BellIcon } from '../../utils/SvgFile';
 import { useUser } from '../UserContext';
+import { useIsMounted } from '../../hooks/useIsMounted';
+import { notificationsService } from '../../services/notificationsService';
 import Avatar from '../Avatar/Avatar';
+import RecommendedUsers from '../RecommendedUsers/RecommendedUsers';
 import './Sidebar.css';
 
 interface SidebarProps {
-	activePage: 'feed' | 'users' | 'profile' | 'messages';
+	activePage: 'feed' | 'users' | 'profile' | 'messages' | 'notifications';
 	user: User | null;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 	const navigate = useNavigate();
 	const { logout } = useUser();
+	const isMounted = useIsMounted();
+	const [unreadCount, setUnreadCount] = useState(0);
 
-	const handleNavigate = (page: 'feed' | 'users' | 'profile' | 'messages') => {
+	useEffect(() => {
+		const fetchUnread = async () => {
+			try {
+				const count = await notificationsService.getUnreadCount();
+				if (isMounted()) {
+					setUnreadCount(count);
+				}
+			} catch (error) {
+				console.error('Failed to fetch unread notifications count:', error);
+			}
+		};
+
+		fetchUnread();
+		const interval = setInterval(fetchUnread, 30000);
+		return () => clearInterval(interval);
+	}, [isMounted]);
+
+	const handleNavigate = (page: 'feed' | 'users' | 'profile' | 'messages' | 'notifications') => {
 		navigate(`/${page}`);
 	};
 
@@ -63,6 +85,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 
 					<button
 						type="button"
+						className={`nav-item ${activePage === 'notifications' ? 'active' : ''}`}
+						onClick={() => handleNavigate('notifications')}
+					>
+						<span className="nav-item-icon-wrapper">
+							<BellIcon />
+							{unreadCount > 0 && <span className="nav-item-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
+						</span>
+						Notifications
+					</button>
+
+					<button
+						type="button"
 						className={`nav-item ${activePage === 'profile' ? 'active' : ''}`}
 						onClick={() => handleNavigate('profile')}
 					>
@@ -75,6 +109,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activePage, user }) => {
 						<span>New Post</span>
 					</button>
 				</nav>
+
+				<RecommendedUsers limit={5} />
 			</div>
 
 			<div className="sidebar-footer">

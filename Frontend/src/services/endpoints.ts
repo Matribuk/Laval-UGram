@@ -13,6 +13,7 @@ export const ENDPOINTS = {
 		BY_ID: (id: string) => `/users/${id}`,
 		ME: '/users/me',
 		SEARCH: '/users/search',
+		RECOMMENDED: '/users/recommended',
 		PROFILE_PICTURE: (id: string) => `/users/${id}/profile-picture`,
 	},
 
@@ -32,6 +33,13 @@ export const ENDPOINTS = {
 		CONVERSATIONS: '/messages/conversations',
 		WITH_USER: (userId: string) => `/messages/${userId}`,
 		MARK_READ: (messageId: string) => `/messages/${messageId}/read`,
+	},
+
+	NOTIFICATIONS: {
+		BASE: '/notifications',
+		BY_ID: (id: string) => `/notifications/${id}`,
+		MARK_READ: (id: string) => `/notifications/${id}/read`,
+		MARK_ALL_READ: '/notifications/read-all',
 	},
 } as const;
 

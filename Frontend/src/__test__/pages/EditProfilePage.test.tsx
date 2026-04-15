@@ -9,10 +9,21 @@ import { toast } from 'react-toastify';
 jest.mock('react-router-dom');
 jest.mock('../../components/UserContext');
 jest.mock('../../services/usersService');
+jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
+	const MockRecommendedUsers = () => <div data-testid="recommended-users" />;
+	MockRecommendedUsers.displayName = 'RecommendedUsers';
+	return MockRecommendedUsers;
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		success: jest.fn(),
 		error: jest.fn(),
+	},
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
 	},
 }));
 jest.mock('../../utils/SvgFile', () => ({
@@ -24,6 +35,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	BackArrowIcon: () => <svg data-testid="back-arrow-icon" />,
 	CameraIcon: () => <svg data-testid="camera-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;

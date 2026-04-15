@@ -5,6 +5,7 @@ export const createMockUsersService = () => ({
   findByEmail: jest.fn(),
   findByUsername: jest.fn(),
   searchByUsername: jest.fn(),
+  getRecommendedUsers: jest.fn(),
   update: jest.fn(),
   updateProfilePicture: jest.fn(),
   delete: jest.fn(),
@@ -19,6 +20,7 @@ export const createMockUsersRepository = () => ({
   findByEmail: jest.fn(),
   findByUsername: jest.fn(),
   searchByUsername: jest.fn(),
+  findRecommended: jest.fn(),
   update: jest.fn(),
   updateProfilePicture: jest.fn(),
   delete: jest.fn(),
@@ -120,7 +122,12 @@ export const createMockMessagesRepository = () => ({
 });
 
 export const createMockStorageService = () => ({
-  uploadImage: jest.fn(),
+  uploadImage: jest.fn().mockResolvedValue({
+    filename: 'mock-uuid.jpg',
+    url: '/uploads/mock-uuid.jpg',
+    thumbnailUrl: '/uploads/mock-uuid_thumbnail.jpg',
+    mediumUrl: '/uploads/mock-uuid_medium.jpg',
+  }),
   deleteImage: jest.fn(),
   getImageUrl: jest.fn(),
 });

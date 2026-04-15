@@ -9,10 +9,30 @@ jest.mock('react-router-dom');
 jest.mock('../../components/UserContext');
 jest.mock('../../services/postsService');
 jest.mock('../../services/usersService');
+jest.mock('../../components/RecommendedUsers/RecommendedUsers', () => {
+	const MockRecommendedUsers = () => <div data-testid="recommended-users" />;
+	MockRecommendedUsers.displayName = 'RecommendedUsers';
+	return MockRecommendedUsers;
+});
+jest.mock('../../components/ImageFilters', () => {
+	const MockImageFilters = ({ preview }: { preview: string }) => (
+		<div data-testid="image-filters">
+			<img src={preview} alt="Preview" className="filtered-image" />
+		</div>
+	);
+	MockImageFilters.displayName = 'ImageFilters';
+	return { __esModule: true, default: MockImageFilters };
+});
 jest.mock('react-toastify', () => ({
 	toast: {
 		success: jest.fn(),
 		error: jest.fn(),
+	},
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
 	},
 }));
 jest.mock('../../utils/SvgFile', () => ({
@@ -24,6 +44,13 @@ jest.mock('../../utils/SvgFile', () => ({
 	CameraIcon: () => <svg data-testid="camera-icon" />,
 	BackArrowIcon: () => <svg data-testid="back-arrow-icon" />,
 	MessageIcon: () => <svg data-testid="message-icon" />,
+	BellIcon: () => <svg data-testid="bell-icon" />,
+}));
+
+jest.mock('../../services/notificationsService', () => ({
+	notificationsService: {
+		getUnreadCount: jest.fn().mockResolvedValue(0),
+	},
 }));
 
 const mockUseUser = UserContext.useUser as jest.MockedFunction<typeof UserContext.useUser>;
@@ -81,7 +108,7 @@ describe('CreatePostPage', () => {
 		});
 	});
 
-	it('shows image preview when file is selected', async () => {
+	it('shows image filters when file is selected', async () => {
 		const { container } = render(<CreatePostPage />);
 
 		const file = new File(['test'], 'test.png', { type: 'image/png' });
@@ -90,8 +117,7 @@ describe('CreatePostPage', () => {
 		fireEvent.change(fileInput);
 
 		await waitFor(() => {
-			const preview = container.querySelector('.image-preview');
-			expect(preview).toBeInTheDocument();
+			expect(screen.getByTestId('image-filters')).toBeInTheDocument();
 		});
 	});
 

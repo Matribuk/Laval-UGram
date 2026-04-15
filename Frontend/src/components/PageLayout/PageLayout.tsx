@@ -8,7 +8,7 @@ import MobileNav from '../MobileNav/MobileNav';
 import './PageLayout.css';
 
 interface PageLayoutProps {
-	activePage: 'feed' | 'users' | 'profile' | 'messages';
+	activePage: 'feed' | 'users' | 'profile' | 'messages' | 'notifications';
 	user: User | null;
 	children: React.ReactNode;
 	className?: string;
