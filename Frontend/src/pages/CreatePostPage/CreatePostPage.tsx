@@ -70,7 +70,7 @@ const CreatePostPage: React.FC = () => {
 				}
 			}
 
-			const filteredFile = await applyFilterToImage(values.imageFile, selectedFilter);
+			const filteredFile = await applyFilterToImage(values.imageFile, selectedFilter, imagePreview);
 
 			await postsService.createPost({
 				file: filteredFile,
