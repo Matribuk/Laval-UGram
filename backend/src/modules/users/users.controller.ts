@@ -227,21 +227,15 @@ export class UsersController {
     @Param('id', ParseUUIDPipe) id: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @CurrentUser() currentUser: User,
   ) {
     await this.usersService.findById(id);
-    const { images, total } = await this.imagesService.findByUserId(
-      id,
-      Number(page) || 1,
-      Number(limit) || 10,
-    );
+    const safePage = Math.max(Number(page) || 1, 1);
+    const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+    const { images, total } = await this.imagesService.findByUserIdWithStats(id, currentUser.id, safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
-      meta: {
-        total,
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
-        totalPages: Math.ceil(total / (Number(limit) || 10)),
-      },
+      meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
     };
   }
 

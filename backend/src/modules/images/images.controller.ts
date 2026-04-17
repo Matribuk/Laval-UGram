@@ -97,10 +97,11 @@ export class ImagesController {
   async findAll(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @CurrentUser() user: User,
   ) {
     const safePage = Math.max(Number(page) || 1, 1);
     const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
-    const { images, total } = await this.imagesService.findAll(safePage, safeLimit);
+    const { images, total } = await this.imagesService.findAllWithStats(user.id, safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
       meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
@@ -122,10 +123,11 @@ export class ImagesController {
     @Query('description') query: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @CurrentUser() user: User,
   ) {
     const safePage = Math.max(Number(page) || 1, 1);
     const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
-    const { images, total } = await this.imagesService.searchByDescription(query || '', safePage, safeLimit);
+    const { images, total } = await this.imagesService.searchByDescriptionWithStats(query || '', user.id, safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
       meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
@@ -146,10 +148,11 @@ export class ImagesController {
     @Param('hashtag') hashtag: string,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @CurrentUser() user: User,
   ) {
     const safePage = Math.max(Number(page) || 1, 1);
     const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
-    const { images, total } = await this.imagesService.findByHashtag(hashtag, safePage, safeLimit);
+    const { images, total } = await this.imagesService.findByHashtagWithStats(hashtag, user.id, safePage, safeLimit);
     return {
       data: images.map((image) => plainToInstance(ImageResponseDto, image)),
       meta: { total, page: safePage, limit: safeLimit, totalPages: Math.ceil(total / safeLimit) },
@@ -166,8 +169,8 @@ export class ImagesController {
     type: ImageResponseDto,
   })
   @ApiResponse({ status: 404, description: 'Image not found' })
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    const image = await this.imagesService.findById(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() user: User) {
+    const image = await this.imagesService.findByIdWithStats(id, user.id);
     return plainToInstance(ImageResponseDto, image);
   }
 

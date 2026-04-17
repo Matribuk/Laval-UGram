@@ -196,30 +196,26 @@ describe('UsersController', () => {
 
   describe('GET /users/:id/images', () => {
     it('should return paginated user images', async () => {
-      
       const user = createUserFactory();
+      const currentUser = createUserFactory();
       const images = createManyImages(3, user);
       usersService.findById.mockResolvedValue(user);
-      imagesService.findByUserId.mockResolvedValue({ images, total: 3 });
+      imagesService.findByUserIdWithStats.mockResolvedValue({ images, total: 3 });
 
-      
-      const result = await controller.findUserImages(user.id, 1, 10);
+      const result = await controller.findUserImages(user.id, 1, 10, currentUser);
 
-      
       expect(result.data).toHaveLength(3);
       expect(result.meta.total).toBe(3);
     });
 
     it('should verify user exists before fetching images', async () => {
-      
       const user = createUserFactory();
+      const currentUser = createUserFactory();
       usersService.findById.mockResolvedValue(user);
-      imagesService.findByUserId.mockResolvedValue({ images: [], total: 0 });
+      imagesService.findByUserIdWithStats.mockResolvedValue({ images: [], total: 0 });
 
-      
-      await controller.findUserImages(user.id, 1, 10);
+      await controller.findUserImages(user.id, 1, 10, currentUser);
 
-      
       expect(usersService.findById).toHaveBeenCalledWith(user.id);
     });
   });
