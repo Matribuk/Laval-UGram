@@ -11,11 +11,11 @@ Le projet est organisé en monorepo avec deux parties principales :
 
 ## Application en production
 
-**URL de l'application**: http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+**URL de l'application**: https://d21p3kdqdbo0as.cloudfront.net
 
 L'application est déployée sur AWS avec l'architecture suivante:
-- **Frontend**: S3 Static Website Hosting
-- **Backend**: Elastic Beanstalk (Node.js)
+- **Frontend**: S3 Static Website Hosting + CloudFront (HTTPS)
+- **Backend**: Elastic Beanstalk (Node.js) + CloudFront (HTTPS)
 - **Base de données**: RDS PostgreSQL
 - **Stockage images**: S3
 

@@ -54,8 +54,7 @@ jobs:
           aws s3 sync . s3://ugram-frontend-prod-team12 --delete --cache-control max-age=31536000,public
           aws s3 cp s3://ugram-frontend-prod-team12/index.html s3://ugram-frontend-prod-team12/index.html --metadata-directive REPLACE --cache-control max-age=0,no-cache,no-store,must-revalidate --content-type text/html
 
-      - name: Invalidate CloudFront cache (if using CloudFront)
-        if: false
+      - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
 
@@ -164,5 +163,5 @@ jobs:
           fi
 
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Frontend URL:** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com" >> $GITHUB_STEP_SUMMARY
-          echo "**Backend URL:** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com" >> $GITHUB_STEP_SUMMARY
+          echo "**Frontend URL:** https://d21p3kdqdbo0as.cloudfront.net" >> $GITHUB_STEP_SUMMARY
+          echo "**Backend URL:** https://deccuz7hiyqbp.cloudfront.net" >> $GITHUB_STEP_SUMMARY
