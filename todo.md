@@ -335,7 +335,8 @@
 * [x] Uploader le dossier `build/` dans le bucket S3
 * [x] Activer l'hébergement de site statique sur le bucket S3
 * [x] Configurer la politique du bucket pour accès public en lecture
-* [ ] (Optionnel) Configurer CloudFront devant le bucket S3
+* [x] Configurer CloudFront devant le bucket S3 (HTTPS — `d21p3kdqdbo0as.cloudfront.net`, ID `E2X9BNNOJ04EPW`)
+* [x] Configurer CloudFront devant Elastic Beanstalk (HTTPS — `deccuz7hiyqbp.cloudfront.net`, ID `EFJLNQC8439I9`)
 
 ---
 
@@ -661,7 +662,8 @@
 * [ ] Configurer WAF (AWS Web Application Firewall) devant l'application
   * [ ] Règles anti-injection SQL et XSS
   * [ ] Blocage des IPs abusives
-* [ ] Activer HTTPS sur Elastic Beanstalk (certificat SSL via ACM)
+* [x] Activer HTTPS sur Elastic Beanstalk (via CloudFront — `deccuz7hiyqbp.cloudfront.net`, cert SSL CloudFront default gratuit)
+* [x] Activer HTTPS sur le Frontend S3 (via CloudFront — `d21p3kdqdbo0as.cloudfront.net`)
 * [ ] Restreindre les accès S3 images (pre-signed URLs ou CloudFront)
 * [ ] Audit des secrets (rotation des clés JWT, Google OAuth, RDS)
 * [ ] Vérifier que les variables sensibles ne sont pas dans le code (audit `.env` / defaults)
