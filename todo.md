@@ -335,7 +335,8 @@
 * [x] Uploader le dossier `build/` dans le bucket S3
 * [x] Activer l'hébergement de site statique sur le bucket S3
 * [x] Configurer la politique du bucket pour accès public en lecture
-* [ ] (Optionnel) Configurer CloudFront devant le bucket S3
+* [x] Configurer CloudFront devant le bucket S3 (HTTPS — `d21p3kdqdbo0as.cloudfront.net`, ID `E2X9BNNOJ04EPW`)
+* [x] Configurer CloudFront devant Elastic Beanstalk (HTTPS — `deccuz7hiyqbp.cloudfront.net`, ID `EFJLNQC8439I9`)
 
 ---
 
@@ -440,7 +441,7 @@
 
 ## 📊 Résumé Grille de Correction - Livrable 2
 
-### ✅ Points Acquis (estimé: 89-92/100)
+### ✅ Points Acquis (estimé: 95-98/100)
 
 **Fonctionnalités (28-33/33):**
 - ✅ OAuth Google (5 pts)
@@ -452,14 +453,14 @@
 - ✅ Rechercher images par hashtag (5 pts)
 - ❓ Fonctionnalités L1 valides (4 pts) - À tester
 
-**Déploiement (17/22):**
+**Déploiement (22/22):**
 - ✅ README.md (1 pt)
 - ✅ Fichiers statiques S3 (5 pts)
 - ✅ Serveur Elastic Beanstalk (5 pts)
 - ✅ Logging serveur CloudWatch (3 pts)
-- ✅ **Logging client Sentry (3 pts)** ← FAIT!
-- ❌ Intégration continue (0/3 pts)
-- ❌ Déploiement continu (0/3 pts)
+- ✅ Logging client Sentry (3 pts)
+- ✅ **Intégration continue (3 pts)** — `.github/workflows/ci.yml` (build + tests + lint FE/BE)
+- ✅ **Déploiement continu (3 pts)** — `.github/workflows/deploy.yml` (EB + S3 + invalidation CloudFront)
 
 **Architecture (estimé: 28-32/32):**
 - ✅ Backend complet (validation, exceptions, RESTful, config env)
@@ -473,17 +474,11 @@
 
 ---
 
-### ⚠️ Points Manquants (8-11 pts)
+### ⚠️ Points Manquants (2-5 pts — à valider manuellement)
 
-**Backend/DevOps:**
-1. **CI/CD GitHub Actions (6 pts total)**
-   - Intégration continue (build + tests) (3 pts)
-   - Déploiement continu (EB + S3) (3 pts)
-
-2. **Points à valider manuellement (2-5 pts):**
-   - Validation téléphone frontend
-   - Responsive design complet
-   - Fonctionnalités L1 encore valides
+- Validation téléphone frontend (`todo.md:58` — encore `[ ]`)
+- Responsive design complet (à retester sur tous les formats L1)
+- Fonctionnalités L1 encore valides en prod HTTPS
 
 ---
 
@@ -661,7 +656,8 @@
 * [ ] Configurer WAF (AWS Web Application Firewall) devant l'application
   * [ ] Règles anti-injection SQL et XSS
   * [ ] Blocage des IPs abusives
-* [ ] Activer HTTPS sur Elastic Beanstalk (certificat SSL via ACM)
+* [x] Activer HTTPS sur Elastic Beanstalk (via CloudFront — `deccuz7hiyqbp.cloudfront.net`, cert SSL CloudFront default gratuit)
+* [x] Activer HTTPS sur le Frontend S3 (via CloudFront — `d21p3kdqdbo0as.cloudfront.net`)
 * [ ] Restreindre les accès S3 images (pre-signed URLs ou CloudFront)
 * [ ] Audit des secrets (rotation des clés JWT, Google OAuth, RDS)
 * [ ] Vérifier que les variables sensibles ne sont pas dans le code (audit `.env` / defaults)

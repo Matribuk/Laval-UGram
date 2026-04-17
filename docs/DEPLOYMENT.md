@@ -154,8 +154,8 @@ L'application Ugram est déployée sur AWS avec l'architecture suivante:
 # Google OAuth
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_CALLBACK_URL=http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/auth/google/callback
-FRONTEND_URL=http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+GOOGLE_CALLBACK_URL=https://deccuz7hiyqbp.cloudfront.net/api/auth/google/callback
+FRONTEND_URL=https://d21p3kdqdbo0as.cloudfront.net
 
 # Database (RDS)
 DB_HOST=ugram-db-prod.cs7s8q406w8d.us-east-1.rds.amazonaws.com
@@ -173,7 +173,7 @@ PORT=8080
 NODE_ENV=production
 
 # CORS
-CORS_ORIGIN=http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+CORS_ORIGIN=https://d21p3kdqdbo0as.cloudfront.net
 
 # Storage (S3)
 STORAGE_TYPE=s3
@@ -334,16 +334,16 @@ Internet (0.0.0.0/0)
 
 | Service | URL | Description |
 |---------|-----|-------------|
-| **Frontend** | http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com | Application React (S3 Static Website) |
-| **Backend API** | http://ugram-backend-prod.us-east-1.elasticbeanstalk.com | API NestJS (Elastic Beanstalk) |
+| **Frontend** | https://d21p3kdqdbo0as.cloudfront.net | Application React (CloudFront HTTPS → S3) |
+| **Backend API** | https://deccuz7hiyqbp.cloudfront.net | API NestJS (CloudFront HTTPS → Elastic Beanstalk) |
 | **Database** | ugram-db-prod.cs7s8q406w8d.us-east-1.rds.amazonaws.com:5432 | PostgreSQL RDS (accessible depuis EB uniquement) |
 | **Images S3** | https://ugram-images-prod-team12.s3.us-east-1.amazonaws.com/ | Bucket d'images (accessible publiquement) |
 
 **Endpoints API principaux:**
-- Authentification: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/auth/login`
-- Google OAuth: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/auth/google`
-- Images: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/images`
-- Utilisateurs: `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/users`
+- Authentification: `https://deccuz7hiyqbp.cloudfront.net/api/auth/login`
+- Google OAuth: `https://deccuz7hiyqbp.cloudfront.net/api/auth/google`
+- Images: `https://deccuz7hiyqbp.cloudfront.net/api/images`
+- Utilisateurs: `https://deccuz7hiyqbp.cloudfront.net/api/users`
 
 ---
 
@@ -355,11 +355,11 @@ Internet (0.0.0.0/0)
 
 1. **Project ID:** (configuré par l'équipe)
 2. **Authorized JavaScript origins:**
-   - `http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com`
+   - `https://d21p3kdqdbo0as.cloudfront.net` (production)
    - `http://localhost:3000` (développement)
 
 3. **Authorized redirect URIs:**
-   - `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com/api/auth/google/callback`
+   - `https://deccuz7hiyqbp.cloudfront.net/api/auth/google/callback` (production)
    - `http://localhost:8080/api/auth/google/callback` (développement)
 
 **Flow OAuth:**
@@ -378,7 +378,7 @@ Internet (0.0.0.0/0)
 cd Frontend
 
 # 1. Mettre à jour .env pour production
-echo "REACT_APP_API_URL=http://ugram-backend-prod.us-east-1.elasticbeanstalk.com" > .env
+echo "REACT_APP_API_URL=https://deccuz7hiyqbp.cloudfront.net" > .env
 
 # 2. Build
 npm run build
@@ -532,14 +532,78 @@ Par défaut, AWS RDS PostgreSQL force les connexions SSL (`rds.force_ssl = 1`). 
 
 ### HTTPS (Frontend/Backend)
 
-**Status actuel:** HTTP uniquement
+**Status actuel:**
 
-- **Frontend:** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
-- **Backend:** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
+- **Frontend (HTTPS):** https://d21p3kdqdbo0as.cloudfront.net — via CloudFront
+- **Frontend (S3 direct, legacy):** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
+- **Backend (HTTPS):** https://deccuz7hiyqbp.cloudfront.net — via CloudFront
+- **Backend (EB direct, legacy):** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
 
-**Pourquoi HTTP:**
+#### CloudFront Frontend — Distribution
 
-Le Livrable 2 n'exige pas HTTPS. Pour activer HTTPS, il faudrait configurer CloudFront devant S3 et un Load Balancer devant Elastic Beanstalk, ce qui génèrerait des coûts supplémentaires hors Free Tier (~$16-20/mois).
+| Paramètre | Valeur |
+|---|---|
+| **Distribution ID** | `E2X9BNNOJ04EPW` |
+| **Distribution domain** | `d21p3kdqdbo0as.cloudfront.net` |
+| **Origin** | `ugram-frontend-prod-team12.s3.us-east-1.amazonaws.com` (S3 REST endpoint) |
+| **Origin access** | OAC (Origin Access Control) — bucket privé côté CF, policy S3 auto-écrite |
+| **Viewer protocol** | Redirect HTTP to HTTPS |
+| **Allowed methods** | GET, HEAD |
+| **Cache policy** | CachingOptimized (managed) |
+| **Price class** | Use only North America and Europe (classe 100) |
+| **Default root object** | `index.html` |
+| **WAF** | Non activé (évite frais ~$14/mois, follow-up L3 sécurité) |
+| **Standard logging** | Désactivé (évite frais S3) |
+| **Custom SSL** | Default `*.cloudfront.net` (gratuit) |
+
+**Custom error responses** (SPA routing React Router) :
+
+| HTTP error | Response page | Response code | TTL |
+|---|---|---|---|
+| 404 | `/index.html` | 200 | 10 s |
+| 403 | `/index.html` | 200 | 10 s |
+
+Sans ces règles, les routes `/feed`, `/profile`, `/post/create` renvoient 403 (S3 REST ne connaît pas le routing React).
+
+#### CloudFront Backend — Distribution
+
+| Paramètre | Valeur |
+|---|---|
+| **Distribution ID** | `EFJLNQC8439I9` |
+| **Distribution domain** | `deccuz7hiyqbp.cloudfront.net` |
+| **Origin** | `ugram-backend-prod.us-east-1.elasticbeanstalk.com` (custom origin) |
+| **Origin protocol** | HTTP only (port 80) — EB n'a pas d'HTTPS natif |
+| **Viewer protocol** | HTTPS only |
+| **Allowed methods** | GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE |
+| **Cache policy** | **`CachingDisabled`** (managed) — critique pour une API avec auth JWT |
+| **Origin request policy** | `AllViewer` (forwarde tous les headers dont Authorization, cookies, query strings) |
+| **Response headers policy** | Aucune |
+| **WAF** | Non activé (follow-up L3 sécurité) |
+| **Custom SSL** | Default `*.cloudfront.net` (gratuit) |
+
+**Pourquoi `CachingDisabled` et pas `UseOriginCacheControlHeaders` :**
+
+L'API renvoie des données user-specific protégées par JWT (feed, notifications, profile, messages). `UseOriginCacheControlHeaders` n'inclut pas l'header `Authorization` dans la cache key — deux utilisateurs avec JWT différents pourraient recevoir la même réponse cachée. `CachingDisabled` garantit zéro cache et zéro risque de fuite entre comptes.
+
+#### Coût
+
+CloudFront est couvert par l'**Always Free Tier** permanent :
+
+- 1 TB data transfer out / mois
+- 10M requêtes HTTP/HTTPS / mois
+- Cert SSL `*.cloudfront.net` gratuit
+- Pas de charge horaire pour la distribution
+
+Pour le trafic UGRAM (quelques MB / quelques milliers de requêtes par mois), le coût réel est **$0**.
+
+> **Note:** une ancienne version de cette doc indiquait ~$16-20/mois pour HTTPS — chiffre erroné, basé sur l'archi ALB + ACM + WAF. CloudFront seul reste en Free Tier.
+
+#### Invalidation du cache lors d'un deploy
+
+Le workflow `.github/workflows/deploy.yml` (ligne 57) contient déjà un step d'invalidation gardé par `if: false` + un secret `CLOUDFRONT_DISTRIBUTION_ID`. À activer :
+
+1. GitHub → Settings → Secrets → ajouter `CLOUDFRONT_DISTRIBUTION_ID = E2X9BNNOJ04EPW`
+2. Passer `if: false` → `if: true` dans `deploy.yml:58`
 
 ---
 
@@ -780,8 +844,8 @@ S'exécute après les deux déploiements (même en cas d'échec).
 | Frontend (S3) | Deployed |
 | Backend (EB) | Deployed |
 
-**Frontend URL:** http://ugram-frontend-prod-team12.s3-website-us-east-1.amazonaws.com
-**Backend URL:** http://ugram-backend-prod.us-east-1.elasticbeanstalk.com
+**Frontend URL:** https://d21p3kdqdbo0as.cloudfront.net
+**Backend URL:** https://deccuz7hiyqbp.cloudfront.net
 ```
 
 ---
@@ -795,7 +859,8 @@ Les secrets suivants doivent être configurés dans `Settings → Secrets and va
 | `AWS_ACCESS_KEY_ID` | Access Key ID de l'utilisateur IAM | `AKIAUJNYQPWR...` |
 | `AWS_SECRET_ACCESS_KEY` | Secret Access Key de l'utilisateur IAM | `wJalrXUtnFEMI/K7MDENG...` |
 | `AWS_ACCOUNT_ID` | ID du compte AWS | `295129087394` |
-| `REACT_APP_API_URL` | URL du backend en production | `http://ugram-backend-prod.us-east-1.elasticbeanstalk.com` |
+| `REACT_APP_API_URL` | URL du backend en production | `https://deccuz7hiyqbp.cloudfront.net` |
+| `CLOUDFRONT_DISTRIBUTION_ID` | ID de la distribution CloudFront FE (pour invalidation cache) | `E2X9BNNOJ04EPW` |
 | `REACT_APP_SENTRY_DSN` | DSN Sentry pour error tracking | `https://...@sentry.io/...` |
 
 **Utilisateur IAM pour GitHub Actions:**
