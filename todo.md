@@ -641,14 +641,14 @@
 ---
 
 ### 📊 Monitoring & Métriques
-* [ ] Ajouter des métriques custom CloudWatch pour les nouveaux endpoints
+* [ ] Ajouter des métriques custom CloudWatch pour les nouveaux endpoints (EB custom metrics payantes — laissées désactivées, cf. DEPLOYMENT.md)
   * [ ] Nombre de réactions par heure
   * [ ] Nombre de commentaires par heure
   * [ ] Nombre de messages privés par heure
   * [ ] Latence des endpoints critiques (resizing, recommandation)
-* [ ] Configurer des alarmes CloudWatch (ex: erreurs 5xx > seuil, latence élevée)
-* [ ] Ajouter le monitoring Sentry sur les nouvelles pages frontend (messages, notifications)
-* [ ] Dashboard CloudWatch regroupant les métriques clés de l'application
+* [x] Configurer des alarmes CloudWatch (`ugram-backend-health-degraded` + `ugram-backend-5xx-errors` → SNS email)
+* [x] Ajouter le monitoring Sentry sur les nouvelles pages frontend (Sentry init global → capture auto sur toutes les pages, y compris messages/notifications)
+* [x] Dashboard CloudWatch regroupant les métriques clés de l'application (`ugram-production` : EB health + CF FE/BE + RDS)
 
 ---
 

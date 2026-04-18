@@ -724,6 +724,102 @@ api.interceptors.response.use(
 
 ---
 
+## Monitoring & Alerting (CloudWatch Dashboard + Alarmes)
+
+En complément du log streaming, un **dashboard CloudWatch** agrège les métriques clés de l'infra, et deux **alarmes CloudWatch** envoient des notifications SNS (email) en cas d'incident.
+
+### Dashboard
+
+**Nom:** `ugram-production`
+**Région:** `us-east-1`
+**URL console:** https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards/dashboard/ugram-production
+
+#### Widgets
+
+| Widget | Source | Métriques | Statistic | Period |
+|---|---|---|---|---|
+| **EB Environment Health** | `AWS/ElasticBeanstalk` / `EnvironmentName=ugram-backend-prod` | `EnvironmentHealth` | Maximum | 1 min |
+| **Backend — CloudFront Traffic & Errors** | `AWS/CloudFront` / `DistributionId=EFJLNQC8439I9` | `Requests`, `4xxErrorRate`, `5xxErrorRate` | Sum / Average / Average | 5 min |
+| **Frontend — CloudFront Traffic** | `AWS/CloudFront` / `DistributionId=E2X9BNNOJ04EPW` | `Requests`, `BytesDownloaded`, `4xxErrorRate` | Sum / Sum / Average | 5 min |
+| **RDS — Database Load** | `AWS/RDS` / `DBInstanceIdentifier=ugram-db-prod` | `CPUUtilization`, `DatabaseConnections`, `FreeableMemory` | Average | 1 min |
+
+**Échelle `EnvironmentHealth`:** 0 = Ok (green), 5 = Info, 10 = Warning, 15 = Degraded, 20 = Severe, 25 = NoData.
+
+#### Choix des métriques
+
+Les métriques EB détaillées (`ApplicationRequestsTotal/2xx/4xx/5xx`, `ApplicationLatencyP95`, etc.) sont publiables mais payantes (~$0.30/métrique/mois × 20 métriques ≈ $6/mois via *CloudWatch Custom Metrics for EB*). On les a laissées **désactivées** (cf. `ugram-backend-prod → Configuration → Monitoring → Custom metrics: Disabled`).
+
+À la place, on utilise les **métriques CloudFront** (gratuites et incluses dans le Free Tier), qui reflètent le trafic réel vu par les utilisateurs puisque toutes les requêtes passent désormais par CloudFront (FE et BE).
+
+**Screenshot:**
+
+![CloudWatch Dashboard](./assets/prod_dashboard_metric.png)
+
+---
+
+### Alarmes
+
+#### 1. `ugram-backend-health-degraded`
+
+| Paramètre | Valeur |
+|---|---|
+| **Métrique** | `EnvironmentHealth` (EB `ugram-backend-prod`) |
+| **Statistic** | Maximum |
+| **Period** | 1 minute |
+| **Threshold** | `>= 10` (Warning ou pire) |
+| **Datapoints to alarm** | 2 out of 2 |
+| **Missing data** | `Treat as breaching` (si EB arrête de publier → alerte) |
+| **Action** | SNS topic `ugram-production-alerts` |
+
+**Intention:** détecter un environnement EB qui devient instable (instance qui crash, DB connection perdue, deploy raté).
+
+#### 2. `ugram-backend-5xx-errors`
+
+| Paramètre | Valeur |
+|---|---|
+| **Métrique** | `5xxErrorRate` (CloudFront BE `EFJLNQC8439I9`) |
+| **Statistic** | Average |
+| **Period** | 5 minutes |
+| **Threshold** | `> 5` (%) |
+| **Datapoints to alarm** | 1 out of 2 |
+| **Missing data** | `Treat as not breaching` (évite alerte fantôme si pas de trafic) |
+| **Action** | SNS topic `ugram-production-alerts` |
+
+**Intention:** détecter un incident backend qui se manifeste pour les utilisateurs finaux (backend down, erreur applicative critique, timeout DB).
+
+**Screenshot:**
+
+![CloudWatch Alarms](./assets/prod_alarms.png)
+
+---
+
+### Notification — SNS topic
+
+**Topic:** `ugram-production-alerts`
+**ARN:** `arn:aws:sns:us-east-1:295129087394:ugram-production-alerts`
+**Protocole:** Email
+**Subscriber:** `antonin.leprest@epitech.eu` (subscription confirmée)
+
+Quand une alarme passe en **`In alarm`**, SNS publie un message au topic qui envoie un email à chaque subscriber confirmé. Le contenu contient le nom de l'alarme, la métrique, la valeur observée vs le threshold, et un lien vers la console CloudWatch.
+
+Pour ajouter d'autres destinataires : console SNS → `ugram-production-alerts` → **Create subscription** → protocole `Email` → endpoint = email → confirmer via le mail reçu.
+
+---
+
+### Coûts
+
+| Ressource | Limite Free Tier (permanente) | Usage projet |
+|---|---|---|
+| Alarms | 10 | 2 |
+| Dashboards | 3 | 1 |
+| API requests | 1M/mois | négligeable |
+| Custom metrics | 10 (pour EB custom metrics désactivées) | 0 |
+| SNS email notifications | 1000/mois | quelques-uns/mois |
+
+**Coût total : $0/mois** tant qu'on reste sous ces limites.
+
+---
+
 ## CI/CD - Déploiement Continu
 
 L'application utilise **GitHub Actions** pour l'intégration continue (CI) et le déploiement continu (CD). Tous les workflows sont configurés dans `.github/workflows/`.

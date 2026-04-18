@@ -70,6 +70,33 @@ Le dashboard Sentry permet de:
 - Voir les replays de session pour les erreurs
 - Suivre la performance de l'application
 
+### Monitoring & Alarmes (CloudWatch)
+
+Un **dashboard CloudWatch** `ugram-production` agrège les métriques clés de l'infra en un seul endroit (EB, CloudFront FE/BE, RDS).
+
+**Widgets du dashboard:**
+- **EB Environment Health** — santé de l'environnement Elastic Beanstalk (0 = Ok, 25 = NoData)
+- **Backend — CloudFront Traffic & Errors** — requêtes, 4xxErrorRate, 5xxErrorRate sur la distribution BE
+- **Frontend — CloudFront Traffic** — requêtes, BytesDownloaded, 4xxErrorRate sur la distribution FE
+- **RDS — Database Load** — CPUUtilization, DatabaseConnections, FreeableMemory
+
+**Dashboard CloudWatch:**
+
+![CloudWatch Dashboard](./docs/assets/prod_dashboard_metric.png)
+
+Deux **alarmes CloudWatch** notifient par email via un topic SNS (`ugram-production-alerts`) :
+
+| Alarme | Condition | Trigger |
+|---|---|---|
+| `ugram-backend-health-degraded` | `EnvironmentHealth >= 10` pendant 2 min | Environnement EB en Warning ou pire |
+| `ugram-backend-5xx-errors` | `5xxErrorRate > 5%` sur 5 min | Backend renvoie trop d'erreurs serveur |
+
+**Alarmes CloudWatch:**
+
+![CloudWatch Alarms](./docs/assets/prod_alarms.png)
+
+Coût : **$0** — Free Tier CloudWatch couvre 10 alarmes, 3 dashboards, 1M requêtes API/mois et SNS couvre 1000 emails/mois.
+
 ## CI/CD - Déploiement Continu
 
 L'application utilise **GitHub Actions** pour l'intégration et le déploiement continu.
