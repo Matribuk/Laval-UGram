@@ -54,6 +54,9 @@ export const transformBackendPost = (backendPost: BackendPost): Post => {
 		caption: backendPost.description || '',
 		tags: backendPost.hashtags.map((h) => h.name),
 		mentions: backendPost.mentions.map((m) => m.mentionedUser.username),
+		likeCount: backendPost.likeCount ?? 0,
+		commentCount: backendPost.commentCount ?? 0,
+		likedByCurrentUser: backendPost.likedByCurrentUser ?? false,
 	};
 };
 

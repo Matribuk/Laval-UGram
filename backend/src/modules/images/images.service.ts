@@ -3,7 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
 } from '@nestjs/common';
-import { ImagesRepository } from './images.repository';
+import { ImagesRepository, ImageWithStats } from './images.repository';
 import { StorageService } from '../storage/storage.service';
 import { CreateImageDto, UpdateImageDto } from './dto';
 import { Image } from './entities';
@@ -100,6 +100,53 @@ export class ImagesService {
       page,
       limit,
     );
+    return { images, total };
+  }
+
+  async findAllWithStats(
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ images: ImageWithStats[]; total: number }> {
+    const [images, total] = await this.imagesRepository.findAllWithStats(currentUserId, page, limit);
+    return { images, total };
+  }
+
+  async findByIdWithStats(id: string, currentUserId: string): Promise<ImageWithStats> {
+    const image = await this.imagesRepository.findByIdWithStats(id, currentUserId);
+    if (!image) {
+      throw new NotFoundException(`Image with ID "${id}" not found`);
+    }
+    return image;
+  }
+
+  async findByUserIdWithStats(
+    userId: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ images: ImageWithStats[]; total: number }> {
+    const [images, total] = await this.imagesRepository.findByUserIdWithStats(userId, currentUserId, page, limit);
+    return { images, total };
+  }
+
+  async findByHashtagWithStats(
+    hashtag: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ images: ImageWithStats[]; total: number }> {
+    const [images, total] = await this.imagesRepository.findByHashtagWithStats(hashtag, currentUserId, page, limit);
+    return { images, total };
+  }
+
+  async searchByDescriptionWithStats(
+    query: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ images: ImageWithStats[]; total: number }> {
+    const [images, total] = await this.imagesRepository.searchByDescriptionWithStats(query, currentUserId, page, limit);
     return { images, total };
   }
 

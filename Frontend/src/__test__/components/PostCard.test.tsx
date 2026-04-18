@@ -2,8 +2,6 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import PostCard from '../../components/PostCard/PostCard';
 import { mockNavigate } from '../../__mocks__/react-router-dom';
-import { postsService } from '../../services/postsService';
-
 jest.mock('react-router-dom');
 jest.mock('../../services/postsService');
 jest.mock('react-toastify', () => ({
@@ -12,8 +10,6 @@ jest.mock('react-toastify', () => ({
 		success: jest.fn(),
 	},
 }));
-
-const mockPostsService = postsService as jest.Mocked<typeof postsService>;
 
 describe('PostCard', () => {
 	const defaultProps = {
@@ -26,12 +22,13 @@ describe('PostCard', () => {
 		imageUrl: 'https://example.com/post-image.jpg',
 		caption: 'This is a test caption',
 		tags: ['photography', 'nature'],
+		likeCount: 0,
+		commentCount: 0,
+		likedByCurrentUser: false,
 	};
 
 	beforeEach(() => {
 		mockNavigate.mockClear();
-		mockPostsService.getComments.mockResolvedValue([]);
-		mockPostsService.getLikeStatus.mockResolvedValue({ likeCount: 0, likedByCurrentUser: false });
 	});
 
 	it('renders author username', () => {

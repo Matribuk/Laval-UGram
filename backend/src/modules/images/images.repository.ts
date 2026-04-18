@@ -2,6 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, ILike } from 'typeorm';
 import { Image, Hashtag, ImageMention } from './entities';
+import { Like } from '../likes/entities/like.entity';
+import { Comment } from '../comments/entities/comment.entity';
+
+export type ImageWithStats = Image & {
+  likeCount: number;
+  commentCount: number;
+  likedByCurrentUser: boolean;
+};
 
 @Injectable()
 export class ImagesRepository {
@@ -12,6 +20,10 @@ export class ImagesRepository {
     private readonly hashtagRepository: Repository<Hashtag>,
     @InjectRepository(ImageMention)
     private readonly mentionRepository: Repository<ImageMention>,
+    @InjectRepository(Like)
+    private readonly likeRepository: Repository<Like>,
+    @InjectRepository(Comment)
+    private readonly commentRepository: Repository<Comment>,
   ) {}
 
   async create(imageData: Partial<Image>): Promise<Image> {
@@ -160,5 +172,99 @@ export class ImagesRepository {
       take: limit,
       order: { createdAt: 'DESC' },
     });
+  }
+
+  async findAllWithStats(
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[ImageWithStats[], number]> {
+    const [images, total] = await this.findAll(page, limit);
+    return [await this.attachStats(images, currentUserId), total];
+  }
+
+  async findByIdWithStats(id: string, currentUserId: string): Promise<ImageWithStats | null> {
+    const image = await this.findById(id);
+    if (!image) return null;
+    const [withStats] = await this.attachStats([image], currentUserId);
+    return withStats ?? null;
+  }
+
+  async findByUserIdWithStats(
+    userId: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[ImageWithStats[], number]> {
+    const [images, total] = await this.findByUserId(userId, page, limit);
+    return [await this.attachStats(images, currentUserId), total];
+  }
+
+  async findByHashtagWithStats(
+    hashtagName: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[ImageWithStats[], number]> {
+    const [images, total] = await this.findByHashtag(hashtagName, page, limit);
+    return [await this.attachStats(images, currentUserId), total];
+  }
+
+  async searchByDescriptionWithStats(
+    query: string,
+    currentUserId: string,
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<[ImageWithStats[], number]> {
+    const [images, total] = await this.searchByDescription(query, page, limit);
+    return [await this.attachStats(images, currentUserId), total];
+  }
+
+  private async attachStats(images: Image[], currentUserId: string): Promise<ImageWithStats[]> {
+    if (images.length === 0) return [];
+
+    const imageIds = images.map((i) => i.id);
+    const { likeCountMap, userLikedSet, commentCountMap } = await this.fetchStats(imageIds, currentUserId);
+
+    return images.map((image) => ({
+      ...image,
+      likeCount: likeCountMap.get(image.id) ?? 0,
+      commentCount: commentCountMap.get(image.id) ?? 0,
+      likedByCurrentUser: userLikedSet.has(image.id),
+    }));
+  }
+
+  private async fetchStats(
+    imageIds: string[],
+    currentUserId: string,
+  ): Promise<{ likeCountMap: Map<string, number>; userLikedSet: Set<string>; commentCountMap: Map<string, number> }> {
+    const [likeCounts, userLikes, commentCounts] = await Promise.all([
+      this.likeRepository
+        .createQueryBuilder('l')
+        .select('l.imageId', 'imageId')
+        .addSelect('COUNT(l.id)', 'likeCount')
+        .where('l.imageId IN (:...imageIds)', { imageIds })
+        .groupBy('l.imageId')
+        .getRawMany<{ imageId: string; likeCount: string }>(),
+      this.likeRepository
+        .createQueryBuilder('l')
+        .select('l.imageId', 'imageId')
+        .where('l.imageId IN (:...imageIds)', { imageIds })
+        .andWhere('l.userId = :currentUserId', { currentUserId })
+        .getRawMany<{ imageId: string }>(),
+      this.commentRepository
+        .createQueryBuilder('c')
+        .select('c.imageId', 'imageId')
+        .addSelect('COUNT(c.id)', 'commentCount')
+        .where('c.imageId IN (:...imageIds)', { imageIds })
+        .groupBy('c.imageId')
+        .getRawMany<{ imageId: string; commentCount: string }>(),
+    ]);
+
+    return {
+      likeCountMap: new Map(likeCounts.map((r) => [r.imageId, Number(r.likeCount)])),
+      userLikedSet: new Set(userLikes.map((r) => r.imageId)),
+      commentCountMap: new Map(commentCounts.map((r) => [r.imageId, Number(r.commentCount)])),
+    };
   }
 }
