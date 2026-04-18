@@ -119,6 +119,47 @@ describe('postsService', () => {
 
 			expect(mockApi.post).toHaveBeenCalled();
 		});
+
+		it('appends appliedFilter to FormData when non-normal filter is provided', async () => {
+			mockApi.post.mockResolvedValue({ data: mockBackendPost });
+			const file = new File(['test'], 'image.jpg', { type: 'image/jpeg' });
+
+			await postsService.createPost({
+				description: 'With filter',
+				file,
+				appliedFilter: 'sepia',
+			});
+
+			const formData = mockApi.post.mock.calls[0][1] as FormData;
+			expect(formData.get('appliedFilter')).toBe('sepia');
+		});
+
+		it('does not append appliedFilter when filter is "normal"', async () => {
+			mockApi.post.mockResolvedValue({ data: mockBackendPost });
+			const file = new File(['test'], 'image.jpg', { type: 'image/jpeg' });
+
+			await postsService.createPost({
+				description: 'No filter',
+				file,
+				appliedFilter: 'normal',
+			});
+
+			const formData = mockApi.post.mock.calls[0][1] as FormData;
+			expect(formData.get('appliedFilter')).toBeNull();
+		});
+
+		it('does not append appliedFilter when filter is undefined', async () => {
+			mockApi.post.mockResolvedValue({ data: mockBackendPost });
+			const file = new File(['test'], 'image.jpg', { type: 'image/jpeg' });
+
+			await postsService.createPost({
+				description: 'No filter key',
+				file,
+			});
+
+			const formData = mockApi.post.mock.calls[0][1] as FormData;
+			expect(formData.get('appliedFilter')).toBeNull();
+		});
 	});
 
 	describe('updatePost', () => {
