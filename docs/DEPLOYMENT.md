@@ -742,6 +742,8 @@ En complément du log streaming, un **dashboard CloudWatch** agrège les métriq
 | **Backend — CloudFront Traffic & Errors** | `AWS/CloudFront` / `DistributionId=EFJLNQC8439I9` | `Requests`, `4xxErrorRate`, `5xxErrorRate` | Sum / Average / Average | 5 min |
 | **Frontend — CloudFront Traffic** | `AWS/CloudFront` / `DistributionId=E2X9BNNOJ04EPW` | `Requests`, `BytesDownloaded`, `4xxErrorRate` | Sum / Sum / Average | 5 min |
 | **RDS — Database Load** | `AWS/RDS` / `DBInstanceIdentifier=ugram-db-prod` | `CPUUtilization`, `DatabaseConnections`, `FreeableMemory` | Average | 1 min |
+| **Backend API — Requests & Latency (custom)** | `Ugram/API` | `RequestCount`, `RequestLatency` | Sum / Average | 1 min |
+| **User Analytics — Behavioral events (custom)** | `Ugram/Analytics` | `UserSignup`, `UserLogin`, `PostCreated`, `PostLiked`, `PostCommented`, `MessageSent`, `FilterApplied` | Sum | 1 min |
 
 **Échelle `EnvironmentHealth`:** 0 = Ok (green), 5 = Info, 10 = Warning, 15 = Degraded, 20 = Severe, 25 = NoData.
 
@@ -798,9 +800,13 @@ Les métriques EB détaillées (`ApplicationRequestsTotal/2xx/4xx/5xx`, `Applica
 **Topic:** `ugram-production-alerts`
 **ARN:** `arn:aws:sns:us-east-1:295129087394:ugram-production-alerts`
 **Protocole:** Email
-**Subscriber:** `antonin.leprest@epitech.eu` (subscription confirmée)
+**Subscribers:** tous les membres de l'équipe 12 (subscriptions confirmées via le lien AWS)
 
 Quand une alarme passe en **`In alarm`**, SNS publie un message au topic qui envoie un email à chaque subscriber confirmé. Le contenu contient le nom de l'alarme, la métrique, la valeur observée vs le threshold, et un lien vers la console CloudWatch.
+
+**Screenshot des subscriptions confirmées:**
+
+![Team SNS subscriptions](./assets/team_alert.png)
 
 Pour ajouter d'autres destinataires : console SNS → `ugram-production-alerts` → **Create subscription** → protocole `Email` → endpoint = email → confirmer via le mail reçu.
 
