@@ -3,14 +3,18 @@ import { JwtService } from '@nestjs/jwt';
 import { plainToInstance } from 'class-transformer';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
+import { AnalyticsService } from '../monitoring/analytics.service';
 import { RegisterDto, AuthResponseDto } from './dto';
 import { UserResponseDto } from '../users/dto';
+
+const OAUTH_NEW_USER_WINDOW_MS = 60_000;
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly analytics: AnalyticsService,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
@@ -19,7 +23,10 @@ export class AuthService {
       return null;
     }
 
-    const isPasswordValid = await this.usersService.validatePassword(user, password);
+    const isPasswordValid = await this.usersService.validatePassword(
+      user,
+      password,
+    );
     if (!isPasswordValid) {
       return null;
     }
@@ -36,11 +43,14 @@ export class AuthService {
       lastName: registerDto.lastName,
     });
 
+    this.analytics.trackSignup();
+
     return this.generateAuthResponse(user);
   }
 
-  async login(user: User): Promise<AuthResponseDto> {
-    return this.generateAuthResponse(user);
+  login(user: User): Promise<AuthResponseDto> {
+    this.analytics.trackLogin();
+    return Promise.resolve(this.generateAuthResponse(user));
   }
 
   async googleLogin(googleProfile: {
@@ -55,6 +65,16 @@ export class AuthService {
       lastName: googleProfile.lastName,
       profilePictureUrl: googleProfile.picture,
     });
+
+    const isNewUser =
+      user.createdAt &&
+      Date.now() - new Date(user.createdAt).getTime() <
+        OAUTH_NEW_USER_WINDOW_MS;
+    if (isNewUser) {
+      this.analytics.trackSignup();
+    } else {
+      this.analytics.trackLogin();
+    }
 
     return this.generateAuthResponse(user);
   }

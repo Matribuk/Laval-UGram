@@ -3,6 +3,7 @@ import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { ImagesService } from '../images.service';
 import { ImagesRepository } from '../images.repository';
 import { StorageService } from '../../storage/storage.service';
+import { AnalyticsService } from '../../monitoring/analytics.service';
 import {
   createImageFactory,
   createMockFile,
@@ -13,22 +14,26 @@ import { createUserFactory } from '../../../../test/factories/user.factory';
 import {
   createMockImagesRepository,
   createMockStorageService,
+  createMockAnalyticsService,
 } from '../../../../test/mocks/services.mock';
 
 describe('ImagesService', () => {
   let service: ImagesService;
   let imagesRepository: ReturnType<typeof createMockImagesRepository>;
   let storageService: ReturnType<typeof createMockStorageService>;
+  let analytics: ReturnType<typeof createMockAnalyticsService>;
 
   beforeEach(async () => {
     imagesRepository = createMockImagesRepository();
     storageService = createMockStorageService();
+    analytics = createMockAnalyticsService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ImagesService,
         { provide: ImagesRepository, useValue: imagesRepository },
         { provide: StorageService, useValue: storageService },
+        { provide: AnalyticsService, useValue: analytics },
       ],
     }).compile();
 
