@@ -67,6 +67,9 @@ describe('SearchPage', () => {
 			caption: 'Beach vacation',
 			tags: ['travel'],
 			mentions: [],
+			likeCount: 0,
+			commentCount: 0,
+			likedByCurrentUser: false,
 		},
 	];
 

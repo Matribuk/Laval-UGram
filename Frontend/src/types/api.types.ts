@@ -42,6 +42,9 @@ export interface Post {
 	caption: string;
 	tags: string[];
 	mentions: string[];
+	likeCount: number;
+	commentCount: number;
+	likedByCurrentUser: boolean;
 }
 
 export interface ProfilePost {
@@ -133,6 +136,9 @@ export interface BackendPost {
 	mentions: BackendMention[];
 	createdAt: string;
 	updatedAt: string;
+	likeCount?: number;
+	commentCount?: number;
+	likedByCurrentUser?: boolean;
 }
 
 export interface PaginatedResponse<T> {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PostAuthor } from '../../types/api.types';
 import Avatar from '../Avatar/Avatar';
@@ -6,7 +6,6 @@ import MentionText from '../MentionText/MentionText';
 import LikeButton from '../LikeButton/LikeButton';
 import CommentButton from '../CommentButton/CommentButton';
 import CommentsSection from '../CommentsSection/CommentsSection';
-import { postsService } from '../../services/postsService';
 import './PostCard.css';
 
 interface PostCardProps {
@@ -16,35 +15,25 @@ interface PostCardProps {
 	imageUrl: string;
 	caption: string;
 	tags: string[];
+	likeCount: number;
+	commentCount: number;
+	likedByCurrentUser: boolean;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, caption, tags }) => {
+const PostCard: React.FC<PostCardProps> = ({
+	id,
+	author,
+	timeAgo,
+	imageUrl,
+	caption,
+	tags,
+	likeCount,
+	commentCount,
+	likedByCurrentUser,
+}) => {
 	const navigate = useNavigate();
 	const [showComments, setShowComments] = useState(false);
-	const [commentCount, setCommentCount] = useState(0);
-
-	useEffect(() => {
-		let isMounted = true;
-
-		const fetchCommentCount = async () => {
-			try {
-				const comments = await postsService.getComments(id);
-				if (isMounted) {
-					setCommentCount(comments.length);
-				}
-			} catch (error) {
-				if (isMounted) {
-					console.error('Failed to fetch comment count:', error);
-				}
-			}
-		};
-
-		fetchCommentCount();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [id]);
+	const [currentCommentCount, setCurrentCommentCount] = useState(commentCount);
 
 	const handleImageClick = () => {
 		navigate(`/post/${id}`);
@@ -55,7 +44,7 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 	};
 
 	const handleCommentCountChange = useCallback((count: number) => {
-		setCommentCount(count);
+		setCurrentCommentCount(count);
 	}, []);
 
 	return (
@@ -75,8 +64,13 @@ const PostCard: React.FC<PostCardProps> = ({ id, author, timeAgo, imageUrl, capt
 			</div>
 
 			<div className="post-actions-bar">
-				<LikeButton postId={id} />
-				<CommentButton count={commentCount} isActive={showComments} onClick={toggleComments} />
+				<LikeButton
+					postId={id}
+					initialLikeCount={likeCount}
+					initialLikedByCurrentUser={likedByCurrentUser}
+					fetchOnMount={false}
+				/>
+				<CommentButton count={currentCommentCount} isActive={showComments} onClick={toggleComments} />
 			</div>
 
 			<div className="post-content">

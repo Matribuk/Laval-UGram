@@ -9,6 +9,7 @@ interface LikeButtonProps {
 	initialLikeCount?: number;
 	initialLikedByCurrentUser?: boolean;
 	showCount?: boolean;
+	fetchOnMount?: boolean;
 }
 
 const LikeButton: React.FC<LikeButtonProps> = ({
@@ -16,12 +17,17 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 	initialLikeCount = 0,
 	initialLikedByCurrentUser = false,
 	showCount = true,
+	fetchOnMount = true,
 }) => {
 	const [likeCount, setLikeCount] = useState(initialLikeCount);
 	const [liked, setLiked] = useState(initialLikedByCurrentUser);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
+		if (!fetchOnMount) {
+			return;
+		}
+
 		const fetchLikeStatus = async () => {
 			try {
 				const status = await postsService.getLikeStatus(postId);
@@ -33,7 +39,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({
 		};
 
 		fetchLikeStatus();
-	}, [postId]);
+	}, [postId, fetchOnMount]);
 
 	const handleToggleLike = async (e: React.MouseEvent) => {
 		e.stopPropagation();

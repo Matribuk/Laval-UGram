@@ -102,6 +102,9 @@ const SearchPage: React.FC = () => {
 								imageUrl={post.thumbnailUrl}
 								caption={post.caption}
 								tags={post.tags}
+								likeCount={post.likeCount}
+								commentCount={post.commentCount}
+								likedByCurrentUser={post.likedByCurrentUser}
 							/>
 						))}
 					</>

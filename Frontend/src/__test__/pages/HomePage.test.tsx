@@ -69,6 +69,9 @@ describe('HomePage', () => {
 			caption: 'First post',
 			tags: ['tag1'],
 			mentions: [],
+			likeCount: 0,
+			commentCount: 0,
+			likedByCurrentUser: false,
 		},
 		{
 			id: 'post-2',
@@ -81,6 +84,9 @@ describe('HomePage', () => {
 			caption: 'Second post',
 			tags: ['tag2'],
 			mentions: [],
+			likeCount: 0,
+			commentCount: 0,
+			likedByCurrentUser: false,
 		},
 	];
 

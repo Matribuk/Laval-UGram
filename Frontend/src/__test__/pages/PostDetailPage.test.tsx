@@ -68,6 +68,9 @@ describe('PostDetailPage', () => {
 		author: { username: 'johndoe', avatar: '/avatar.jpg' },
 		timeAgo: '2 hours ago',
 		createdAt: '2024-01-01T00:00:00Z',
+		likeCount: 5,
+		commentCount: 3,
+		likedByCurrentUser: false,
 	};
 
 	beforeEach(() => {

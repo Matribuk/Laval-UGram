@@ -106,6 +106,9 @@ const HomePage: React.FC = () => {
 								imageUrl={post.thumbnailUrl}
 								caption={post.caption}
 								tags={post.tags}
+								likeCount={post.likeCount}
+								commentCount={post.commentCount}
+								likedByCurrentUser={post.likedByCurrentUser}
 							/>
 						))}
 						<p className="feed-end">You've reached the end</p>
