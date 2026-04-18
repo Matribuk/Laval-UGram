@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { ImagesRepository } from '../images.repository';
 import { Image, Hashtag, ImageMention } from '../entities';
+import { Like } from '../../likes/entities/like.entity';
+import { Comment } from '../../comments/entities/comment.entity';
 import { createImageFactory, createHashtagFactory } from '../../../../test/factories/image.factory';
 import { createUserFactory } from '../../../../test/factories/user.factory';
 
@@ -10,6 +12,8 @@ describe('ImagesRepository', () => {
   let mockImageRepository: any;
   let mockHashtagRepository: any;
   let mockMentionRepository: any;
+  let mockLikeRepository: any;
+  let mockCommentRepository: any;
 
   beforeEach(async () => {
     mockImageRepository = {
@@ -34,12 +38,31 @@ describe('ImagesRepository', () => {
       delete: jest.fn(),
     };
 
+    const mockQueryBuilder = {
+      select: jest.fn().mockReturnThis(),
+      addSelect: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      andWhere: jest.fn().mockReturnThis(),
+      groupBy: jest.fn().mockReturnThis(),
+      getRawMany: jest.fn().mockResolvedValue([]),
+    };
+
+    mockLikeRepository = {
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+    };
+
+    mockCommentRepository = {
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ImagesRepository,
         { provide: getRepositoryToken(Image), useValue: mockImageRepository },
         { provide: getRepositoryToken(Hashtag), useValue: mockHashtagRepository },
         { provide: getRepositoryToken(ImageMention), useValue: mockMentionRepository },
+        { provide: getRepositoryToken(Like), useValue: mockLikeRepository },
+        { provide: getRepositoryToken(Comment), useValue: mockCommentRepository },
       ],
     }).compile();
 

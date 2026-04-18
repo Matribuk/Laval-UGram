@@ -6,12 +6,14 @@ import {
   ManyToOne,
   JoinColumn,
   Unique,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Image } from '../../images/entities/image.entity';
 
 @Entity('likes')
 @Unique(['userId', 'imageId'])
+@Index(['imageId'])
 export class Like {
   @PrimaryGeneratedColumn('uuid')
   id: string;

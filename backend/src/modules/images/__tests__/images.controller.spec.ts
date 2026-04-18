@@ -104,14 +104,12 @@ describe('ImagesController', () => {
 
   describe('GET /images', () => {
     it('should return paginated images', async () => {
-      
+      const user = createUserFactory();
       const images = createManyImages(5);
-      imagesService.findAll.mockResolvedValue({ images, total: 20 });
+      imagesService.findAllWithStats.mockResolvedValue({ images, total: 20 });
 
-      
-      const result = await controller.findAll(1, 5);
+      const result = await controller.findAll(1, 5, user);
 
-      
       expect(result.data).toHaveLength(5);
       expect(result.meta).toEqual({
         total: 20,
@@ -122,24 +120,20 @@ describe('ImagesController', () => {
     });
 
     it('should use default pagination values', async () => {
-      
-      imagesService.findAll.mockResolvedValue({ images: [], total: 0 });
+      const user = createUserFactory();
+      imagesService.findAllWithStats.mockResolvedValue({ images: [], total: 0 });
 
-      
-      await controller.findAll();
+      await controller.findAll(1, 10, user);
 
-      
-      expect(imagesService.findAll).toHaveBeenCalledWith(1, 10);
+      expect(imagesService.findAllWithStats).toHaveBeenCalledWith(user.id, 1, 10);
     });
 
     it('should transform images to ImageResponseDto', async () => {
-
+      const user = createUserFactory();
       const images = createManyImages(1);
-      imagesService.findAll.mockResolvedValue({ images, total: 1 });
+      imagesService.findAllWithStats.mockResolvedValue({ images, total: 1 });
 
-
-      const result = await controller.findAll(1, 10);
-
+      const result = await controller.findAll(1, 10, user);
 
       expect(result.data[0]).toHaveProperty('id');
       expect(result.data[0]).toHaveProperty('url');
@@ -148,28 +142,31 @@ describe('ImagesController', () => {
 
   describe('GET /images/search', () => {
     it('should search images by description query', async () => {
+      const user = createUserFactory();
       const images = createManyImages(2);
-      imagesService.searchByDescription.mockResolvedValue({ images, total: 2 });
+      imagesService.searchByDescriptionWithStats.mockResolvedValue({ images, total: 2 });
 
-      const result = await controller.searchByDescription('sunset', 1, 10);
+      const result = await controller.searchByDescription('sunset', 1, 10, user);
 
       expect(result.data).toHaveLength(2);
-      expect(imagesService.searchByDescription).toHaveBeenCalledWith('sunset', 1, 10);
+      expect(imagesService.searchByDescriptionWithStats).toHaveBeenCalledWith('sunset', user.id, 1, 10);
     });
 
     it('should handle empty search query', async () => {
-      imagesService.searchByDescription.mockResolvedValue({ images: [], total: 0 });
+      const user = createUserFactory();
+      imagesService.searchByDescriptionWithStats.mockResolvedValue({ images: [], total: 0 });
 
-      await controller.searchByDescription('', 1, 10);
+      await controller.searchByDescription('', 1, 10, user);
 
-      expect(imagesService.searchByDescription).toHaveBeenCalledWith('', 1, 10);
+      expect(imagesService.searchByDescriptionWithStats).toHaveBeenCalledWith('', user.id, 1, 10);
     });
 
     it('should return paginated search results with meta', async () => {
+      const user = createUserFactory();
       const images = createManyImages(5);
-      imagesService.searchByDescription.mockResolvedValue({ images, total: 15 });
+      imagesService.searchByDescriptionWithStats.mockResolvedValue({ images, total: 15 });
 
-      const result = await controller.searchByDescription('nature', 1, 5);
+      const result = await controller.searchByDescription('nature', 1, 5, user);
 
       expect(result.meta).toEqual({
         total: 15,
@@ -180,9 +177,10 @@ describe('ImagesController', () => {
     });
 
     it('should return empty results when no matches found', async () => {
-      imagesService.searchByDescription.mockResolvedValue({ images: [], total: 0 });
+      const user = createUserFactory();
+      imagesService.searchByDescriptionWithStats.mockResolvedValue({ images: [], total: 0 });
 
-      const result = await controller.searchByDescription('nonexistent', 1, 10);
+      const result = await controller.searchByDescription('nonexistent', 1, 10, user);
 
       expect(result.data).toHaveLength(0);
       expect(result.meta.total).toBe(0);
@@ -191,27 +189,23 @@ describe('ImagesController', () => {
 
   describe('GET /images/hashtag/:hashtag', () => {
     it('should filter images by hashtag', async () => {
-      
+      const user = createUserFactory();
       const images = createManyImages(3);
-      imagesService.findByHashtag.mockResolvedValue({ images, total: 3 });
+      imagesService.findByHashtagWithStats.mockResolvedValue({ images, total: 3 });
 
-      
-      const result = await controller.findByHashtag('nature', 1, 10);
+      const result = await controller.findByHashtag('nature', 1, 10, user);
 
-      
       expect(result.data).toHaveLength(3);
-      expect(imagesService.findByHashtag).toHaveBeenCalledWith('nature', 1, 10);
+      expect(imagesService.findByHashtagWithStats).toHaveBeenCalledWith('nature', user.id, 1, 10);
     });
 
     it('should return paginated results with meta', async () => {
-      
+      const user = createUserFactory();
       const images = createManyImages(5);
-      imagesService.findByHashtag.mockResolvedValue({ images, total: 15 });
+      imagesService.findByHashtagWithStats.mockResolvedValue({ images, total: 15 });
 
-      
-      const result = await controller.findByHashtag('photo', 1, 5);
+      const result = await controller.findByHashtag('photo', 1, 5, user);
 
-      
       expect(result.meta).toEqual({
         total: 15,
         page: 1,
@@ -221,13 +215,11 @@ describe('ImagesController', () => {
     });
 
     it('should return empty for non-existent hashtag', async () => {
-      
-      imagesService.findByHashtag.mockResolvedValue({ images: [], total: 0 });
+      const user = createUserFactory();
+      imagesService.findByHashtagWithStats.mockResolvedValue({ images: [], total: 0 });
 
-      
-      const result = await controller.findByHashtag('nonexistent', 1, 10);
+      const result = await controller.findByHashtag('nonexistent', 1, 10, user);
 
-      
       expect(result.data).toHaveLength(0);
       expect(result.meta.total).toBe(0);
     });
@@ -235,27 +227,23 @@ describe('ImagesController', () => {
 
   describe('GET /images/:id', () => {
     it('should return image with all relations', async () => {
-      
+      const user = createUserFactory();
       const image = createImageFactory();
-      imagesService.findById.mockResolvedValue(image);
+      imagesService.findByIdWithStats.mockResolvedValue(image);
 
-      
-      const result = await controller.findOne(image.id);
+      const result = await controller.findOne(image.id, user);
 
-      
       expect(result).toHaveProperty('id', image.id);
-      expect(imagesService.findById).toHaveBeenCalledWith(image.id);
+      expect(imagesService.findByIdWithStats).toHaveBeenCalledWith(image.id, user.id);
     });
 
     it('should transform to ImageResponseDto', async () => {
-      
+      const user = createUserFactory();
       const image = createImageFactory();
-      imagesService.findById.mockResolvedValue(image);
+      imagesService.findByIdWithStats.mockResolvedValue(image);
 
-      
-      const result = await controller.findOne(image.id);
+      const result = await controller.findOne(image.id, user);
 
-      
       expect(result).toHaveProperty('id');
       expect(result).toHaveProperty('url');
     });

@@ -85,6 +85,18 @@ export class ImageResponseDto {
   mentions: MentionResponseDto[];
 
   @Expose()
+  @ApiPropertyOptional({ description: 'Total number of likes', example: 42 })
+  likeCount?: number;
+
+  @Expose()
+  @ApiPropertyOptional({ description: 'Total number of comments', example: 7 })
+  commentCount?: number;
+
+  @Expose()
+  @ApiPropertyOptional({ description: 'Whether the current user has liked this image', example: true })
+  likedByCurrentUser?: boolean;
+
+  @Expose()
   @ApiProperty({
     description: 'Upload date',
     example: '2024-01-15T10:30:00.000Z',

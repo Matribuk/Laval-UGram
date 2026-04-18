@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Image } from '../../images/entities/image.entity';
 
 @Entity('comments')
+@Index(['imageId'])
 export class Comment {
   @PrimaryGeneratedColumn('uuid')
   id: string;

@@ -18,6 +18,9 @@ export const createImageFactory = (overrides: Partial<Image> = {}): Image => {
   image.url = overrides.url ?? `/uploads/${uuid}.jpg`;
   image.thumbnailUrl = overrides.thumbnailUrl ?? `/uploads/${uuid}_thumbnail.jpg`;
   image.mediumUrl = overrides.mediumUrl ?? `/uploads/${uuid}_medium.jpg`;
+  (image as any).likeCount = (overrides as any).likeCount ?? 0;
+  (image as any).commentCount = (overrides as any).commentCount ?? 0;
+  (image as any).likedByCurrentUser = (overrides as any).likedByCurrentUser ?? false;
   image.description = overrides.description ?? `Test image description ${counter}`;
   image.userId = overrides.userId ?? user.id;
   image.user = user;
