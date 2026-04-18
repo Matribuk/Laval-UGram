@@ -79,6 +79,8 @@ Un **dashboard CloudWatch** `ugram-production` agrège les métriques clés de l
 - **Backend — CloudFront Traffic & Errors** — requêtes, 4xxErrorRate, 5xxErrorRate sur la distribution BE
 - **Frontend — CloudFront Traffic** — requêtes, BytesDownloaded, 4xxErrorRate sur la distribution FE
 - **RDS — Database Load** — CPUUtilization, DatabaseConnections, FreeableMemory
+- **Backend API — Requests & Latency (custom)** — `RequestCount` + `RequestLatency` du middleware NestJS (namespace `Ugram/API`)
+- **User Analytics — Behavioral events (custom)** — events `UserSignup`, `UserLogin`, `PostCreated`, `PostLiked`, `PostCommented`, `MessageSent`, `FilterApplied` (namespace `Ugram/Analytics`)
 
 **Dashboard CloudWatch:**
 
@@ -94,6 +96,10 @@ Deux **alarmes CloudWatch** notifient par email via un topic SNS (`ugram-product
 **Alarmes CloudWatch:**
 
 ![CloudWatch Alarms](./docs/assets/prod_alarms.png)
+
+Tous les membres de l'équipe sont subscribers du topic SNS `ugram-production-alerts` et reçoivent les alertes par email (subscriptions confirmées via le lien de confirmation AWS) :
+
+![Team SNS subscriptions](./docs/assets/team_alert.png)
 
 Coût : **$0** — Free Tier CloudWatch couvre 10 alarmes, 3 dashboards, 1M requêtes API/mois et SNS couvre 1000 emails/mois.
 
