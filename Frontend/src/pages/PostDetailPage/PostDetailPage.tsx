@@ -119,7 +119,12 @@ const PostDetailPage: React.FC = () => {
 				</div>
 
 				<div className="post-detail-actions">
-					<LikeButton postId={post.id} />
+					<LikeButton
+						postId={post.id}
+						initialLikeCount={post.likeCount}
+						initialLikedByCurrentUser={post.likedByCurrentUser}
+						fetchOnMount={false}
+					/>
 				</div>
 
 				<div className="post-detail-content">

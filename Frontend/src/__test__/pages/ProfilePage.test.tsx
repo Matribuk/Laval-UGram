@@ -88,6 +88,9 @@ describe('ProfilePage', () => {
 			author: { username: 'johndoe' },
 			timeAgo: '',
 			createdAt: '',
+			likeCount: 0,
+			commentCount: 0,
+			likedByCurrentUser: false,
 		},
 		{
 			id: 'post-2',
@@ -100,6 +103,9 @@ describe('ProfilePage', () => {
 			author: { username: 'johndoe' },
 			timeAgo: '',
 			createdAt: '',
+			likeCount: 0,
+			commentCount: 0,
+			likedByCurrentUser: false,
 		},
 	];
 
