@@ -641,14 +641,23 @@
 ---
 
 ### 📊 Monitoring & Métriques
-* [ ] Ajouter des métriques custom CloudWatch pour les nouveaux endpoints
-  * [ ] Nombre de réactions par heure
-  * [ ] Nombre de commentaires par heure
-  * [ ] Nombre de messages privés par heure
-  * [ ] Latence des endpoints critiques (resizing, recommandation)
-* [ ] Configurer des alarmes CloudWatch (ex: erreurs 5xx > seuil, latence élevée)
-* [ ] Ajouter le monitoring Sentry sur les nouvelles pages frontend (messages, notifications)
-* [ ] Dashboard CloudWatch regroupant les métriques clés de l'application
+
+> **Points grille L3** : `Monitoring adéquat` (2 pts) + `Métriques de performance et requêtes HTTP` (2 pts) + `Analytiques comportement usagers` (2 pts base + 2 pts implémentation) = **8 pts** au total.
+
+* [ ] **Métriques de performance & requêtes HTTP** (2 pts grille L3) — middleware NestJS global + `PutMetricData` vers CloudWatch
+  * [ ] Request count par route / status code
+  * [ ] Latence p50/p95/p99 par route
+  * [ ] Latence des endpoints critiques (resizing image, recommandation comptes)
+* [ ] **Analytiques comportement usagers** (2+2 pts grille L3) — `AnalyticsService` qui publie des events CloudWatch custom
+  * [ ] `user.signup`, `user.login`
+  * [ ] `post.created`, `post.liked`, `post.commented`
+  * [ ] `message.sent`
+  * [ ] `filter.applied` (quel filtre utilisé)
+* [x] Configurer des alarmes CloudWatch (`ugram-backend-health-degraded` + `ugram-backend-5xx-errors` → SNS email)
+* [x] Ajouter le monitoring Sentry sur les nouvelles pages frontend (Sentry init global → capture auto sur toutes les pages, y compris messages/notifications)
+* [x] Dashboard CloudWatch regroupant les métriques clés de l'application (`ugram-production` : EB health + CF FE/BE + RDS)
+
+> **Coût** : CloudWatch Custom Metrics Free Tier = 10 métriques + 1M PutMetricData/mois gratuits. Usage projet ≈ 8 métriques + quelques milliers d'events/mois → **$0**.
 
 ---
 
