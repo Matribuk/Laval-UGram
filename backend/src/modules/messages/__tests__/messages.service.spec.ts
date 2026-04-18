@@ -3,9 +3,11 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { MessagesService } from '../messages.service';
 import { MessagesRepository } from '../messages.repository';
 import { UsersService } from '../../users/users.service';
+import { AnalyticsService } from '../../monitoring/analytics.service';
 import {
   createMockMessagesRepository,
   createMockUsersService,
+  createMockAnalyticsService,
 } from '../../../../test/mocks/services.mock';
 import { createMessageFactory, createUserFactory } from '../../../../test/factories';
 
@@ -13,6 +15,7 @@ describe('MessagesService', () => {
   let service: MessagesService;
   let messagesRepository: ReturnType<typeof createMockMessagesRepository>;
   let usersService: ReturnType<typeof createMockUsersService>;
+  let analytics: ReturnType<typeof createMockAnalyticsService>;
 
   const sender = createUserFactory({ id: 'sender-id' });
   const receiver = createUserFactory({ id: 'receiver-id' });
@@ -20,12 +23,14 @@ describe('MessagesService', () => {
   beforeEach(async () => {
     messagesRepository = createMockMessagesRepository();
     usersService = createMockUsersService();
+    analytics = createMockAnalyticsService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         MessagesService,
         { provide: MessagesRepository, useValue: messagesRepository },
         { provide: UsersService, useValue: usersService },
+        { provide: AnalyticsService, useValue: analytics },
       ],
     }).compile();
 

@@ -97,6 +97,15 @@ Deux **alarmes CloudWatch** notifient par email via un topic SNS (`ugram-product
 
 Coût : **$0** — Free Tier CloudWatch couvre 10 alarmes, 3 dashboards, 1M requêtes API/mois et SNS couvre 1000 emails/mois.
 
+### Métriques custom (Application)
+
+Le backend publie ses propres métriques custom CloudWatch pour la performance HTTP et les analytiques comportementales :
+
+- **`Ugram/API`** — `RequestCount` + `RequestLatency` publiés par un middleware NestJS global sur chaque requête
+- **`Ugram/Analytics`** — `UserSignup`, `UserLogin`, `PostCreated`, `PostLiked`, `PostCommented`, `MessageSent`, `FilterApplied` publiés depuis les services métier
+
+Les 9 métriques custom restent dans la limite Free Tier CloudWatch (10 gratuites/mois). Détails d'implémentation dans [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md#custom-metrics-application-monitoring).
+
 ## CI/CD - Déploiement Continu
 
 L'application utilise **GitHub Actions** pour l'intégration et le déploiement continu.

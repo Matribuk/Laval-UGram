@@ -1,8 +1,13 @@
-import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommentsRepository } from './comments.repository';
 import { ImagesService } from '../images/images.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { NotificationType } from '../notifications/entities/notification.entity';
+import { AnalyticsService } from '../monitoring/analytics.service';
 import { Comment } from './entities/comment.entity';
 
 @Injectable()
@@ -11,13 +16,28 @@ export class CommentsService {
     private readonly commentsRepository: CommentsRepository,
     private readonly imagesService: ImagesService,
     private readonly notificationsService: NotificationsService,
+    private readonly analytics: AnalyticsService,
   ) {}
 
-  async addComment(userId: string, imageId: string, content: string): Promise<Comment> {
+  async addComment(
+    userId: string,
+    imageId: string,
+    content: string,
+  ): Promise<Comment> {
     const image = await this.imagesService.findById(imageId);
-    const comment = await this.commentsRepository.create(userId, imageId, content);
+    const comment = await this.commentsRepository.create(
+      userId,
+      imageId,
+      content,
+    );
 
-    void this.notificationsService.createNotification(image.userId, userId, NotificationType.COMMENT, comment.id);
+    void this.notificationsService.createNotification(
+      image.userId,
+      userId,
+      NotificationType.COMMENT,
+      comment.id,
+    );
+    this.analytics.trackPostCommented();
 
     return comment;
   }
@@ -38,7 +58,11 @@ export class CommentsService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ comments: Comment[]; total: number }> {
-    const [comments, total] = await this.commentsRepository.findByImageId(imageId, page, limit);
+    const [comments, total] = await this.commentsRepository.findByImageId(
+      imageId,
+      page,
+      limit,
+    );
     return { comments, total };
   }
 
@@ -47,7 +71,11 @@ export class CommentsService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ comments: Comment[]; total: number }> {
-    const [comments, total] = await this.commentsRepository.findByUserId(userId, page, limit);
+    const [comments, total] = await this.commentsRepository.findByUserId(
+      userId,
+      page,
+      limit,
+    );
     return { comments, total };
   }
 }

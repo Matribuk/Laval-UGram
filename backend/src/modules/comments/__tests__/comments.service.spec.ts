@@ -3,7 +3,13 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { CommentsService } from '../comments.service';
 import { CommentsRepository } from '../comments.repository';
 import { ImagesService } from '../../images/images.service';
-import { createMockCommentsRepository, createMockImagesService, createMockNotificationsService } from '../../../../test/mocks/services.mock';
+import { AnalyticsService } from '../../monitoring/analytics.service';
+import {
+  createMockCommentsRepository,
+  createMockImagesService,
+  createMockNotificationsService,
+  createMockAnalyticsService,
+} from '../../../../test/mocks/services.mock';
 import { createCommentFactory, createImageFactory } from '../../../../test/factories';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { NotificationType } from '../../notifications/entities/notification.entity';
@@ -13,11 +19,13 @@ describe('CommentsService', () => {
   let commentsRepository: ReturnType<typeof createMockCommentsRepository>;
   let imagesService: ReturnType<typeof createMockImagesService>;
   let notificationsService: ReturnType<typeof createMockNotificationsService>;
+  let analytics: ReturnType<typeof createMockAnalyticsService>;
 
   beforeEach(async () => {
     commentsRepository = createMockCommentsRepository();
     imagesService = createMockImagesService();
     notificationsService = createMockNotificationsService();
+    analytics = createMockAnalyticsService();
     notificationsService.createNotification.mockResolvedValue(null);
 
     const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +34,7 @@ describe('CommentsService', () => {
         { provide: CommentsRepository, useValue: commentsRepository },
         { provide: ImagesService, useValue: imagesService },
         { provide: NotificationsService, useValue: notificationsService },
+        { provide: AnalyticsService, useValue: analytics },
       ],
     }).compile();
 

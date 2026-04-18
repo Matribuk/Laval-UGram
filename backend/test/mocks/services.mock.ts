@@ -148,11 +148,29 @@ export const createMockStorageProvider = () => ({
   getUrl: jest.fn((filename: string) => `/uploads/${filename}`),
 });
 
+export const createMockAnalyticsService = () => ({
+  trackSignup: jest.fn(),
+  trackLogin: jest.fn(),
+  trackPostCreated: jest.fn(),
+  trackPostLiked: jest.fn(),
+  trackPostCommented: jest.fn(),
+  trackMessageSent: jest.fn(),
+  trackFilterApplied: jest.fn(),
+});
+
+export const createMockCloudwatchService = () => ({
+  publishMetric: jest.fn(),
+});
+
 export const createMockJwtService = () => ({
   sign: jest.fn().mockReturnValue('mock-jwt-token'),
   signAsync: jest.fn().mockResolvedValue('mock-jwt-token'),
-  verify: jest.fn().mockReturnValue({ sub: 'user-id', email: 'test@example.com' }),
-  verifyAsync: jest.fn().mockResolvedValue({ sub: 'user-id', email: 'test@example.com' }),
+  verify: jest
+    .fn()
+    .mockReturnValue({ sub: 'user-id', email: 'test@example.com' }),
+  verifyAsync: jest
+    .fn()
+    .mockResolvedValue({ sub: 'user-id', email: 'test@example.com' }),
   decode: jest.fn(),
 });
 
@@ -160,15 +178,31 @@ export type MockUsersService = ReturnType<typeof createMockUsersService>;
 export type MockUsersRepository = ReturnType<typeof createMockUsersRepository>;
 export type MockAuthService = ReturnType<typeof createMockAuthService>;
 export type MockImagesService = ReturnType<typeof createMockImagesService>;
-export type MockImagesRepository = ReturnType<typeof createMockImagesRepository>;
+export type MockImagesRepository = ReturnType<
+  typeof createMockImagesRepository
+>;
 export type MockLikesService = ReturnType<typeof createMockLikesService>;
 export type MockLikesRepository = ReturnType<typeof createMockLikesRepository>;
 export type MockCommentsService = ReturnType<typeof createMockCommentsService>;
-export type MockCommentsRepository = ReturnType<typeof createMockCommentsRepository>;
+export type MockCommentsRepository = ReturnType<
+  typeof createMockCommentsRepository
+>;
 export type MockMessagesService = ReturnType<typeof createMockMessagesService>;
-export type MockMessagesRepository = ReturnType<typeof createMockMessagesRepository>;
-export type MockNotificationsService = ReturnType<typeof createMockNotificationsService>;
-export type MockNotificationsRepository = ReturnType<typeof createMockNotificationsRepository>;
+export type MockMessagesRepository = ReturnType<
+  typeof createMockMessagesRepository
+>;
+export type MockNotificationsService = ReturnType<
+  typeof createMockNotificationsService
+>;
+export type MockNotificationsRepository = ReturnType<
+  typeof createMockNotificationsRepository
+>;
 export type MockStorageService = ReturnType<typeof createMockStorageService>;
 export type MockStorageProvider = ReturnType<typeof createMockStorageProvider>;
 export type MockJwtService = ReturnType<typeof createMockJwtService>;
+export type MockAnalyticsService = ReturnType<
+  typeof createMockAnalyticsService
+>;
+export type MockCloudwatchService = ReturnType<
+  typeof createMockCloudwatchService
+>;

@@ -812,11 +812,92 @@ Pour ajouter d'autres destinataires : console SNS → `ugram-production-alerts` 
 |---|---|---|
 | Alarms | 10 | 2 |
 | Dashboards | 3 | 1 |
-| API requests | 1M/mois | négligeable |
-| Custom metrics | 10 (pour EB custom metrics désactivées) | 0 |
+| API requests (PutMetricData inclus) | 1M/mois | quelques milliers |
+| Custom metrics | 10 | 9 (2 API + 7 Analytics) |
 | SNS email notifications | 1000/mois | quelques-uns/mois |
 
 **Coût total : $0/mois** tant qu'on reste sous ces limites.
+
+---
+
+## Custom Metrics (Application Monitoring)
+
+En plus du dashboard et des alarmes basés sur les métriques natives (EB, CloudFront, RDS), le backend publie ses propres **métriques custom CloudWatch** pour couvrir la performance HTTP et les analytiques comportementales.
+
+### Implémentation
+
+Le module `backend/src/modules/monitoring/` :
+
+- `CloudwatchService` — wrapper du SDK `@aws-sdk/client-cloudwatch`, fire-and-forget avec error handling silencieux. No-op quand `cloudwatch.enabled=false` (défaut hors production).
+- `AnalyticsService` — API appelée depuis les services métier (auth, images, likes, comments, messages) après chaque action utilisateur.
+- `HttpMetricsMiddleware` — middleware NestJS global qui publie `RequestCount` + `RequestLatency` pour chaque requête.
+
+### Métriques publiées
+
+**Namespace `Ugram/API`** (HTTP performance) :
+
+| Métrique | Unité | Publiée par |
+|---|---|---|
+| `RequestCount` | Count | `HttpMetricsMiddleware` sur chaque requête HTTP |
+| `RequestLatency` | Milliseconds | `HttpMetricsMiddleware` sur `res.on('finish')` |
+
+**Namespace `Ugram/Analytics`** (comportement utilisateur) :
+
+| Métrique | Publiée depuis |
+|---|---|
+| `UserSignup` | `AuthService.register` + `googleLogin` si compte OAuth créé dans la dernière minute |
+| `UserLogin` | `AuthService.login` + `googleLogin` si compte OAuth existant |
+| `PostCreated` | `ImagesService.create` |
+| `PostLiked` | `LikesService.addLike` (nouvelle transition vers liké) |
+| `PostCommented` | `CommentsService.addComment` |
+| `MessageSent` | `MessagesService.sendMessage` |
+| `FilterApplied` | `ImagesService.create` si `CreateImageDto.appliedFilter` présent et différent de `normal` |
+
+**Total : 9 métriques custom** → sous la limite Free Tier de 10 métriques gratuites par mois.
+
+### Configuration
+
+Variables d'environnement backend :
+
+| Variable | Défaut | Effet |
+|---|---|---|
+| `CLOUDWATCH_ENABLED` | `true` si `NODE_ENV=production`, sinon `false` | Active/désactive la publication |
+| `CLOUDWATCH_NAMESPACE_PREFIX` | `Ugram` | Préfixe des namespaces (`Ugram/API`, `Ugram/Analytics`) |
+| `AWS_REGION` | `us-east-1` | Région CloudWatch |
+
+En dev / test, les publishs sont **no-op silencieux** → aucun appel AWS, aucun spam de métriques.
+
+### Permissions IAM
+
+Le rôle EC2 de l'environnement Elastic Beanstalk (`aws-elasticbeanstalk-ec2-role`) a reçu une **inline policy** `UgramCloudWatchMetrics` :
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Action": "cloudwatch:PutMetricData",
+    "Resource": "*",
+    "Condition": {
+      "StringEquals": {
+        "cloudwatch:namespace": ["Ugram/API", "Ugram/Analytics"]
+      }
+    }
+  }]
+}
+```
+
+La condition `cloudwatch:namespace` empêche le rôle d'écrire vers n'importe quel autre namespace, limitant la surface d'attaque.
+
+### Visualisation
+
+Dans la console CloudWatch → **Metrics → All metrics** → choisir **`Ugram/API`** ou **`Ugram/Analytics`** → sélectionner les métriques pour les graphiques. Les métriques peuvent être ajoutées au dashboard `ugram-production` existant si besoin d'une vue centralisée.
+
+### Design decisions
+
+- **Pas de dimensions** sur les métriques — chaque combinaison `metric × dimension value` compte comme une métrique custom facturée. Sans dimensions, on reste à 9 métriques au total. Pour un split détaillé par route / status code, les métriques CloudFront (déjà dans le dashboard) couvrent le besoin.
+- **Fire-and-forget async** — `CloudwatchService.publishMetric` retourne `void` et capture les erreurs silencieusement (`logger.warn`). Aucune requête HTTP ne peut être ralentie ou bloquée par un appel CloudWatch.
+- **Pas de batching** — chaque event fait un `PutMetricData` séparé. Simple, et le volume du projet reste sous le Free Tier de 1M requêtes API/mois.
 
 ---
 

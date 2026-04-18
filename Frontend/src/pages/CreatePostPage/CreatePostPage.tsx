@@ -77,6 +77,7 @@ const CreatePostPage: React.FC = () => {
 				description: values.caption,
 				hashtags: tags,
 				mentions: mentionedUserIds,
+				appliedFilter: selectedFilter,
 			});
 
 			toast.success('Post created successfully');
