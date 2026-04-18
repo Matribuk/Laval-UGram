@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { MessagesRepository } from './messages.repository';
 import { UsersService } from '../users/users.service';
+import { AnalyticsService } from '../monitoring/analytics.service';
 import { Message } from './entities/message.entity';
 import { User } from '../users/entities/user.entity';
 
@@ -20,14 +21,25 @@ export class MessagesService {
   constructor(
     private readonly messagesRepository: MessagesRepository,
     private readonly usersService: UsersService,
+    private readonly analytics: AnalyticsService,
   ) {}
 
-  async sendMessage(senderId: string, receiverId: string, content: string): Promise<Message> {
+  async sendMessage(
+    senderId: string,
+    receiverId: string,
+    content: string,
+  ): Promise<Message> {
     if (senderId === receiverId) {
       throw new BadRequestException('You cannot send a message to yourself');
     }
     await this.usersService.findById(receiverId);
-    return this.messagesRepository.create(senderId, receiverId, content);
+    const message = await this.messagesRepository.create(
+      senderId,
+      receiverId,
+      content,
+    );
+    this.analytics.trackMessageSent();
+    return message;
   }
 
   async getMessages(
@@ -36,12 +48,13 @@ export class MessagesService {
     page: number = 1,
     limit: number = 20,
   ): Promise<{ messages: Message[]; total: number }> {
-    const [messages, total] = await this.messagesRepository.findMessagesBetweenUsers(
-      currentUserId,
-      otherUserId,
-      page,
-      limit,
-    );
+    const [messages, total] =
+      await this.messagesRepository.findMessagesBetweenUsers(
+        currentUserId,
+        otherUserId,
+        page,
+        limit,
+      );
     return { messages, total };
   }
 
@@ -81,7 +94,9 @@ export class MessagesService {
       throw new NotFoundException('Message not found');
     }
     if (message.receiverId !== userId) {
-      throw new ForbiddenException('You can only mark your own received messages as read');
+      throw new ForbiddenException(
+        'You can only mark your own received messages as read',
+      );
     }
     await this.messagesRepository.markAsRead(messageId);
     message.read = true;

@@ -2,26 +2,31 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from '../auth.service';
 import { UsersService } from '../../users/users.service';
+import { AnalyticsService } from '../../monitoring/analytics.service';
 import { createUserFactory } from '../../../../test/factories/user.factory';
 import {
   createMockUsersService,
   createMockJwtService,
+  createMockAnalyticsService,
 } from '../../../../test/mocks/services.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: ReturnType<typeof createMockUsersService>;
   let jwtService: ReturnType<typeof createMockJwtService>;
+  let analytics: ReturnType<typeof createMockAnalyticsService>;
 
   beforeEach(async () => {
     usersService = createMockUsersService();
     jwtService = createMockJwtService();
+    analytics = createMockAnalyticsService();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: UsersService, useValue: usersService },
         { provide: JwtService, useValue: jwtService },
+        { provide: AnalyticsService, useValue: analytics },
       ],
     }).compile();
 

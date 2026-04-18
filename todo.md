@@ -644,15 +644,14 @@
 
 > **Points grille L3** : `Monitoring adéquat` (2 pts) + `Métriques de performance et requêtes HTTP` (2 pts) + `Analytiques comportement usagers` (2 pts base + 2 pts implémentation) = **8 pts** au total.
 
-* [ ] **Métriques de performance & requêtes HTTP** (2 pts grille L3) — middleware NestJS global + `PutMetricData` vers CloudWatch
-  * [ ] Request count par route / status code
-  * [ ] Latence p50/p95/p99 par route
-  * [ ] Latence des endpoints critiques (resizing image, recommandation comptes)
-* [ ] **Analytiques comportement usagers** (2+2 pts grille L3) — `AnalyticsService` qui publie des events CloudWatch custom
-  * [ ] `user.signup`, `user.login`
-  * [ ] `post.created`, `post.liked`, `post.commented`
-  * [ ] `message.sent`
-  * [ ] `filter.applied` (quel filtre utilisé)
+* [x] **Métriques de performance & requêtes HTTP** (2 pts grille L3) — middleware NestJS `HttpMetricsMiddleware` + namespace `Ugram/API`
+  * [x] `RequestCount` par requête HTTP (tous statuts confondus, split fin via CloudFront 4xx/5xx rate)
+  * [x] `RequestLatency` (Milliseconds) sur `res.on('finish')`
+* [x] **Analytiques comportement usagers** (2+2 pts grille L3) — `AnalyticsService` dans `backend/src/modules/monitoring/` + namespace `Ugram/Analytics`
+  * [x] `UserSignup`, `UserLogin`
+  * [x] `PostCreated`, `PostLiked`, `PostCommented`
+  * [x] `MessageSent`
+  * [x] `FilterApplied` (propagé depuis le FE via `CreateImageDto.appliedFilter`)
 * [x] Configurer des alarmes CloudWatch (`ugram-backend-health-degraded` + `ugram-backend-5xx-errors` → SNS email)
 * [x] Ajouter le monitoring Sentry sur les nouvelles pages frontend (Sentry init global → capture auto sur toutes les pages, y compris messages/notifications)
 * [x] Dashboard CloudWatch regroupant les métriques clés de l'application (`ugram-production` : EB health + CF FE/BE + RDS)

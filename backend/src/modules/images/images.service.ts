@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { ImagesRepository, ImageWithStats } from './images.repository';
 import { StorageService } from '../storage/storage.service';
+import { AnalyticsService } from '../monitoring/analytics.service';
 import { CreateImageDto, UpdateImageDto } from './dto';
 import { Image } from './entities';
 import { User } from '../users/entities/user.entity';
@@ -14,6 +15,7 @@ export class ImagesService {
   constructor(
     private readonly imagesRepository: ImagesRepository,
     private readonly storageService: StorageService,
+    private readonly analytics: AnalyticsService,
   ) {}
 
   async create(
@@ -21,7 +23,8 @@ export class ImagesService {
     createImageDto: CreateImageDto,
     user: User,
   ): Promise<Image> {
-    const { url, thumbnailUrl, mediumUrl } = await this.storageService.uploadImage(file);
+    const { url, thumbnailUrl, mediumUrl } =
+      await this.storageService.uploadImage(file);
 
     const image = await this.imagesRepository.create({
       url,
@@ -38,11 +41,22 @@ export class ImagesService {
       await this.imagesRepository.updateImageHashtags(image.id, hashtags);
     }
 
-    if (createImageDto.mentionedUserIds && createImageDto.mentionedUserIds.length > 0) {
+    if (
+      createImageDto.mentionedUserIds &&
+      createImageDto.mentionedUserIds.length > 0
+    ) {
       await this.imagesRepository.updateImageMentions(
         image.id,
         createImageDto.mentionedUserIds,
       );
+    }
+
+    this.analytics.trackPostCreated();
+    if (
+      createImageDto.appliedFilter &&
+      createImageDto.appliedFilter !== 'normal'
+    ) {
+      this.analytics.trackFilterApplied();
     }
 
     return this.findById(image.id);
@@ -108,12 +122,22 @@ export class ImagesService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ images: ImageWithStats[]; total: number }> {
-    const [images, total] = await this.imagesRepository.findAllWithStats(currentUserId, page, limit);
+    const [images, total] = await this.imagesRepository.findAllWithStats(
+      currentUserId,
+      page,
+      limit,
+    );
     return { images, total };
   }
 
-  async findByIdWithStats(id: string, currentUserId: string): Promise<ImageWithStats> {
-    const image = await this.imagesRepository.findByIdWithStats(id, currentUserId);
+  async findByIdWithStats(
+    id: string,
+    currentUserId: string,
+  ): Promise<ImageWithStats> {
+    const image = await this.imagesRepository.findByIdWithStats(
+      id,
+      currentUserId,
+    );
     if (!image) {
       throw new NotFoundException(`Image with ID "${id}" not found`);
     }
@@ -126,7 +150,12 @@ export class ImagesService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ images: ImageWithStats[]; total: number }> {
-    const [images, total] = await this.imagesRepository.findByUserIdWithStats(userId, currentUserId, page, limit);
+    const [images, total] = await this.imagesRepository.findByUserIdWithStats(
+      userId,
+      currentUserId,
+      page,
+      limit,
+    );
     return { images, total };
   }
 
@@ -136,7 +165,12 @@ export class ImagesService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ images: ImageWithStats[]; total: number }> {
-    const [images, total] = await this.imagesRepository.findByHashtagWithStats(hashtag, currentUserId, page, limit);
+    const [images, total] = await this.imagesRepository.findByHashtagWithStats(
+      hashtag,
+      currentUserId,
+      page,
+      limit,
+    );
     return { images, total };
   }
 
@@ -146,7 +180,13 @@ export class ImagesService {
     page: number = 1,
     limit: number = 10,
   ): Promise<{ images: ImageWithStats[]; total: number }> {
-    const [images, total] = await this.imagesRepository.searchByDescriptionWithStats(query, currentUserId, page, limit);
+    const [images, total] =
+      await this.imagesRepository.searchByDescriptionWithStats(
+        query,
+        currentUserId,
+        page,
+        limit,
+      );
     return { images, total };
   }
 

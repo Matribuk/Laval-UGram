@@ -8,6 +8,7 @@ interface CreatePostData {
 	hashtags?: string[];
 	mentions?: string[];
 	file: File;
+	appliedFilter?: string;
 }
 
 interface UpdatePostData {
@@ -53,6 +54,9 @@ export const postsService = {
 		}
 		if (data.mentions && data.mentions.length > 0) {
 			data.mentions.forEach((mention) => formData.append('mentionedUserIds', mention));
+		}
+		if (data.appliedFilter && data.appliedFilter !== 'normal') {
+			formData.append('appliedFilter', data.appliedFilter);
 		}
 
 		const response = await api.post<BackendPost>(ENDPOINTS.IMAGES.BASE, formData, {

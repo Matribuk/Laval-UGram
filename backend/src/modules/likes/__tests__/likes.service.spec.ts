@@ -3,7 +3,13 @@ import { ConflictException, NotFoundException } from '@nestjs/common';
 import { LikesService } from '../likes.service';
 import { LikesRepository } from '../likes.repository';
 import { ImagesService } from '../../images/images.service';
-import { createMockLikesRepository, createMockImagesService, createMockNotificationsService } from '../../../../test/mocks/services.mock';
+import { AnalyticsService } from '../../monitoring/analytics.service';
+import {
+  createMockLikesRepository,
+  createMockImagesService,
+  createMockNotificationsService,
+  createMockAnalyticsService,
+} from '../../../../test/mocks/services.mock';
 import { createImageFactory, createLikeFactory } from '../../../../test/factories';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { NotificationType } from '../../notifications/entities/notification.entity';
@@ -13,11 +19,13 @@ describe('LikesService', () => {
   let likesRepository: ReturnType<typeof createMockLikesRepository>;
   let imagesService: ReturnType<typeof createMockImagesService>;
   let notificationsService: ReturnType<typeof createMockNotificationsService>;
+  let analytics: ReturnType<typeof createMockAnalyticsService>;
 
   beforeEach(async () => {
     likesRepository = createMockLikesRepository();
     imagesService = createMockImagesService();
     notificationsService = createMockNotificationsService();
+    analytics = createMockAnalyticsService();
     notificationsService.createNotification.mockResolvedValue(null);
 
     const module: TestingModule = await Test.createTestingModule({
@@ -26,6 +34,7 @@ describe('LikesService', () => {
         { provide: LikesRepository, useValue: likesRepository },
         { provide: ImagesService, useValue: imagesService },
         { provide: NotificationsService, useValue: notificationsService },
+        { provide: AnalyticsService, useValue: analytics },
       ],
     }).compile();
 

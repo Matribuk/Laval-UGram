@@ -28,7 +28,9 @@ export const JWT_CONFIG = {
 export const GOOGLE_OAUTH_CONFIG = {
   CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
   CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
-  CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL || 'http://localhost:8080/api/auth/google/callback',
+  CALLBACK_URL:
+    process.env.GOOGLE_CALLBACK_URL ||
+    'http://localhost:8080/api/auth/google/callback',
 };
 
 export const STORAGE_CONFIG = {
@@ -48,4 +50,12 @@ export const STORAGE_CONFIG = {
   MAX_FILE_SIZE: 5 * 1024 * 1024,
 
   ALLOWED_MIME_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+};
+
+export const CLOUDWATCH_CONFIG = {
+  ENABLED:
+    (process.env.CLOUDWATCH_ENABLED ??
+      (process.env.NODE_ENV === 'production' ? 'true' : 'false')) === 'true',
+  NAMESPACE_PREFIX: process.env.CLOUDWATCH_NAMESPACE_PREFIX || 'Ugram',
+  REGION: process.env.AWS_REGION || 'us-east-1',
 };
