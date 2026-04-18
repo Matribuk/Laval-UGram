@@ -19,42 +19,53 @@
 
 ## Architecture AWS
 
-L'application Ugram est déployée sur AWS avec l'architecture suivante:
+L'application Ugram est déployée sur AWS avec l'architecture suivante (HTTPS end-to-end pour FE et API via CloudFront) :
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      Internet Users                         │
-└────────────┬────────────────────────────────┬───────────────┘
-             │                                │
-             │ HTTP                           │ HTTP
-             │                                │
-             ▼                                ▼
-┌────────────────────────┐       ┌───────────────────────────┐
-│   S3 Static Website    │       │   Elastic Beanstalk       │
-│  (React Frontend)      │◄──────│   (NestJS Backend)        │
-│                        │  API  │                           │
-│ ugram-frontend-prod    │       │ ugram-backend-prod        │
-│      -team12           │       │                           │
-└────────────────────────┘       └───────────┬───────────────┘
-                                             │
-                                             │ PostgreSQL
-                                             │ (SSL disabled)
-                                             ▼
-                                 ┌───────────────────────────┐
-                                 │   RDS PostgreSQL 16.13    │
-                                 │                           │
-                                 │   ugram-db-prod           │
-                                 └───────────────────────────┘
-                                             ▲
-                                             │
-                                             │ Uploads
-                                             │
-                                 ┌───────────────────────────┐
-                                 │   S3 Bucket (Images)      │
-                                 │                           │
-                                 │ ugram-images-prod-team12  │
-                                 └───────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│                         Internet Users                           │
+└──────┬──────────────────────┬──────────────────────┬─────────────┘
+       │ HTTPS                │ HTTPS                │ HTTPS (image GETs)
+       ▼                      ▼                      |
+┌──────────────┐      ┌──────────────┐               │
+│ CloudFront   │      │ CloudFront   │               │
+│ FE (SPA)     │      │ BE (API)     │               │
+│ d21p3kdqdb…  │      │ deccuz7hiy…  │               │
+│ CachingOpt.  │      │ CachingDis.  │               │
+└──────┬───────┘      └──────┬───────┘               │
+       │ HTTPS (OAC)         │ HTTP (origin)         │
+       ▼                     ▼                       ▼
+┌──────────────┐      ┌──────────────┐      ┌──────────────────┐
+│ S3 Static    │      │ EB (NestJS   │      │ S3 Images Bucket │
+│ Website      │      │  t3.micro)   │      │ ugram-images-    │
+│ ugram-       │      │ ugram-       │      │  prod-team12     │
+│ frontend-    │      │ backend-prod │      │ (public reads)   │
+│ prod-team12  │      │              │      │                  │
+└──────────────┘      └──────┬───────┘      └────────▲─────────┘
+                             │ PostgreSQL            │ S3 SDK uploads
+                             │ (no SSL, intra-VPC)   │ (EC2 instance role)
+                             ▼                       │
+                     ┌───────────────────┐           │
+                     │ RDS PostgreSQL 16 │           │
+                     │ ugram-db-prod     │           │
+                     └───────────────────┘           │
+                             ▲                       │
+                             │ reads/writes          │
+                             └───────────────────────┘
+
+Logs/Metrics (out-of-band) :
+  EB ──► CloudWatch Logs (web.stdout / nginx access+error)
+  EB ──► CloudWatch Metrics (Ugram/API + Ugram/Analytics custom)
+  CloudFront ──► CloudWatch Metrics (Requests, 4xx/5xx rate)
+  FE ──► Sentry (error tracking + session replay)
+  Alarmes ──► SNS topic ugram-production-alerts ──► emails équipe
 ```
+
+**Notes sur les flux** :
+- **FE→BE** : le navigateur appelle directement `deccuz7hiyqbp.cloudfront.net/api/*` (pas via le CloudFront FE) — le FE SPA est juste un bundle de code statique qui fait des requêtes XHR cross-origin autorisées par CORS.
+- **BE→S3 Images** : uploads directs via SDK AWS S3 (permissions via l'instance profile EC2).
+- **Lectures d'images** : actuellement servies directement depuis S3 public (bucket policy `public-read`). Une distribution CloudFront devant ce bucket est un follow-up de sécurité (todo L3).
+- **Connexion RDS** : privée intra-VPC (`vpc-07fe678d46804cb30`), pas de SSL car parameter group `ugram-pg16-no-ssl` avec `force_ssl=0`.
 
 ---
 
