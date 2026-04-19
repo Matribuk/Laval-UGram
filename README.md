@@ -154,6 +154,23 @@ git push origin feature/ma-fonctionnalite
 
 **Documentation complète:** Voir [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md#cicd---déploiement-continu) pour les détails (configuration, secrets GitHub, monitoring, etc.)
 
+## Sécurité de l'API
+
+Le backend implémente plusieurs couches de défense contre les attaques web courantes :
+
+- **SQL injection** — TypeORM avec queries paramétrées exclusivement, aucune concaténation de strings ; `ParseUUIDPipe` + `@IsUUID()` sur tous les paramètres de route.
+- **XSS / injection HTTP** — [Helmet](https://helmetjs.github.io/) activé globalement dans `backend/src/main.ts:32-36` : CSP strict, HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`. React échappe les valeurs rendues via JSX par défaut.
+- **Validation d'input** — `class-validator` + `CustomValidationPipe` global sur tous les DTOs (`@IsEmail`, `@IsUUID`, `@MinLength`, `@MaxLength`, `@Matches`, etc.) avec `whitelist: true` + `forbidNonWhitelisted: true` → rejet des champs non déclarés (ex: `isAdmin`).
+- **Rate limiting** — `@nestjs/throttler` global : max 100 requêtes/60s/IP (`app.module.ts:35`).
+- **Pagination capée** — toutes les listes plafonnent à 100 items/page (`Math.min(..., 100)` dans chaque controller).
+- **Contrôle d'accès** — `JwtAuthGuard` sur tous les endpoints non-publics + vérification propriétaire (`image.userId === currentUser.id`) sur update/delete.
+- **Upload sécurisé** — max 5 MB, whitelist MIME (`jpeg/png/gif/webp`), resizing server-side via Sharp (détruit les métadonnées EXIF), `client_max_body_size 10M` sur nginx EB.
+- **CORS strict** — origine whitelist contrôlée via `CORS_ORIGIN` (prod = URL CloudFront FE uniquement).
+- **Transport** — HTTPS forcé sur FE et BE via CloudFront (`Redirect HTTP to HTTPS` / `HTTPS only`) ; OAC sur le bucket S3 FE → bucket privé, seul CloudFront peut lire.
+- **Secrets** — les credentials (DB, JWT, Google OAuth) sont dans les **Environment Properties EB**, jamais dans le code ou les fichiers `.env` commités (gitignored).
+
+Détails complets avec références de fichiers : [docs/DEPLOYMENT.md#sécurité-de-lapi](./docs/DEPLOYMENT.md#sécurité-de-lapi).
+
 ## Prérequis
 
 * Node.js >= 20.x

@@ -661,14 +661,15 @@
 ---
 
 ### 🔐 Sécurité
-* [ ] Configurer WAF (AWS Web Application Firewall) devant l'application
+* [ ] Configurer WAF (AWS Web Application Firewall) devant l'application — skip (hors Free Tier, ~$14/mois)
   * [ ] Règles anti-injection SQL et XSS
   * [ ] Blocage des IPs abusives
 * [x] Activer HTTPS sur Elastic Beanstalk (via CloudFront — `deccuz7hiyqbp.cloudfront.net`, cert SSL CloudFront default gratuit)
 * [x] Activer HTTPS sur le Frontend S3 (via CloudFront — `d21p3kdqdbo0as.cloudfront.net`)
 * [ ] Restreindre les accès S3 images (pre-signed URLs ou CloudFront)
 * [ ] Audit des secrets (rotation des clés JWT, Google OAuth, RDS)
-* [ ] Vérifier que les variables sensibles ne sont pas dans le code (audit `.env` / defaults)
+* [x] Vérifier que les variables sensibles ne sont pas dans le code (audit `.env` / defaults) — `.env` gitignorés, `.env.example` avec placeholders uniquement (jamais commités dans l'historique)
+* [x] **Sécurité de l'API** (2 pts grille L3) — SQL injection (TypeORM paramétré), XSS (Helmet CSP/HSTS), validation inputs (class-validator), rate limiting (Throttler), pagination cap, JWT auth + ownership checks, upload MIME whitelist, CORS strict. Documenté dans `docs/DEPLOYMENT.md#sécurité-de-lapi` et `README.md#sécurité-de-lapi`
 
 ---
 

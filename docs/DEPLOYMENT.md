@@ -7,13 +7,14 @@
 3. [URLs de production](#urls-de-production)
 4. [Configuration détaillée](#configuration-détaillée)
 5. [Configuration SSL/TLS](#configuration-ssltls)
-6. [Logging & Monitoring](#logging--monitoring-cloudwatch)
+6. [Sécurité de l'API](#sécurité-de-lapi)
+7. [Logging & Monitoring](#logging--monitoring-cloudwatch)
    - [CloudWatch Logs (serveur)](#configuration-cloudwatch-logs)
    - [Sentry (client)](#logging-client-sentry)
-7. [CI/CD - Déploiement Continu](#cicd---déploiement-continu)
+8. [CI/CD - Déploiement Continu](#cicd---déploiement-continu)
    - [Intégration Continue (CI)](#intégration-continue-ci)
    - [Déploiement Continu (CD)](#déploiement-continu-cd)
-8. [Résumé des coûts AWS](#résumé-des-coûts-aws-estimation)
+9. [Résumé des coûts AWS](#résumé-des-coûts-aws-estimation)
 
 ---
 
@@ -615,6 +616,102 @@ Le workflow `.github/workflows/deploy.yml` (ligne 57) contient déjà un step d'
 
 1. GitHub → Settings → Secrets → ajouter `CLOUDFRONT_DISTRIBUTION_ID = E2X9BNNOJ04EPW`
 2. Passer `if: false` → `if: true` dans `deploy.yml:58`
+
+---
+
+## Sécurité de l'API
+
+Le backend NestJS implémente plusieurs couches de défense contre les attaques web courantes (XSS, SQL injection, brute force, abus, upload malveillant). Cette section liste les mesures en place, avec les références de fichiers pour audit.
+
+### Défense contre l'injection SQL
+
+- **ORM paramétré** : toutes les requêtes DB passent par TypeORM (repository pattern + query builder). Aucune concaténation de strings dans une requête SQL, tous les paramètres utilisateur sont bindés via placeholders (`:param`).
+  - Exemples : `backend/src/modules/images/images.repository.ts` (query builder avec `.where('l.imageId IN (:...imageIds)')`)
+  - Aucun usage de `.query()` raw avec input utilisateur direct.
+- **Validation UUID stricte** sur tous les paramètres `:id` de routes via `ParseUUIDPipe` + `@IsUUID()` sur les DTOs → empêche des payloads malformés d'atteindre la couche DB.
+
+### Défense contre XSS et injection HTTP
+
+- **Helmet middleware** activé globalement dans `backend/src/main.ts:32-36`. Fournit les headers :
+  - `Content-Security-Policy` (strict : `default-src 'self'`, `script-src 'self'`, `object-src 'none'`, `frame-ancestors 'self'`)
+  - `Strict-Transport-Security` (HSTS, `max-age=31536000`)
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: SAMEORIGIN`
+  - `Cross-Origin-Opener-Policy`, `Cross-Origin-Resource-Policy`
+  - `Referrer-Policy: no-referrer`
+- **CSP `upgrade-insecure-requests`** : les navigateurs upgrade automatiquement HTTP → HTTPS côté client.
+- **Frontend** : React échappe par défaut le contenu utilisateur rendu via JSX (`{value}`). Aucun usage de `dangerouslySetInnerHTML`.
+
+### Validation stricte des inputs
+
+- **`class-validator` + `CustomValidationPipe`** appliqués globalement (`main.ts:49`). Chaque DTO valide ses champs :
+  - `@IsEmail()`, `@IsString()`, `@IsUUID()`, `@IsNotEmpty()`, `@MinLength()`, `@MaxLength()`, `@Matches(regex)` sur tous les champs utilisateur
+  - `whitelist: true` + `forbidNonWhitelisted: true` → les champs non déclarés dans le DTO sont rejetés (prévient l'injection de champs comme `isAdmin`)
+- **Pattern exhaustif** dans tous les DTO : `backend/src/modules/*/dto/*.dto.ts`
+
+### Rate limiting (anti-brute-force, anti-DoS)
+
+- **`@nestjs/throttler`** activé globalement (`app.module.ts:35`) :
+  ```ts
+  ThrottlerModule.forRoot([{ name: 'default', ttl: 60_000, limit: 100 }])
+  ```
+  → max 100 requêtes / 60 secondes / IP. Dépassement → HTTP 429 Too Many Requests.
+- **Guard global** : `{ provide: APP_GUARD, useClass: ThrottlerGuard }` — s'applique à TOUS les endpoints.
+
+### Pagination capée (anti-abus, anti-DB-load)
+
+- **Max 100 items par page** sur toutes les listes (images, users, comments, messages) :
+  ```ts
+  const safeLimit = Math.min(Math.max(Number(limit) || 10, 1), 100);
+  ```
+  Présent dans `images.controller.ts:102`, `images.controller.ts:129`, `images.controller.ts:154`, `images.controller.ts:185`, et équivalents dans les autres controllers.
+- Empêche un attaquant de demander `?limit=99999` et saturer la DB / le réseau.
+
+### Contrôle d'accès (authz)
+
+- **JWT bearer** requis sur tous les endpoints sauf auth publique (signup, login, OAuth callback) :
+  - `@UseGuards(JwtAuthGuard)` + `@ApiBearerAuth()` sur chaque controller method protégé
+  - Token signé + vérifié via `passport-jwt` strategy
+- **Vérification propriétaire** sur les mutations sensibles :
+  - `ImagesService.update` / `.delete` vérifient `image.userId === currentUser.id` (`images.service.ts:200`, `:230`) → sinon `ForbiddenException`
+  - `CommentsService.removeComment` idem (`comments.service.ts:30-32`)
+  - `MessagesService.markAsRead` idem (`messages.service.ts:87-89`)
+- **`DELETE /users/:id`** limité au propriétaire du compte (via guard + check user.id).
+
+### Upload de fichiers (anti-malware, anti-DoS)
+
+- **Taille max 5 MB** : `FileInterceptor('image', { limits: { fileSize: 5 * 1024 * 1024 } })` dans `images.controller.ts:41`
+- **MIME type whitelist** : seuls `image/jpeg`, `image/png`, `image/gif`, `image/webp` acceptés (`storage.service.ts:95-99` + `defaults.ts:52`)
+- **Resizing server-side via Sharp** : regénère 3 variants à partir du buffer upload, détruit les métadonnées EXIF potentiellement sensibles, et valide implicitement que le buffer est bien une image parsable.
+- **nginx `client_max_body_size`** : 10 MB côté reverse proxy EB (première ligne de défense avant NestJS).
+
+### CORS strict
+
+- **Origin contrôlée via env var** (`main.ts:40-45`) :
+  ```ts
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
+  ```
+- En prod, `CORS_ORIGIN=https://d21p3kdqdbo0as.cloudfront.net` → seul le FE CloudFront est autorisé à appeler l'API.
+
+### Gestion des erreurs
+
+- **`GlobalExceptionFilter`** (`main.ts:50`) capture toutes les exceptions non gérées et retourne des réponses uniformes (pas de stack trace leak en prod).
+- Mapping correct vers les codes HTTP : `400 BadRequest`, `401 Unauthorized`, `403 Forbidden`, `404 NotFound`, `409 Conflict`, `500 Internal`.
+
+### Transport sécurisé
+
+- **HTTPS forcé** sur le FE et le BE via CloudFront (`Viewer protocol policy: Redirect HTTP to HTTPS` / `HTTPS only`).
+- **OAC** (Origin Access Control) sur le bucket S3 FE → seul CloudFront peut lire, bucket privé côté internet.
+
+### Secrets
+
+- Les credentials sensibles (DB, JWT, Google OAuth) sont injectés via **Environment Properties Elastic Beanstalk**, pas via des fichiers `.env` commités (`.env` est dans `.gitignore` backend + frontend).
+- **`.env.example`** tracké dans git ne contient que des placeholders (`your-password`, `your-secret-key-...`).
 
 ---
 
